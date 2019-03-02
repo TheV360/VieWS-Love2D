@@ -1,0 +1,20 @@
+Image = Control:extend()
+
+function Image:new(o)
+	self.image = o.image
+	self.color = o.color or {1, 1, 1, 1}
+	
+	if self.image then
+		if not (o.size and o.size.width  or o.width ) then o.width  = self.image:getWidth (o.text) end
+		if not (o.size and o.size.height or o.height) then o.height = self.image:getHeight(o.text) end
+	end
+	
+	Image.super.new(self, o)
+end
+
+function Image:draw()
+	love.graphics.setColor(self.color)
+	love.graphics.draw(self.image)
+end
+
+return Image
