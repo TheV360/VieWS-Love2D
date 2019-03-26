@@ -1,6 +1,8 @@
 local Console = {
 	enabled = false,
 	
+	openKey = "`",
+	
 	stealth = true,
 	stealthLog = {},
 	stealthLifetime = 120,
@@ -38,7 +40,6 @@ local Console = {
 	tabBefore = "",
 	tabBeforeCursor = 0,
 	tabMessage = false,
-	emptyTab = true,
 	
 	errorMessages = {
 		"Oof",
@@ -103,8 +104,8 @@ function Console:print(...)
 	end
 end
 
-function Console:printSpecial(formatTable)
-	self.log[#self.log + 1] = formatTable
+function Console:printSpecial(entryTable)
+	self.log[#self.log + 1] = entryTable
 	
 	-- "Scroll"
 	if #self.log > self.logMax then
@@ -113,7 +114,7 @@ function Console:printSpecial(formatTable)
 	
 	-- Commented out because oftentimes the printSpecial is used for internal stuff.
 	-- if self.stealth then
-	-- 	self.stealthLog[#self.stealthLog + 1] = formatTable
+	-- 	self.stealthLog[#self.stealthLog + 1] = entryTable
 	-- 	self.stealthLog[#self.stealthLog].life = self.stealthLifetime
 		
 	-- 	-- Also "Scroll"
@@ -122,7 +123,7 @@ function Console:printSpecial(formatTable)
 	-- 	end
 	-- end
 	
-	_debug_print_(formatTable.text)
+	_debug_print_(entryTable.text)
 end
 
 function Console:addAtCursor(str)
@@ -134,7 +135,7 @@ end
 
 function Console:textinput(key)
 	if not self.enabled then
-		if key == "`" then
+		if key == self.openKey then
 			self.enabled = true
 		end
 		return
@@ -233,7 +234,7 @@ function Console:keypressed(key)
 end
 
 function Console:hideTabMessage()
-	if key ~= "tab" and self.tabMessage then
+	if self.tabMessage then
 		self.log[#self.log] = nil
 		self.tabMessage = false
 	end
@@ -263,11 +264,9 @@ function Console:tabCompletion(dir)
 			
 			-- It wasn't
 			if not isValid then return end
-		elseif self.emptyTab then
+		else
 			-- It's alright to have nothing.
 			items = {""}
-		else
-			return
 		end
 		
 		-- It was!
@@ -329,7 +328,7 @@ function Console:tabCompletion(dir)
 	msg = msg .. self.tabBeforeComponent .. self.tab[self.currTab]
 	
 	if not self.tabMessage then
-		self:print()
+		self:print() -- TODO: just straight up remove this from the actual log. Put it into its own variable. If the variable isn't nil, it'll be temporarily added to the lines to draw.
 		self.log[#self.log] = {text = "", color = {1, 1, 1, 0.5}, noCamera = true}
 		self.tabMessage = true
 	end
@@ -446,6 +445,7 @@ function Console:isValidIdentifier(str, openEnded)
 	-- You can't be yourself twice
 	local alreadySelf = false
 	
+	-- Check if the things separating them are good.
 	for i in str:gfind("[%.%:]") do
 		-- Can't do this: a.b:c.d
 		-- I don't accept any delimiters once you use a :.
@@ -458,6 +458,7 @@ function Console:isValidIdentifier(str, openEnded)
 		delCount = delCount + 1
 	end
 	
+	-- Check if the things in between the delimiters are good.
 	for i in str:gfind(self.validVariable) do
 		table.insert(vars, i)
 	end

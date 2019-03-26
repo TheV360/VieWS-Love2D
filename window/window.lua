@@ -123,20 +123,45 @@ function Window:new(o)
 	
 	-- Mouse
 	if o.mouse then
-		local n = Util.watch({1, 2, 3, 4, 5}, function(key) return love.mouse.isDown(key) end)
+		local n = Util.watch({1, 2, 3, 4, 5}, function(key) return love.mouse.isDown(key) end) -- I swear, this makes sense
 		self.mouse = n
 		
 		if not isTable(o.mouse) then o.mouse = {} end
 		
-		n.show = true
-		n.image = o.mouse.image or nil
+		-- Cursors array. Contains all the cursors.
+		n.cursors = {}
+		n.currentCursor = o.mouse.currentCursor or "none"
 		
-		n.x, n.y = 0, 0
+		if o.mouse.cursors then
+			local i, v
+			
+			for i, v in pairs(o.mouse.cursors) do
+				n.cursors[i] = {
+					image = v.image,
+					home = {
+						x = v.home and v.home.x or 0,
+						y = v.home and v.home.y or 0
+					}
+				}
+			end
+		end
 		
-		n.home = {
-			x = o.mouse.home and o.mouse.home.x or 0,
-			y = o.mouse.home and o.mouse.home.y or 0
-		}
+		-- Deprecated way of handling cursors. Still works with new way!
+		if o.mouse.image then
+			n.cursors[#n.cursors + 1] = {
+				image = o.mouse.image or nil,
+				home = {
+					x = o.mouse.home and o.mouse.home.x or 0,
+					y = o.mouse.home and o.mouse.home.y or 0
+				}
+			}
+			
+			self:switchCursor(#n.cursors)
+		end
+		
+		if o.mouse.defaultCursor then
+			self:switchCursor(o.mouse.defaultCursor)
+		end
 	end
 	
 	-- Debug
@@ -160,7 +185,7 @@ function Window:new(o)
 		-- Default Debug Stuff Ahead
 		
 		self.loveFunctions:addLoveFunction("keypressed", "ConsoleKeyPressed", function(key)
-			if self.debug.console.enabled or key == self.debug.openKey then
+			if self.debug.console.enabled or key == self.debug.console.openKey then
 				self.debug.console:keypressed(key)
 			elseif key == self.debug.keys.menu then
 				-- if self.running then
@@ -252,9 +277,6 @@ function Window:new(o)
 		self.width, self.height = width, height
 		if self.screen then self:updateScreen() end
 	end)
-	
-	-- If there's already a mouse graphic, don't draw this mouse
-	love.mouse.setVisible(self.mouse.image == nil)
 	
 	-- Keyboard repeaaaaaaaaaaaaaaaaaaaaaaaat
 	love.keyboard.setKeyRepeat(true)
@@ -369,7 +391,7 @@ function Window:draw()
 	love.graphics.setColor(1, 1, 1)
 	
 	-- Draw mouse
-	if self.mouse and self.mouse.image then
+	if self.mouse then
 		self:drawMouse()
 	end
 	
@@ -416,18 +438,21 @@ function Window:updateMouse()
 end
 
 function Window:drawMouse()
+	local cc = self.mouse.cursors[self.mouse.currentCursor]
+	
+	if not isTable(cc) then return end
+	if not cc.image then return end
+	
 	if self.screen then
 		if self.running then
-			if self.mouse.show then
-				love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
-				love.graphics.draw(self.mouse.image, self.screen.x + (self.mouse.sx - self.mouse.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - self.mouse.home.y) * self.screen.scale, 0, self.screen.scale)
-				love.graphics.setScissor()
-			end
+			love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
+			love.graphics.draw(cc.image, self.screen.x + (self.mouse.sx - cc.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - cc.home.y) * self.screen.scale, 0, self.screen.scale)
+			love.graphics.setScissor()
 		else
-			love.graphics.draw(self.mouse.image, self.mouse.x - self.mouse.home.x * self.screen.scale, self.mouse.y - self.mouse.home.y * self.screen.scale, 0, self.screen.scale)
+			love.graphics.draw(cc.image, self.mouse.x - cc.home.x * self.screen.scale, self.mouse.y - cc.home.y * self.screen.scale, 0, self.screen.scale)
 		end
 	else
-		love.graphics.draw(self.mouse.image, self.mouse.x - self.mouse.home.x, self.mouse.y - self.mouse.home.y)
+		love.graphics.draw(cc.image, self.mouse.x - cc.home.x, self.mouse.y - cc.home.y)
 	end
 end
 
@@ -463,6 +488,15 @@ function Window:calculateShake()
 	
 	self.shake.cx = math.floor(ox)
 	self.shake.cy = math.floor(oy)
+end
+
+function Window:switchCursor(index)
+	if self.mouse.currentCursor == index then return end
+	if not self.mouse.cursors[index] then error("V360Template: Switched to mouse that doesn't exist.") end
+	
+	self.mouse.currentCursor = index
+	
+	love.mouse.setVisible(not self.mouse.cursors[self.mouse.currentCursor].image)
 end
 
 function Window:canShakeWindow()

@@ -16,7 +16,8 @@ function love.load()
 	require "game"
 	
 	window = GameWindow{
-		title = "Template",
+		title = "VieWS",
+		version = "v0.1",
 		icon = love.image.newImageData("resources/icon.png"),
 		
 		screen = {
@@ -25,11 +26,17 @@ function love.load()
 		},
 		
 		mouse = {
-			-- image = love.graphics.newImage("resources/mouse.png"),
-			-- home = {x = 1, y = 2},
-			
-			image = love.graphics.newImage("resources/hand.png"),
-			home = {x = 4, y = 1}
+			cursors = {
+				["mouse"] = {
+					image = love.graphics.newImage("resources/cursors/mouse.png"),
+					home = {x = 1, y = 2}
+				},
+				["hand"] = {
+					image = love.graphics.newImage("resources/cursors/hand.png"),
+					home = {x = 4, y = 1}	
+				}
+			},
+			defaultCursor = "mouse"
 		},
 		debug = true,
 		
@@ -39,34 +46,37 @@ function love.load()
 	}
 	
 	function window:drawMouse()
+		local cc = self.mouse.cursors[self.mouse.currentCursor]
+		
+		if type(cc) ~= "table" then return end
+		if not cc.image then return end
+		
 		local shadowDistance = 1
 		
 		if self.screen then
 			if self.running then
-				if self.mouse.show then
-					love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
-					
-					love.graphics.setColor(0, 0, 0, 0.25)
-					love.graphics.draw(self.mouse.image, self.screen.x + (self.mouse.sx - self.mouse.home.x + shadowDistance) * self.screen.scale, self.screen.y + (self.mouse.sy - self.mouse.home.y + shadowDistance) * self.screen.scale, 0, self.screen.scale)
-					
-					love.graphics.setColor(1, 1, 1)
-					love.graphics.draw(self.mouse.image, self.screen.x + (self.mouse.sx - self.mouse.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - self.mouse.home.y) * self.screen.scale, 0, self.screen.scale)
-					
-					love.graphics.setScissor()
-				end
-			else
+				love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
+				
 				love.graphics.setColor(0, 0, 0, 0.25)
-				love.graphics.draw(self.mouse.image, self.mouse.x - (self.mouse.home.x + shadowDistance) * self.screen.scale, self.mouse.y - (self.mouse.home.y + shadowDistance) * self.screen.scale, 0, self.screen.scale)
+				love.graphics.draw(cc.image, self.screen.x + (self.mouse.sx - cc.home.x + shadowDistance) * self.screen.scale, self.screen.y + (self.mouse.sy - cc.home.y + shadowDistance) * self.screen.scale, 0, self.screen.scale)
 				
 				love.graphics.setColor(1, 1, 1)
-				love.graphics.draw(self.mouse.image, self.mouse.x - self.mouse.home.x * self.screen.scale, self.mouse.y - self.mouse.home.y * self.screen.scale, 0, self.screen.scale)
+				love.graphics.draw(cc.image, self.screen.x + (self.mouse.sx - cc.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - cc.home.y) * self.screen.scale, 0, self.screen.scale)
+				
+				love.graphics.setScissor()
+			else
+				love.graphics.setColor(0, 0, 0, 0.25)
+				love.graphics.draw(cc.image, self.mouse.x - (cc.home.x + shadowDistance) * self.screen.scale, self.mouse.y - (cc.home.y + shadowDistance) * self.screen.scale, 0, self.screen.scale)
+				
+				love.graphics.setColor(1, 1, 1)
+				love.graphics.draw(cc.image, self.mouse.x - cc.home.x * self.screen.scale, self.mouse.y - cc.home.y * self.screen.scale, 0, self.screen.scale)
 			end
 		else
 			love.graphics.setColor(0, 0, 0, 0.25)
-			love.graphics.draw(self.mouse.image, self.mouse.x - self.mouse.home.x + shadowDistance, self.mouse.y - self.mouse.home.y + shadowDistance)
+			love.graphics.draw(cc.image, self.mouse.x - cc.home.x + shadowDistance, self.mouse.y - cc.home.y + shadowDistance)
 			
 			love.graphics.setColor(1, 1, 1)
-			love.graphics.draw(self.mouse.image, self.mouse.x - self.mouse.home.x, self.mouse.y - self.mouse.home.y)
+			love.graphics.draw(cc.image, self.mouse.x - cc.home.x, self.mouse.y - cc.home.y)
 		end
 	end
 	

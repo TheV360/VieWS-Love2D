@@ -27,8 +27,7 @@ function VieWS:new(o)
 	
 	-- Desktop
 	self.desktop = Desktop{
-		width  = self.size.width,
-		height = self.size.height
+		parent = self
 	}
 	
 	-- Popups (right click stuff, menu bar stuff.)
@@ -49,6 +48,8 @@ function VieWS:new(o)
 	
 	-- Handles all love callbacks
 	self.loveFunctions = o.loveFunctions
+	
+	-- loveFunctions:addLoveFunction("mouse", "", func)
 end
 
 function VieWS:addWindow(w)
@@ -95,7 +96,7 @@ function VieWS:update()
 			
 			if w.hoverContent then
 				-- The mouse is over the content, and it has clicked.
-				self.windowDrag.window = nil
+				w.panel:mouseClick(window.mouse)
 			elseif w.hover then
 				-- The mouse is not over the content, but is over the window.
 				if self.mouse.y - w.position.y < 0 then

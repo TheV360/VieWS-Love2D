@@ -5,7 +5,7 @@ function VieWSEventRect:new(o)
 end
 
 function VieWSEventRect:mouse(m) end
-function VieWSEventRect:mouseClick() end
+function VieWSEventRect:mouseClick(m) end
 function VieWSEventRect:mouseEnter(m) end
 function VieWSEventRect:mouseExit(m) end
 function VieWSEventRect:wheelMoved(x, y) end
@@ -16,7 +16,8 @@ function VieWSEventRect:show() end
 function VieWSEventRect:focus() end
 function VieWSEventRect:blur() end
 
-function VieWSEventRect:keyPressed(key) return false end
+function VieWSEventRect:keyPressed(key) return false end -- return value
+function VieWSEventRect:keyReleased(key) return false end -- means value eaten
 function VieWSEventRect:textInput(t) end
 
 return VieWSEventRect
