@@ -21,7 +21,9 @@ function Window:new(o)
 	end
 	
 	self.panel = Panel{
-		size = self.size
+		size = self.size,
+		
+		setup = o.setup
 	}
 	
 	self.style = {

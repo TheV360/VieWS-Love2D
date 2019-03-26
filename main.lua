@@ -33,7 +33,15 @@ function love.load()
 				},
 				["hand"] = {
 					image = love.graphics.newImage("resources/cursors/hand.png"),
-					home = {x = 4, y = 1}	
+					home = {x = 4, y = 1}
+				},
+				["movable"] = {
+					image = love.graphics.newImage("resources/cursors/movable.png"),
+					home = {x = 4, y = 1}
+				},
+				["move"] = {
+					image = love.graphics.newImage("resources/cursors/move.png"),
+					home = {x = 4, y = 1}
 				}
 			},
 			defaultCursor = "mouse"
@@ -45,6 +53,7 @@ function love.load()
 		draw = draw
 	}
 	
+	-- Modified version of drawMouse function with shadow
 	function window:drawMouse()
 		local cc = self.mouse.cursors[self.mouse.currentCursor]
 		

@@ -8,10 +8,15 @@ function Panel:new(o)
 	
 	-- Make controls
 	self.controls = {}
+	
+	-- Run initialization function
+	if type(o.setup) == "function" then
+		o.setup(self)
+	end
 end
 
-function Panel:addControl(c)
-	table.insert(self.controls, c)
+function Panel:addControl(name, c)
+	self.controls[name] = c
 end
 
 function Panel:update()

@@ -62,6 +62,8 @@ end
 function VieWS:update()
 	local i, w, tmp
 	
+	window:switchCursor("mouse")
+	
 	self.mouse.x, self.mouse.y = window.mouse.sx, window.mouse.sy
 	self.mouse.window = nil
 	
@@ -70,6 +72,8 @@ function VieWS:update()
 	elseif self.windowDrag.window then
 		self.windowDrag.window.position.x = self.mouse.x - self.windowDrag.x
 		self.windowDrag.window.position.y = self.mouse.y - self.windowDrag.y
+		
+		window:switchCursor("move")
 	end
 	
 	self.desktop:update()
@@ -82,6 +86,10 @@ function VieWS:update()
 		
 		if w.hover or w.hoverContent then
 			self.mouse.window = w
+		end
+		
+		if w.hover and not w.hoverContent and not self.windowDrag.window then
+			window:switchCursor("movable")
 		end
 		
 		w:update()
@@ -104,8 +112,8 @@ function VieWS:update()
 					self.windowDrag.window = w
 					self.windowDrag.x = self.mouse.x - w.position.x
 					self.windowDrag.y = self.mouse.y - w.position.y
-				else
-					-- TODO
+					
+					window:switchCursor("move")
 				end
 			end
 		end
