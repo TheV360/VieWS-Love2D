@@ -5,11 +5,11 @@ require "views/geometry"
 VieWSRect = require("views/viewsrect")
 VieWSEventRect = require("views/eventrect")
 Desktop = require("views/desktop")
-Window = require("views/window")
 Popup = require("views/popup")
 
 Control = require("views/controls/control")
 Panel = require("views/controls/panel")
+Window = require("views/window")
 Label = require("views/controls/label")
 Image = require("views/controls/image")
 Button = require("views/controls/button")
@@ -88,7 +88,7 @@ function VieWS:update()
 			self.mouse.window = w
 		end
 		
-		if w.hover and not w.hoverContent and not self.windowDrag.window then
+		if w.hover and not w.hoverContent and not self.windowDrag.window and self.mouse.y - w.position.y < 0 then
 			window:switchCursor("movable")
 		end
 		

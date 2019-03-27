@@ -61,4 +61,21 @@ function Panel:draw()
 	love.graphics.draw(self.canvas, 0, 0)
 end
 
+function Panel:mouseClick(m)
+	local i, c
+	
+	for i, c in pairs(self.controls) do
+		local x, y, w, h = c:getPaddingRect(true)
+		
+		if Util.pointSquare(m.x, m.y, x, y, w, h) then
+			print("!!!")
+			c:mouseClick(m)
+		else
+			print("\nFOR CONTROL " .. i)
+			print("p: " .. m.x .. ", " .. m.y)
+			print("r: " .. x .. ", " .. y .. "  " .. w .. "x" .. h)
+		end
+	end
+end
+
 return Panel

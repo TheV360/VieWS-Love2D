@@ -9,6 +9,11 @@ If any of these tasks succeeds, don't move on and please end it there.
 	2. If the mouse is on the contents, do mouse event.
 4. If mouse not on taskbar or windows, do mouse event on desktop
 
+## Better:
+
+Make a function to get what is currently being hovered over. Always iterate from front to back, and return when you find it.
+1. 
+
 # How input callbacks work
 
 See mouse cursor, but replace mouse event with any event.

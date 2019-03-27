@@ -59,6 +59,10 @@ function setup()
 				
 				text = "Github"
 			}
+			githubButton.mouseClick = function(m)
+				love.system.openURL("https://thev360.github.io/")
+				print(":D")
+			end
 			self:addControl("githubButton", githubButton)
 			
 			closeButton = Button{

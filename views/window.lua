@@ -1,6 +1,6 @@
 -- The window. Oh boy.
 
-local Window = VieWSRect:extend()
+local Window = Panel:extend()
 Window.TitleBarWidth = 10
 Window.SideWidth = 1
 Window.ShadowDistance = 2

@@ -29,19 +29,23 @@ function love.load()
 			cursors = {
 				["mouse"] = {
 					image = love.graphics.newImage("resources/cursors/mouse.png"),
-					home = {x = 1, y = 2}
+					home = {x = 0, y = 0} -- home on first white pixel
+					-- home = {x = 1, y = 2} -- home on first black pixel
 				},
 				["hand"] = {
 					image = love.graphics.newImage("resources/cursors/hand.png"),
-					home = {x = 4, y = 1}
+					home = {x = 4, y = 0} -- home on first white pixel
+					-- home = {x = 4, y = 1} -- home on first black pixel
 				},
 				["movable"] = {
 					image = love.graphics.newImage("resources/cursors/movable.png"),
-					home = {x = 4, y = 1}
+					home = {x = 4, y = 0} -- home on first white pixel
+					-- home = {x = 4, y = 1} -- home on first black pixel
 				},
 				["move"] = {
 					image = love.graphics.newImage("resources/cursors/move.png"),
-					home = {x = 4, y = 1}
+					home = {x = 4, y = 0} -- home on first white pixel
+					-- home = {x = 4, y = 1} -- home on first black pixel
 				}
 			},
 			defaultCursor = "mouse"
