@@ -104,7 +104,7 @@ function VieWS:update()
 			
 			if w.hoverContent then
 				-- The mouse is over the content, and it has clicked.
-				w.panel:mouseClick(window.mouse)
+				w:mouseClick(self.mouse)
 			elseif w.hover then
 				-- The mouse is not over the content, but is over the window.
 				if self.mouse.y - w.position.y < 0 then

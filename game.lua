@@ -10,87 +10,90 @@ function setup()
 		loveFunctions = window.loveFunctions
 	}
 	
-	myWindow = Window{
-		title = "About VieWS",
-		
-		x = 16,
-		y = 32,
-		
-		width = 128,
-		height = 64,
-		
-		setup = function(self)
-			logoImage = Image{
-				x = 4,
-				y = 6,
-				image = love.graphics.newImage("resources/logo.png")
-			}
-			self:addControl("logoImage", logoImage)
+	function makeMyWindow()
+		myWindow = Window{
+			title = "About VieWS",
 			
-			versionLabel = Label{
-				x = 94,
-				y = 14,
+			x = 16,
+			y = 32,
+			
+			width = 128,
+			height = 64,
+			
+			setup = function(self)
+				logoImage = Image{
+					x = 4,
+					y = 6,
+					image = love.graphics.newImage("resources/logo.png")
+				}
+				self:addControl("logoImage", logoImage)
 				
-				text = "v0.1?",
-				color = {0.5, 0.5, 0.5, 1}
-			}
-			self:addControl("versionLabel", versionLabel)
-			
-			nameLabel = Label{
-				x = 4,
-				y = 24,
-				text = "V360 Window System"
-			}
-			self:addControl("nameLabel", nameLabel)
-			
-			authorLabel = Label{
-				x = 4,
-				y = 34,
-				text = "By V360 (@0x560360)"
-			}
-			self:addControl("authorLabel", authorLabel)
-			
-			githubButton = Button{
-				x = 4,
-				y = 44,
+				versionLabel = Label{
+					x = 94,
+					y = 14,
+					
+					text = "v0.1?",
+					color = {0.5, 0.5, 0.5, 1}
+				}
+				self:addControl("versionLabel", versionLabel)
 				
-				width = 58,
-				height = 16,
+				nameLabel = Label{
+					x = 4,
+					y = 24,
+					text = "V360 Window System"
+				}
+				self:addControl("nameLabel", nameLabel)
 				
-				text = "Github"
-			}
-			githubButton.mouseClick = function(m)
-				love.system.openURL("https://thev360.github.io/")
-				print(":D")
+				authorLabel = Label{
+					x = 4,
+					y = 34,
+					text = "By V360 (@0x560360)"
+				}
+				self:addControl("authorLabel", authorLabel)
+				
+				githubButton = Button{
+					x = 4,
+					y = 44,
+					
+					width = 58,
+					height = 16,
+					
+					text = "Github"
+				}
+				githubButton.mouseClick = function(m)
+					love.system.openURL("https://thev360.github.io/VieWS/")
+				end
+				self:addControl("githubButton", githubButton)
+				
+				closeButton = Button{
+					x = 66,
+					y = 44,
+					
+					width = 58,
+					height = 16,
+					
+					text = "Close"
+				}
+				closeButton.mouseClick = makeMyWindow
+				self:addControl("closeButton", closeButton)
 			end
-			self:addControl("githubButton", githubButton)
-			
-			closeButton = Button{
-				x = 66,
-				y = 44,
-				
-				width = 58,
-				height = 16,
-				
-				text = "Close"
-			}
-			self:addControl("closeButton", closeButton)
-		end
-	}
+		}
+		view:addWindow(myWindow)
+	end
+	makeMyWindow()
 	
-	view:addWindow(myWindow)
-	view:addWindow(Window{
-		title = "Window 2",
+	-- view:addWindow(Window{
+	-- 	title = "Window 2",
 		
-		x = 48,
-		y = 48,
+	-- 	x = 48,
+	-- 	y = 48,
 		
-		width = 128,
-		height = 64,
+	-- 	width = 128,
+	-- 	height = 64,
 		
-		borderless = true
-		-- border = {top = 4, right = 1, bottom = 1, left = 1}
-	})
+	-- 	borderless = true
+	-- 	-- border = {top = 4, right = 1, bottom = 1, left = 1}
+	-- })
 end
 
 function update()

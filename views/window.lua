@@ -20,12 +20,6 @@ function Window:new(o)
 		end
 	end
 	
-	self.panel = Panel{
-		size = self.size,
-		
-		setup = o.setup
-	}
-	
 	self.style = {
 		borderBackground = {0, 0, 0},
 		borderForeground = {1, 1, 1},
@@ -57,15 +51,13 @@ function Window:draw()
 	love.graphics.setColor(self.style.contentBackground)
 	love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.width, self.size.height)
 	
-	if self.panel then
-		love.graphics.push()
-		love.graphics.origin()
-		
-		love.graphics.translate(self.position.x, self.position.y)
-		self.panel:draw()
-		
-		love.graphics.pop()
-	end
+	love.graphics.push()
+	love.graphics.origin()
+	
+	love.graphics.translate(self.position.x, self.position.y)
+	Window.super.draw(self)
+	
+	love.graphics.pop()
 end
 
 function Window:drawBorder()
