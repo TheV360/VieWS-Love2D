@@ -61,6 +61,34 @@ function Panel:draw()
 	love.graphics.draw(self.canvas, 0, 0)
 end
 
+function Panel:mouse(m)
+	local i, c
+	
+	for i, c in pairs(self.controls) do
+		local x, y, w, h = c:getPaddingRect(true)
+		
+		if Util.pointSquare(m.x - self.position.x, m.y - self.position.y, x, y, w, h) then
+			if not c.hover then
+				c:mouseEnter(m)
+				
+				c.redraw = true
+			end
+			
+			c.hover = true
+			
+			c:mouse(m)
+		else
+			if c.hover then
+				c:mouseExit(m)
+				
+				c.redraw = true
+			end
+			
+			c.hover = false
+		end
+	end
+end
+
 function Panel:mouseClick(m)
 	local i, c
 	
@@ -69,7 +97,6 @@ function Panel:mouseClick(m)
 		
 		if Util.pointSquare(m.x - self.position.x, m.y - self.position.y, x, y, w, h) then
 			c:mouseClick(m)
-		else
 		end
 	end
 end

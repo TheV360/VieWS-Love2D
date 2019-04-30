@@ -14,6 +14,8 @@ end
 
 function Image:draw()
 	love.graphics.setColor(self.color)
+	self:clearRect()
+	
 	love.graphics.draw(self.image)
 end
 

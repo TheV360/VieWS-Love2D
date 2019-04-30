@@ -12,6 +12,8 @@ end
 
 function Label:draw()
 	love.graphics.setColor(self.color)
+	self:clearRect()
+	
 	love.graphics.print(self.text)
 end
 

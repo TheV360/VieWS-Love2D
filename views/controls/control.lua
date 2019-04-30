@@ -23,6 +23,9 @@ function Control:new(o)
 	-- Is visible?
 	self.visible = o.visible ~= false
 	
+	-- Is hovered?
+	self.hover = false
+	
 	-- Needs a redraw?
 	self.redraw = true
 end
@@ -66,15 +69,15 @@ function Control:drawRect(mode)
 	
 	-- if self.drawStyle.round then
 	-- 	if mode == "line" then
-	-- 		love.graphics.rectangle("line", x + 0.5, y + 0.5, w - 1, h - 1, self.drawStyle.round, self.drawStyle.round, 1)
+	-- 		love.graphics.rectangle("line", 0.5, 0.5, w - 1, h - 1, self.drawStyle.round, self.drawStyle.round, 1)
 	-- 	else
-	-- 		love.graphics.rectangle("fill", x, y, w, h, self.drawStyle.round, self.drawStyle.round, 1)
+	-- 		love.graphics.rectangle("fill", 0, 0, w, h, self.drawStyle.round, self.drawStyle.round, 1)
 	-- 	end
 	-- else
 		if mode == "line" then
-			love.graphics.rectangle("line", x + 0.5, y + 0.5, w - 1, h - 1)
+			love.graphics.rectangle("line", 0.5, 0.5, w - 1, h - 1)
 		else
-			love.graphics.rectangle("fill", x, y, w, h)
+			love.graphics.rectangle("fill", 0, 0, w, h)
 		end
 	-- end
 end
@@ -86,7 +89,7 @@ function Control:clearRect()
 	love.graphics.setColor(0, 0, 0, 0)
 	love.graphics.setBlendMode("replace")
 	
-	love.graphics.rectangle("fill", x, y, w, h)
+	love.graphics.rectangle("fill", 0, 0, w, h)
 	
 	love.graphics.pop()
 end

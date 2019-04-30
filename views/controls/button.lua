@@ -11,13 +11,29 @@ function Button:new(o)
 end
 
 function Button:draw()
+	self:clearRect()
+	
 	love.graphics.setColor(self.color)
-	love.graphics.rectangle("line", 0.5, 0.5, self.size.width - 1, self.size.height - 1)
-	love.graphics.print(
-		self.text,
-		math.ceil ((self.size.width  - view.font:getWidth (self.text)) / 2),
-		math.floor((self.size.height - view.font:getHeight(         )) / 2)
-	)
+	if self.hover then
+		self:drawRect("fill")
+		
+		-- TODO: use proper theme colors, not hard-coded garbage
+		
+		love.graphics.setColor(0.85, 0.8, 0.8)
+		love.graphics.print(
+			self.text,
+			math.ceil ((self.size.width  - view.font:getWidth (self.text)) / 2),
+			math.floor((self.size.height - view.font:getHeight(         )) / 2)
+		)
+	else
+		self:drawRect("line")
+		
+		love.graphics.print(
+			self.text,
+			math.ceil ((self.size.width  - view.font:getWidth (self.text)) / 2),
+			math.floor((self.size.height - view.font:getHeight(         )) / 2)
+		)
+	end
 end
 
 return Button

@@ -15,6 +15,8 @@ Image = require("views/controls/image")
 Button = require("views/controls/button")
 
 VieWS = VieWSRect:extend()
+-- VieWS = VieWSEventRect:extend()
+
 VieWS.WindowSort = function(wa, wb) return wa.z < wb.z end
 
 function VieWS:new(o)
@@ -85,11 +87,15 @@ function VieWS:update()
 		w.hoverContent = w:onContent(self.mouse.x, self.mouse.y)
 		
 		if w.hover or w.hoverContent then
-			self.mouse.window = w
+			self.mouse.window = w -- gets topmost window
 		end
 		
-		if w.hover and not w.hoverContent and not self.windowDrag.window and self.mouse.y - w.position.y < 0 then
-			window:switchCursor("movable")
+		if not self.windowDrag.window then
+			if w.hover and not w.hoverContent and self.mouse.y - w.position.y < 0 then
+				window:switchCursor("movable")
+			elseif w.hover then
+				window:switchCursor("mouse")
+			end
 		end
 		
 		w:update()
@@ -97,6 +103,12 @@ function VieWS:update()
 	
 	if self.mouse.window then
 		local w = self.mouse.window
+		
+		if w.hoverContent then
+			w:mouse(self.mouse)
+		elseif w.hover then
+			-- w:mouse(self.mouse)
+		end
 		
 		if window.mouse.press[1] then
 			-- Push window to front.
@@ -116,6 +128,20 @@ function VieWS:update()
 					window:switchCursor("move")
 				end
 			end
+		end
+	end
+	
+	-- Delete windows marked for deletion
+	for i = #self.windows, 1, -1 do
+		if self.windows[i].status == "close" then
+			table.remove(self.windows, i)
+		end
+	end
+	
+	-- Lua doesn't like it if you remove a numeric thing while it's in the pairs loop, hence the other loop.
+	for i, w in pairs(self.windows) do
+		if type(i) ~= "number" and self.windows[i].status == "close" then
+			self.windows[i] = nil
 		end
 	end
 	

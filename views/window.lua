@@ -22,9 +22,11 @@ function Window:new(o)
 	
 	self.style = {
 		borderBackground = {0, 0, 0},
-		borderForeground = {1, 1, 1},
+		borderForeground = {0.85, 0.8, 0.8},
 		contentBackground = {0.85, 0.8, 0.8}
 	}
+	
+	self.status = "normal"
 end
 
 function Window:onWindow(x, y)
@@ -159,6 +161,10 @@ function Window:drawShadow()
 			Window.ShadowDistance
 		)
 	end
+end
+
+function Window:close()
+	self.status = "close"
 end
 
 return Window
