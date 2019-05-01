@@ -65,7 +65,7 @@ function Window:new(o)
 		n.width  = o.screen.width  or 360
 		n.height = o.screen.height or 240
 		
-		n.canvas = love.graphics.newCanvas(n.width, n.height, {format = "rgba4"})
+		n.canvas = love.graphics.newCanvas(n.width, n.height)
 	end
 	
 	-- Backdrop

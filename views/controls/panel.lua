@@ -4,7 +4,7 @@ function Panel:new(o)
 	Panel.super.new(self, o)
 	
 	-- Canvas
-	self.canvas = love.graphics.newCanvas(self.size.width, self.size.height, {format = "rgba4"})
+	self.canvas = love.graphics.newCanvas(self.size.width, self.size.height)
 	
 	-- Make controls
 	self.controls = {}

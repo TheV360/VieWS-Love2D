@@ -16,7 +16,14 @@ function Window:new(o)
 			self.border = Sides(o.border.top, o.border.right, o.border.bottom, o.border.left)
 		else
 			self.border = Sides(Window.TitleBarWidth, Window.SideWidth, Window.SideWidth)
-			self.borderForm = true -- will be replaced with border's form when forms added
+			self.borderPanel = true
+			-- self.borderPanel = Panel{
+			-- 	x = -self.border.top,
+			-- 	y = -self.border.left,
+				
+			-- 	width =  self.size.width + self.border.left + self.border.right,
+			-- 	height = self.size.height + self.border.top + self.border.bottom
+			-- }
 		end
 	end
 	
@@ -47,6 +54,10 @@ function Window:onContent(x, y)
 	and    y >= self.position.y
 	and    x <  self.position.x + self.size.width
 	and    y <  self.position.y + self.size.height
+end
+
+function Window:update()
+	Window.super.update(self)
 end
 
 function Window:draw()
@@ -102,7 +113,7 @@ function Window:drawBorder()
 			self.border.bottom
 		)
 		
-		if self.borderForm then
+		if self.borderPanel then
 			love.graphics.setColor(self.style.borderForeground)
 			
 			-- Title
