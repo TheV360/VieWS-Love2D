@@ -89,3 +89,35 @@ view:addWindow(Window{
 	setup = windowConstruction,
 	-- border = {top = 4, right = 1, bottom = 1, left = 1}
 })
+
+view:addWindow(Window{
+	title = "Lo-fi Color test",
+	
+	x = 8,
+	y = 24,
+	
+	width = 128,
+	height = 160,
+	
+	setup = function(wSelf)
+		imgControl = Image{
+			x = 0, y = 0,
+			
+			image = love.graphics.newImage("resources/colorTest.png")
+		}
+		wSelf:addControl("imgControl", imgControl)
+		
+		coolButton = Button{
+			x = 2, y = 2,
+			
+			width = 11,
+			height = 11,
+			
+			text = "X"
+		}
+		coolButton.mouseClick = function()
+			wSelf:close()
+		end
+		wSelf:addControl("coolButton", coolButton)
+	end
+})

@@ -18,7 +18,3 @@ end
 function draw()
 	view:draw()
 end
-
-function makeSnapshot()
-	local crumbs = {}
-end
