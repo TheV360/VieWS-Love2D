@@ -30,8 +30,10 @@ function Window:new(o)
 	self.style = {
 		borderBackground = {0, 0, 0},
 		borderForeground = {0.85, 0.8, 0.8},
-		contentBackground = {0.85, 0.8, 0.8}
+		contentBackground = {0.85, 0.8, 0.8},
+		shadow = {0, 0, 0, 0.25}
 	}
+	self.color = self.style.contentBackground -- todo: please make this better,
 	
 	self.status = "normal"
 end
@@ -61,9 +63,6 @@ function Window:update()
 end
 
 function Window:draw()
-	love.graphics.setColor(self.style.contentBackground)
-	love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.width, self.size.height)
-	
 	love.graphics.push()
 	love.graphics.origin()
 	
@@ -133,7 +132,7 @@ function Window:drawBorder()
 end
 
 function Window:drawShadow()
-	love.graphics.setColor(0, 0, 0, 0.25)
+	love.graphics.setColor(self.style.shadow)
 	
 	if self.border then
 		-- Right

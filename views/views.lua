@@ -50,8 +50,6 @@ function VieWS:new(o)
 	
 	-- Handles all love callbacks
 	self.loveFunctions = o.loveFunctions
-	
-	-- loveFunctions:addLoveFunction("mouse", "", func)
 end
 
 function VieWS:addWindow(w)
@@ -161,4 +159,7 @@ function VieWS:draw()
 		
 		w:drawShadow()
 	end
+end
+
+function VieWS:mousemoved(m)
 end

@@ -6,6 +6,9 @@ function Panel:new(o)
 	-- Canvas
 	self.canvas = love.graphics.newCanvas(self.size.width, self.size.height)
 	
+	-- Color
+	self.color = o.color or {0, 0, 0, 0}
+	
 	-- Make controls
 	self.controls = {}
 	
@@ -56,6 +59,9 @@ function Panel:draw()
 			end
 		end
 	end)
+	
+	love.graphics.setColor(self.color)
+	love.graphics.rectangle("fill", 0, 0, self.size.width, self.size.height)
 	
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(self.canvas, 0, 0)

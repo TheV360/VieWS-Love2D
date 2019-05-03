@@ -24,6 +24,7 @@ function love.load()
 			width  = 360,
 			height = 240
 		},
+		shake = true,
 		
 		mouse = {
 			cursors = {

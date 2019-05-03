@@ -76,18 +76,30 @@ end
 makeMyWindow()
 	
 view:addWindow(Window{
-	title = "Window 2",
+	title = "Rumble Pak",
 	
 	x = 48,
 	y = 48,
 	
-	width = 128,
+	width = 64,
 	height = 64,
 	
-	borderless = true,
-	
-	setup = windowConstruction,
-	-- border = {top = 4, right = 1, bottom = 1, left = 1}
+	setup = function(wSelf)
+		rumbleButton = Button{
+			x = 8,
+			y = 8,
+			
+			width = 48,
+			height = 48,
+			
+			text = "Test\nRumble"
+		}
+		rumbleButton.mouseClick = function(cSelf, m)
+			window.shake.x = window.shake.x > 0 and 0 or 16
+			window.shake.y = window.shake.x
+		end
+		wSelf:addControl("rumbleButton", rumbleButton)
+	end
 })
 
 view:addWindow(Window{
@@ -106,18 +118,5 @@ view:addWindow(Window{
 			image = love.graphics.newImage("resources/colorTest.png")
 		}
 		wSelf:addControl("imgControl", imgControl)
-		
-		coolButton = Button{
-			x = 2, y = 2,
-			
-			width = 11,
-			height = 11,
-			
-			text = "X"
-		}
-		coolButton.mouseClick = function()
-			wSelf:close()
-		end
-		wSelf:addControl("coolButton", coolButton)
 	end
 })
