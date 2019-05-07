@@ -65,7 +65,6 @@ function VieWS:update()
 	window:switchCursor("mouse")
 	
 	self.mouse.x, self.mouse.y = window.mouse.sx, window.mouse.sy
-	self.mouse.window = nil
 	
 	if not window.mouse.down[1] then
 		self.windowDrag.window = nil
@@ -85,7 +84,7 @@ function VieWS:update()
 		w.hoverContent = w:onContent(self.mouse.x, self.mouse.y)
 		
 		if w.hover or w.hoverContent then
-			self.mouse.window = w -- gets topmost window
+			self.mouse.windowTmp = w -- gets topmost window
 		end
 		
 		if not self.windowDrag.window then
@@ -98,6 +97,13 @@ function VieWS:update()
 		
 		w:update()
 	end
+	
+	if self.mouse.window and self.mouse.windowTmp and self.mouse.window ~= self.mouse.windowTmp then
+		self.mouse.window:mouseExit(self.mouse)
+	end
+	
+	self.mouse.window = self.mouse.windowTmp
+	self.mouse.windowTmp = nil
 	
 	if self.mouse.window then
 		local w = self.mouse.window

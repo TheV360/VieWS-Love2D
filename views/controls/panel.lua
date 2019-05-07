@@ -107,4 +107,18 @@ function Panel:mouseClick(m)
 	end
 end
 
+function Panel:mouseEnter(m)
+end
+
+function Panel:mouseExit(m)
+	local i, c
+	
+	for i, c in pairs(self.controls) do
+		if c.hover then
+			c.redraw = true
+			c.hover = false
+		end
+	end
+end
+
 return Panel

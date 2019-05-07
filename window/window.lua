@@ -100,8 +100,8 @@ function Window:new(o)
 		n.enabled = false
 		
 		n.screenCoords = o.shake.screenCoords or false
-		n.extremes = o.shake.extremes or true
-		n.windowBonk = o.shake.windowBonk or true
+		n.extremes = o.shake.extremes ~= nil and o.shake.extremes or true
+		n.windowBonk = o.shake.windowBonk ~= nil and o.shake.windowBonk or true
 	end
 	
 	-- Button
