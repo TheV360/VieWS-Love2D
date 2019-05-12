@@ -24,7 +24,15 @@ function VieWS:new(o)
 	
 	-- The mouse
 	self.mouse = {
-		x = 0, y = 0
+		x = 0, y = 0,
+		
+		drag = {
+			index = nil,
+			
+			-- Offset while dragging
+			x = 0,
+			y = 0
+		}
 	}
 	
 	-- Desktop
@@ -37,16 +45,12 @@ function VieWS:new(o)
 	
 	-- Window stuff
 	self.windows = {}
-	self.windowDrag = {
-		index = nil,
-		
-		-- Offset while dragging
-		x = 0,
-		y = 0
-	}
 	
 	-- For getting width and height of text
 	self.font = love.graphics.getFont()
+	
+	-- Stack of effects objects (window close, etc.)
+	self.effects = {}
 	
 	-- Handles all love callbacks
 	self.loveFunctions = o.loveFunctions
@@ -67,10 +71,10 @@ function VieWS:update()
 	self.mouse.x, self.mouse.y = window.mouse.sx, window.mouse.sy
 	
 	if not window.mouse.down[1] then
-		self.windowDrag.window = nil
-	elseif self.windowDrag.window then
-		self.windowDrag.window.position.x = self.mouse.x - self.windowDrag.x
-		self.windowDrag.window.position.y = self.mouse.y - self.windowDrag.y
+		self.mouse.drag.window = nil
+	elseif self.mouse.drag.window then
+		self.mouse.drag.window.position.x = self.mouse.x - self.mouse.drag.x
+		self.mouse.drag.window.position.y = self.mouse.y - self.mouse.drag.y
 		
 		window:switchCursor("move")
 	end
@@ -87,18 +91,18 @@ function VieWS:update()
 			self.mouse.windowTmp = w -- gets topmost window
 		end
 		
-		if not self.windowDrag.window then
-			if w.hover and not w.hoverContent and self.mouse.y - w.position.y < 0 then
-				window:switchCursor("movable")
-			elseif w.hover then
+		if not self.mouse.drag.window then
+			-- if w.hover and not w.hoverContent and self.mouse.y - w.position.y < 0 then
+			-- 	window:switchCursor("movable")
+			-- elseif w.hover then
 				window:switchCursor("mouse")
-			end
+			-- end
 		end
 		
 		w:update()
 	end
 	
-	if self.mouse.window and self.mouse.windowTmp and self.mouse.window ~= self.mouse.windowTmp then
+	if self.mouse.window and self.mouse.window ~= self.mouse.windowTmp then
 		self.mouse.window:mouseExit(self.mouse)
 	end
 	
@@ -108,30 +112,20 @@ function VieWS:update()
 	if self.mouse.window then
 		local w = self.mouse.window
 		
-		if w.hoverContent then
-			w:mouse(self.mouse)
-		elseif w.hover then
-			-- w:mouse(self.mouse)
-		end
+		w:mouse(self.mouse)
 		
 		if window.mouse.press[1] then
 			-- Push window to front.
 			w.z = #self.windows + 1
 			
-			if w.hoverContent then
-				-- The mouse is over the content, and it has clicked.
-				w:mouseClick(self.mouse)
-			elseif w.hover then
-				-- The mouse is not over the content, but is over the window.
-				if self.mouse.y - w.position.y < 0 then
-					-- The mouse is over the top part of the window.
-					self.windowDrag.window = w
-					self.windowDrag.x = self.mouse.x - w.position.x
-					self.windowDrag.y = self.mouse.y - w.position.y
-					
-					window:switchCursor("move")
-				end
-			end
+			w:mouseClick(self.mouse)
+			
+			-- if self.mouse.y - w.position.y < 0 and self.mouse.x - w.position.x > 8 then
+			-- 	-- The mouse is over the top part of the window.
+			-- 	
+				
+			-- 	window:switchCursor("move")
+			-- end
 		end
 	end
 	
@@ -158,12 +152,11 @@ function VieWS:draw()
 	self.desktop:draw()
 	
 	for _, w in ipairs(self.windows) do
+		w:drawShadow()
+		
 		w:drawBorder()
 		
-		love.graphics.setColor(1, 1, 1)
 		w:draw()
-		
-		w:drawShadow()
 	end
 end
 
