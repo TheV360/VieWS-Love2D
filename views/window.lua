@@ -1,6 +1,6 @@
 -- The window. Oh boy.
 
-local Window = Panel:extend()
+local Window = Controls.Panel:extend()
 
 Window.TitleBarWidth = 11
 Window.SideWidth = 1
@@ -28,7 +28,7 @@ function Window:new(o)
 	}
 	self.color = self.style.contentBackground -- todo: please make this better,
 	
-	self.status = "normal"
+	self.status = "open"
 end
 
 function Window:onWindow(x, y)

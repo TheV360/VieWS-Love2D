@@ -1,4 +1,4 @@
-Button = Control:extend()
+local Button = Controls.Control:extend()
 
 function Button:new(o)
 	self.text = o.text or "Button"

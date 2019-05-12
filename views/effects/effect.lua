@@ -1,4 +1,4 @@
-Effect = OptObject:extend()
+local Effect = OptObject:extend()
 
 function Effect:new(o)
 	Effect.super.new(self, o)

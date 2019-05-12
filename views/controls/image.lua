@@ -1,4 +1,4 @@
-Image = Control:extend()
+local Image = Controls.Control:extend()
 
 function Image:new(o)
 	self.image = o.image

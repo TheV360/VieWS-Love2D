@@ -1,4 +1,4 @@
-Panel = Control:extend()
+local Panel = Controls.Control:extend()
 
 function Panel:new(o)
 	Panel.super.new(self, o)

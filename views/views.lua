@@ -7,17 +7,19 @@ VieWSEventRect = require("views/eventrect")
 Desktop = require("views/desktop")
 Popup = require("views/popup")
 
-Control = require("views/controls/control")
-Panel = require("views/controls/panel")
-Window = require("views/window")
-Label = require("views/controls/label")
-Image = require("views/controls/image")
-Button = require("views/controls/button")
+Controls = {}
+Controls.Control = require("views/controls/control")
+Controls.Panel = require("views/controls/panel")
+Controls.Label = require("views/controls/label")
+Controls.Image = require("views/controls/image")
+Controls.Button = require("views/controls/button")
 
-Effects = {
-	Effect = require("views/effects/effect"),
-	CloseWindow = require("views/effects/closeWindow")
-}
+Effects = {}
+Effects.Effect = require("views/effects/effect")
+Effects.OpenWindow = require("views/effects/openWindow")
+Effects.CloseWindow = require("views/effects/closeWindow")
+
+Window = require("views/window")
 
 VieWS = VieWSRect:extend()
 -- VieWS = VieWSEventRect:extend()
@@ -132,7 +134,24 @@ function VieWS:update()
 	for i = #self.windows, 1, -1 do
 		w = self.windows[i]
 		
-		if w.status == "close" then
+		if w.status == "open" then
+			if w.border then
+				table.insert(self.effects, Effects.OpenWindow{
+					x = w.position.x - w.border.left,
+					y = w.position.y - w.border.top,
+					width = w.size.width + w.border.left + w.border.right,
+					height = w.size.height + w.border.top + w.border.bottom
+				})
+			else
+				table.insert(self.effects, Effects.OpenWindow{
+					x = w.position.x,
+					y = w.position.y,
+					width = w.size.width,
+					height = w.size.height
+				})
+			end
+			w.status = "normal"
+		elseif w.status == "close" then
 			if w.border then
 				table.insert(self.effects, Effects.CloseWindow{
 					x = w.position.x - w.border.left,
@@ -154,8 +173,42 @@ function VieWS:update()
 	
 	-- Lua doesn't like it if you remove a numeric thing while it's in the pairs loop, hence the other loop.
 	for i, w in pairs(self.windows) do
-		if type(i) ~= "number" and self.windows[i].status == "close" then
-			self.windows[i] = nil
+		if type(i) ~= "number" then
+			if w.status == "open" then
+				if w.border then
+					table.insert(self.effects, Effects.OpenWindow{
+						x = w.position.x - w.border.left,
+						y = w.position.y - w.border.top,
+						width = w.size.width + w.border.left + w.border.right,
+						height = w.size.height + w.border.top + w.border.bottom
+					})
+				else
+					table.insert(self.effects, Effects.OpenWindow{
+						x = w.position.x,
+						y = w.position.y,
+						width = w.size.width,
+						height = w.size.height
+					})
+				end
+				w.status = "normal"
+			elseif w.status == "close" then
+				if w.border then
+					table.insert(self.effects, Effects.CloseWindow{
+						x = w.position.x - w.border.left,
+						y = w.position.y - w.border.top,
+						width = w.size.width + w.border.left + w.border.right,
+						height = w.size.height + w.border.top + w.border.bottom
+					})
+				else
+					table.insert(self.effects, Effects.CloseWindow{
+						x = w.position.x,
+						y = w.position.y,
+						width = w.size.width,
+						height = w.size.height
+					})
+				end
+				self.windows[i] = nil
+			end
 		end
 	end
 	

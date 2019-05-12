@@ -1,4 +1,4 @@
-Control = VieWSEventRect:extend()
+local Control = VieWSEventRect:extend()
 
 function Control:new(o)
 	Control.super.new(self, o)

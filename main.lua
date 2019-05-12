@@ -28,6 +28,7 @@ function love.load()
 		
 		mouse = {
 			cursors = {
+				[""] = {},
 				["mouse"] = {
 					image = love.graphics.newImage("resources/cursors/mouse.png"),
 					home = {x = 0, y = 0} -- home on first white pixel
