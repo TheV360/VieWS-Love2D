@@ -14,6 +14,11 @@ Label = require("views/controls/label")
 Image = require("views/controls/image")
 Button = require("views/controls/button")
 
+Effects = {
+	Effect = require("views/effects/effect"),
+	CloseWindow = require("views/effects/closeWindow")
+}
+
 VieWS = VieWSRect:extend()
 -- VieWS = VieWSEventRect:extend()
 
@@ -66,6 +71,15 @@ end
 function VieWS:update()
 	local i, w, tmp
 	
+	-- FX
+	for i = #self.effects, 1, -1 do
+		self.effects[i].life = self.effects[i].life - 1
+		
+		if self.effects[i].life < 0 then
+			table.remove(self.effects, i)
+		end
+	end
+	
 	window:switchCursor("mouse")
 	
 	self.mouse.x, self.mouse.y = window.mouse.sx, window.mouse.sy
@@ -91,14 +105,6 @@ function VieWS:update()
 			self.mouse.windowTmp = w -- gets topmost window
 		end
 		
-		if not self.mouse.drag.window then
-			-- if w.hover and not w.hoverContent and self.mouse.y - w.position.y < 0 then
-			-- 	window:switchCursor("movable")
-			-- elseif w.hover then
-				window:switchCursor("mouse")
-			-- end
-		end
-		
 		w:update()
 	end
 	
@@ -119,19 +125,29 @@ function VieWS:update()
 			w.z = #self.windows + 1
 			
 			w:mouseClick(self.mouse)
-			
-			-- if self.mouse.y - w.position.y < 0 and self.mouse.x - w.position.x > 8 then
-			-- 	-- The mouse is over the top part of the window.
-			-- 	
-				
-			-- 	window:switchCursor("move")
-			-- end
 		end
 	end
 	
 	-- Delete windows marked for deletion
 	for i = #self.windows, 1, -1 do
-		if self.windows[i].status == "close" then
+		w = self.windows[i]
+		
+		if w.status == "close" then
+			if w.border then
+				table.insert(self.effects, Effects.CloseWindow{
+					x = w.position.x - w.border.left,
+					y = w.position.y - w.border.top,
+					width = w.size.width + w.border.left + w.border.right,
+					height = w.size.height + w.border.top + w.border.bottom
+				})
+			else
+				table.insert(self.effects, Effects.CloseWindow{
+					x = w.position.x,
+					y = w.position.y,
+					width = w.size.width,
+					height = w.size.height
+				})
+			end
 			table.remove(self.windows, i)
 		end
 	end
@@ -157,6 +173,11 @@ function VieWS:draw()
 		w:drawBorder()
 		
 		w:draw()
+	end
+	
+	-- FX
+	for i = 1, #self.effects do
+		self.effects[i]:draw()
 	end
 end
 
