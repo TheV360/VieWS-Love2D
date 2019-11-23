@@ -1,5 +1,3 @@
-require "window/util"
-
 local Window = Object:extend()
 
 local function isTable(n)
@@ -18,6 +16,11 @@ function Window:new(o)
 	-- Game Title & Save Folder Name
 	self.title = o.title or "Untitled"
 	self.version = o.version or "v0.0"
+	
+	-- Quality
+	if o.pixelPerfect then
+		Window.pixelPerfect()
+	end
 	
 	-- Icon
 	self.icon = o.icon or nil
@@ -47,7 +50,7 @@ function Window:new(o)
 	self.callbacks.draw = o.draw
 	
 	-- Love Function Management
-	self.loveFunctions = require("window/loveFunctions")
+	self.loveFunctions = require("window.loveFunctions")
 	self.loveFunctions.addLoveFunctionWithRunCheck = function(lf, key, name, func)
 		lf:addLoveFunction(key, name, function(...)if self.running then func(...) end end)
 	end
@@ -55,12 +58,13 @@ function Window:new(o)
 	-- Screen Size
 	if o.screen then
 		local n = {
-			scale = 2,
 			x = 0, y = 0
 		}
 		self.screen = n
 		
 		if not isTable(o.screen) then o.screen = {} end
+		
+		n.scale  = o.screen.scale  or 2
 		
 		n.width  = o.screen.width  or 360
 		n.height = o.screen.height or 240
@@ -132,31 +136,48 @@ function Window:new(o)
 		n.cursors = {}
 		n.currentCursor = o.mouse.currentCursor or "none"
 		
+		n.anim = {
+			frame = 1,
+			timer = 0
+		}
+		
 		if o.mouse.cursors then
 			local i, v
 			
 			for i, v in pairs(o.mouse.cursors) do
+				local img = v.image
+				
+				if type(img) == "string" then
+					img = love.graphics.newImage(img)
+				end
+				
+				local _, w
+				local anim = nil
+				if v.anim then
+					anim = {}
+					for _, w in ipairs(v.anim) do
+						table.insert(anim, {
+							quad = love.graphics.newQuad(
+								w.x or v.anim.x,
+								w.y or v.anim.y,
+								w.width or v.anim.width,
+								w.height or v.anim.height,
+								img:getDimensions()
+							),
+							time = (w.time or v.anim.time or 1) - 1
+						})
+					end
+				end
+				
 				n.cursors[i] = {
-					image = v.image,
+					image = img,
+					anim = anim,
 					home = {
 						x = v.home and v.home.x or 0,
 						y = v.home and v.home.y or 0
 					}
 				}
 			end
-		end
-		
-		-- Deprecated way of handling cursors. Still works with new way!
-		if o.mouse.image then
-			n.cursors[#n.cursors + 1] = {
-				image = o.mouse.image or nil,
-				home = {
-					x = o.mouse.home and o.mouse.home.x or 0,
-					y = o.mouse.home and o.mouse.home.y or 0
-				}
-			}
-			
-			self:switchCursor(#n.cursors)
 		end
 		
 		if o.mouse.defaultCursor then
@@ -173,9 +194,9 @@ function Window:new(o)
 		
 		n.profile = o.debug.profile or false
 		
-		n.console = require("window/debug/console")
-		n.menu = require("window/debug/menu")
-		n.stats = require("window/debug/stats")
+		n.console = require("window.debug.console")
+		n.menu = require("window.debug.menu")
+		n.stats = require("window.debug.stats")
 		
 		n.keys = {
 			menu  = o.debug.keys and o.debug.keys.menu  or "=",
@@ -183,6 +204,7 @@ function Window:new(o)
 		}
 		
 		-- Default Debug Stuff Ahead
+		n.console:setup{window = self}
 		
 		self.loveFunctions:addLoveFunction("keypressed", "ConsoleKeyPressed", function(key)
 			if self.debug.console.enabled or key == self.debug.console.openKey then
@@ -215,7 +237,7 @@ function Window:new(o)
 		self.debug.menu:addOption("Toggle Console", function() self.debug.console.enabled = not self.debug.console.enabled end)
 		self.debug.menu:addDivider()
 		self.debug.menu:addOption("Take Screenshot", function()
-			if window.backdrop.enabled then
+			if window.backdrop and window.backdrop.enabled then
 				love.graphics.captureScreenshot(window.title .. " " .. window.version .. " " .. os.time() .. ".png")
 			else
 				window.screen.canvas:newImageData():encode("png", window.title .. " " .. window.version .. " " .. os.time() .. ".png")
@@ -433,6 +455,20 @@ function Window:updateMouse()
 		self.mouse.sy = math.max(0, math.min(self.mouse.sy, self.screen.height - 1))
 	end
 	
+	local cc = self.mouse.cursors[self.mouse.currentCursor]
+	if cc.anim and type(cc.anim) == "table" then
+		if self.mouse.anim.timer > 0 then
+			self.mouse.anim.timer = self.mouse.anim.timer - 1
+		else
+			if self.mouse.anim.frame >= #cc.anim then
+				self.mouse.anim.frame = 1
+			else
+				self.mouse.anim.frame = self.mouse.anim.frame + 1
+				self.mouse.anim.timer = cc.anim[self.mouse.anim.frame].time
+			end
+		end
+	end
+	
 	-- Also, the mouse is a watch, so update that.
 	self.mouse:update()
 end
@@ -441,18 +477,36 @@ function Window:drawMouse()
 	local cc = self.mouse.cursors[self.mouse.currentCursor]
 	
 	if not isTable(cc) then return end
-	if not cc.image then return end
 	
-	if self.screen then
-		if self.running then
-			love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
-			love.graphics.draw(cc.image, self.screen.x + (self.mouse.sx - cc.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - cc.home.y) * self.screen.scale, 0, self.screen.scale)
-			love.graphics.setScissor()
+	local cci = cc.image
+	if not cci then return end
+	
+	if cc.anim and cc.anim[self.mouse.anim.frame] then
+		local cciq = cc.anim[self.mouse.anim.frame].quad
+		
+		if self.screen then
+			if self.running then
+				love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
+				love.graphics.draw(cci, cciq, self.screen.x + (self.mouse.sx - cc.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - cc.home.y) * self.screen.scale, 0, self.screen.scale)
+				love.graphics.setScissor()
+			else
+				love.graphics.draw(cci, cciq, self.mouse.x - cc.home.x * self.screen.scale, self.mouse.y - cc.home.y * self.screen.scale, 0, self.screen.scale)
+			end
 		else
-			love.graphics.draw(cc.image, self.mouse.x - cc.home.x * self.screen.scale, self.mouse.y - cc.home.y * self.screen.scale, 0, self.screen.scale)
+			love.graphics.draw(cci, cciq, self.mouse.x - cc.home.x, self.mouse.y - cc.home.y)
 		end
 	else
-		love.graphics.draw(cc.image, self.mouse.x - cc.home.x, self.mouse.y - cc.home.y)
+		if self.screen then
+			if self.running then
+				love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
+				love.graphics.draw(cci, self.screen.x + (self.mouse.sx - cc.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - cc.home.y) * self.screen.scale, 0, self.screen.scale)
+				love.graphics.setScissor()
+			else
+				love.graphics.draw(cci, self.mouse.x - cc.home.x * self.screen.scale, self.mouse.y - cc.home.y * self.screen.scale, 0, self.screen.scale)
+			end
+		else
+			love.graphics.draw(cci, self.mouse.x - cc.home.x, self.mouse.y - cc.home.y)
+		end
 	end
 end
 
@@ -495,6 +549,10 @@ function Window:switchCursor(index)
 	if not self.mouse.cursors[index] then error("V360Template: Switched to mouse that doesn't exist.") end
 	
 	self.mouse.currentCursor = index
+	if self.mouse.cursors[self.mouse.currentCursor].anim then
+		self.mouse.anim.frame = 1
+		self.mouse.anim.timer = self.mouse.cursors[self.mouse.currentCursor].anim[self.mouse.anim.frame].time
+	end
 	
 	love.mouse.setVisible(not self.mouse.cursors[self.mouse.currentCursor].image)
 end

@@ -1,4 +1,4 @@
-require "views/views"
+require("views.views")
 
 function setup()
 	view = VieWS{
@@ -8,7 +8,7 @@ function setup()
 		loveFunctions = window.loveFunctions
 	}
 	
-	require "somePlaceToPutWindowInitCode"
+	require("somePlaceToPutWindowInitCode")
 end
 
 function update()

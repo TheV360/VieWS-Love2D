@@ -1,25 +1,25 @@
 -- VieWS.
 
-require "views/geometry"
+require("views.geometry")
 
-VieWSRect = require("views/viewsrect")
-VieWSEventRect = require("views/eventrect")
-Desktop = require("views/desktop")
-Popup = require("views/popup")
+VieWSRect = require("views.viewsrect")
+VieWSEventRect = require("views.eventrect")
+Desktop = require("views.desktop")
+Popup = require("views.popup")
 
 Controls = {}
-Controls.Control = require("views/controls/control")
-Controls.Panel = require("views/controls/panel")
-Controls.Label = require("views/controls/label")
-Controls.Image = require("views/controls/image")
-Controls.Button = require("views/controls/button")
+Controls.Control = require("views.controls.control")
+Controls.Panel = require("views.controls.panel")
+Controls.Label = require("views.controls.label")
+Controls.Image = require("views.controls.image")
+Controls.Button = require("views.controls.button")
 
 Effects = {}
-Effects.Effect = require("views/effects/effect")
-Effects.OpenWindow = require("views/effects/openWindow")
-Effects.CloseWindow = require("views/effects/closeWindow")
+Effects.Effect = require("views.effects.effect")
+Effects.OpenWindow = require("views.effects.openWindow")
+Effects.CloseWindow = require("views.effects.closeWindow")
 
-Window = require("views/window")
+Window = require("views.window")
 
 VieWS = VieWSRect:extend()
 -- VieWS = VieWSEventRect:extend()

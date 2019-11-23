@@ -41,7 +41,7 @@ local Console = {
 	currTab = 0,
 	tabBefore = "",
 	tabBeforeCursor = 0,
-	tabMessage = false,
+	tabMessage = nil,
 	
 	errorMessages = {
 		"Oof",
@@ -53,14 +53,23 @@ local Console = {
 		"I'm sad"
 	},
 	
-	charWidth = 6,
-	lineHeight = 8,
+	charWidth = nil,
+	lineHeight = nil,
 	
 	tabStep = 4,
 	
 	validVariable = "[%a_][%a%d_]*",
 	vagueIdentifier = "[%a_][%a%d_%.%:]*"
 }
+
+function Console:setup(o)
+	local window = o.window
+	
+	self.charWidth  = o.charWidth  or math.max(Util.measureTextWidth("m"), Util.measureTextWidth("w"), Util.measureTextWidth("_"))
+	self.lineHeight = o.lineHeight or Util.measureTextHeight()
+	
+	self.logMax = o.logMax or 24
+end
 
 _debug_print_ = print
 
@@ -255,18 +264,15 @@ function Console:keypressed(key)
 end
 
 function Console:hideTabMessage()
-	if self.tabMessage then
-		self.log[#self.log] = nil
-		self.tabMessage = false
+	self.tabMessage = nil
 	end
-end
 
 function Console:tabCompletion(dir)
 	if self.currTab < 1 then
 		-- Oof, we have to calculate the things
 		self.tab = {}
 		self.currTab = 0
-		self.tabMessage = false
+		self.tabMessage = nil
 		
 		-- So if you press tab here love.graphics.re|(), it only sees "love.graphics.re" [VALID] and not "love.graphics.re()" [INVALID]
 		local inputCur = string.sub(self.input, 1, self.cursor - 1)
@@ -349,11 +355,9 @@ function Console:tabCompletion(dir)
 	msg = msg .. self.tabBeforeComponent .. self.tab[self.currTab]
 	
 	if not self.tabMessage then
-		self:print() -- TODO: just straight up remove this from the actual log. Put it into its own variable. If the variable isn't nil, it'll be temporarily added to the lines to draw.
-		self.log[#self.log] = {text = "", color = {1, 1, 1, 0.5}, noCamera = true}
-		self.tabMessage = true
+		self.tabMessage = {text = "", color = {1, 1, 1, 0.5}, noCamera = true}
 	end
-	self.log[#self.log].text = msg
+	self.tabMessage.text = msg
 	
 	-- Whoops
 	self.cursorBlink = 0
@@ -519,7 +523,7 @@ end
 function Console:draw()
 	if not self.enabled then
 		if self.stealth then
-			local scale = math.min(window.screen.scale, 2)
+			local scale = math.max(2, window.screen.scale - 1)
 			
 			love.graphics.setColor(0, 0, 0)
 			for i = 1, #self.stealthLog do
@@ -536,6 +540,7 @@ function Console:draw()
 					changedColor = true
 				end
 				
+				-- how to draw shadow
 				love.graphics.print(self.stealthLog[i].text, 8, 9 + (i - 1) * self.lineHeight * scale, 0, scale)
 				love.graphics.print(self.stealthLog[i].text, 9, 8 + (i - 1) * self.lineHeight * scale, 0, scale)
 				love.graphics.print(self.stealthLog[i].text, 9, 9 + (i - 1) * self.lineHeight * scale, 0, scale)
@@ -573,28 +578,19 @@ function Console:draw()
 	end
 	
 	local i, msg
-	local bottomDist = (#self.log + 1) * (self.lineHeight * window.screen.scale)
+	local bottomDist = (#self.log + (self.tabMessage and 2 or 1)) * (self.lineHeight * window.screen.scale)
 	
 	love.graphics.setColor(0.25, 0.25, 0.25, 0.5)
 	love.graphics.rectangle("fill", 0, window.height - bottomDist, self.width * self.charWidth * window.screen.scale, bottomDist)
 	
 	love.graphics.setColor(1, 1, 1)
+			
 	for i = 1, #self.log do
-		if type(self.log[i]) == "table" then
-			msg = self.log[i].text
-			love.graphics.setColor(self.log[i].color)
-			
-			if not self.log[i].noCamera then
-				msg = string.sub(msg, self.camera, self.camera + self.width - 1)
-			end
-		else
-			msg = self.log[i]
-			love.graphics.setColor(1, 1, 1)
-			
-			msg = string.sub(msg, self.camera, self.camera + self.width - 1)
+		self:drawLine(self.log[i], bottomDist, i)
 		end
 		
-		love.graphics.print(msg, 0, window.height - (bottomDist - (self.lineHeight * window.screen.scale * (i - 1))), 0, window.screen.scale)
+	if self.tabMessage then
+		self:drawLine(self.tabMessage, bottomDist, #self.log + 1)
 	end
 	
 	love.graphics.setColor(0.5, 0.75, 1)
@@ -605,4 +601,24 @@ function Console:draw()
 	love.graphics.print("■", (self.cursor - self.camera + #self.inputPrefix) * self.charWidth * window.screen.scale, window.height - (self.lineHeight * window.screen.scale), 0, window.screen.scale)
 end
 
+function Console:drawLine(line, bottomDist, i)
+	local msg
+	
+	if type(line) == "table" then
+		msg = line.text
+		love.graphics.setColor(line.color)
+			
+		if not line.noCamera then
+				msg = string.sub(msg, self.camera, self.camera + self.width - 1)
+		end
+	else
+		msg = line
+		love.graphics.setColor(1, 1, 1)
+		
+		msg = string.sub(msg, self.camera, self.camera + self.width - 1)
+	end
+		
+	love.graphics.print(msg, 0, window.height - (bottomDist - (self.lineHeight * window.screen.scale * (i - 1))), 0, window.screen.scale)
+end
+	
 return Console
