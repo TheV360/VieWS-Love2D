@@ -31,24 +31,17 @@ function Window:new(o)
 	self.status = "open"
 end
 
-function Window:onWindow(x, y)
+function Window:isOver(checkPoint)
 	if self.border then
-		return Util.pointSquare(x, y,
+		return Util.pointSquare(checkPoint.x, checkPoint.y,
 			self.position.x - self.border.left,
 			self.position.y - self.border.top,
 			self.size.width + self.border.left + self.border.right,
 			self.size.height + self.border.top + self.border.bottom
 		)
 	else
-		return self:onContent(x, y)
+		return Util.pointSquare(checkPoint.x, checkPoint.y, self.position.x, self.position.y, self.size.width, self.size.height)
 	end
-end
-
-function Window:onContent(x, y)
-	return x >= self.position.x
-	and    y >= self.position.y
-	and    x <  self.position.x + self.size.width
-	and    y <  self.position.y + self.size.height
 end
 
 function Window:update()

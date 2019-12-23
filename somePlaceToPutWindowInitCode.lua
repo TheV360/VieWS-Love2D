@@ -1,13 +1,13 @@
 function aboutWindow()
-	require("apps.about").setup()
+	require("apps/about").setup()
 end
 
 function graphWindow()
-	require("apps.graph").setup()
+	require("apps/graph").setup()
 end
 
 function rumblePakWindow()
-	view:addWindow(Window{
+	view:addWindow(Controls.Window{
 		title = "Rumble Pak",
 		
 		x = 48,
@@ -36,7 +36,7 @@ function rumblePakWindow()
 end
 
 function colorTestWindow()
-	view:addWindow(Window{
+	view:addWindow(Controls.Window{
 		title = "Lo-fi Color test",
 		
 		x = 8,
@@ -57,7 +57,7 @@ function colorTestWindow()
 end
 
 function windowMakerWindow()
-	view:addWindow(Window{
+	view:addWindow(Controls.Window{
 		title = "Window Maker",
 		
 		x = 52,

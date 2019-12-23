@@ -50,7 +50,7 @@ function Window:new(o)
 	self.callbacks.draw = o.draw
 	
 	-- Love Function Management
-	self.loveFunctions = require("window.loveFunctions")
+	self.loveFunctions = require("window/loveFunctions")
 	self.loveFunctions.addLoveFunctionWithRunCheck = function(lf, key, name, func)
 		lf:addLoveFunction(key, name, function(...)if self.running then func(...) end end)
 	end
@@ -194,9 +194,9 @@ function Window:new(o)
 		
 		n.profile = o.debug.profile or false
 		
-		n.console = require("window.debug.console")
-		n.menu = require("window.debug.menu")
-		n.stats = require("window.debug.stats")
+		n.console = require("window/debug/console")
+		n.menu = require("window/debug/menu")
+		n.stats = require("window/debug/stats")
 		
 		n.keys = {
 			menu  = o.debug.keys and o.debug.keys.menu  or "=",

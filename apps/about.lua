@@ -1,7 +1,7 @@
 local About = {}
 
 function About.setup()
-	view:addWindow(Window{
+	view:addWindow(Controls.Window{
 		title = "About VieWS",
 		
 		x = 16 + math.random(0, 256),

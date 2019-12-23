@@ -1,7 +1,7 @@
 local Graph = {}
 
 function Graph.setup()
-	view:addWindow(Window{
+	view:addWindow(Controls.Window{
 		title = "Graph, or more accurately, Panel test",
 		
 		x = 16,
@@ -15,6 +15,29 @@ function Graph.setup()
 end
 
 function Graph.setupComponents(wSelf)
+	somethingWindow = Controls.Window{
+		title = "smaller window",
+		
+		x = 64,
+		y = 16,
+		
+		width = 128,
+		height = 64,
+		
+		setup = function(wSelf)
+			somethingButton = Controls.Button{
+				x = 8,
+				y = 8,
+				text = "Something"
+			}
+			somethingButton.mouseClick = function(cSelf, m)
+				love.window.showMessageBox("hi")
+			end
+			
+			wSelf:addControl("somethingWindow", somethingWindow)
+		end
+	}
+	
 	horrible1 = Controls.Panel{
 		x = 4,
 		y = 4,
@@ -44,6 +67,7 @@ function Graph.setupComponents(wSelf)
 	
 	horrible1:addControl("horrible2", horrible2)
 	
+	wSelf:addControl("somethingWindow", somethingWindow)
 	wSelf:addControl("horrible1", horrible1)
 end
 

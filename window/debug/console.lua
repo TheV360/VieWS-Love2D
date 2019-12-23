@@ -198,6 +198,8 @@ function Console:keypressed(key)
 			self:addAtCursor(love.system.getClipboardText())
 		elseif key == "z" then
 			self:clearInput()
+		elseif key == "backspace" then
+			-- do thing
 		else
 			return
 		end
@@ -265,7 +267,7 @@ end
 
 function Console:hideTabMessage()
 	self.tabMessage = nil
-	end
+end
 
 function Console:tabCompletion(dir)
 	if self.currTab < 1 then

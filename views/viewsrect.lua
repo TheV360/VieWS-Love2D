@@ -26,4 +26,8 @@ function VieWSRect:draw()
 	)
 end
 
+function VieWSRect:isOver(checkPoint)
+	return Util.pointSquare(checkPoint.x, checkPoint.y, self.position.x, self.position.y, self.size.width, self.size.height)
+end
+
 return VieWSRect

@@ -1,25 +1,24 @@
 -- VieWS.
 
-require("views.geometry")
+require("views/geometry")
 
-VieWSRect = require("views.viewsrect")
-VieWSEventRect = require("views.eventrect")
-Desktop = require("views.desktop")
-Popup = require("views.popup")
-
-Controls = {}
-Controls.Control = require("views.controls.control")
-Controls.Panel = require("views.controls.panel")
-Controls.Label = require("views.controls.label")
-Controls.Image = require("views.controls.image")
-Controls.Button = require("views.controls.button")
+VieWSRect = require("views/viewsrect")
+VieWSEventRect = require("views/eventrect")
+Desktop = require("views/desktop")
+Popup = require("views/popup")
 
 Effects = {}
-Effects.Effect = require("views.effects.effect")
-Effects.OpenWindow = require("views.effects.openWindow")
-Effects.CloseWindow = require("views.effects.closeWindow")
+Effects.Effect = require("views/effects/effect")
+Effects.OpenWindow = require("views/effects/openWindow")
+Effects.CloseWindow = require("views/effects/closeWindow")
 
-Window = require("views.window")
+Controls = {}
+Controls.Control = require("views/controls/control")
+Controls.Panel = require("views/controls/panel")
+Controls.Label = require("views/controls/label")
+Controls.Image = require("views/controls/image")
+Controls.Button = require("views/controls/button")
+Controls.Window = require("views/controls/window")
 
 VieWS = VieWSRect:extend()
 -- VieWS = VieWSEventRect:extend()
@@ -82,17 +81,21 @@ function VieWS:update()
 		end
 	end
 	
-	window:switchCursor("mouse")
-	
 	self.mouse.x, self.mouse.y = window.mouse.sx, window.mouse.sy
 	
-	if not window.mouse.down[1] then
-		self.mouse.drag.window = nil
-	elseif self.mouse.drag.window then
-		self.mouse.drag.window.position.x = self.mouse.x - self.mouse.drag.x
-		self.mouse.drag.window.position.y = self.mouse.y - self.mouse.drag.y
-		
-		window:switchCursor("move")
+	if self.mouse.drag.window then
+		if not window.mouse.down[1] then
+			self.mouse.drag.window = nil
+			
+			window:switchCursor("mouse")
+		elseif self.mouse.drag.window then
+			self.mouse.drag.window.position.x = self.mouse.x - self.mouse.drag.x
+			self.mouse.drag.window.position.y = self.mouse.y - self.mouse.drag.y
+			
+			window:switchCursor("move")
+		end
+	else
+		window:switchCursor("mouse")
 	end
 	
 	self.desktop:update()
@@ -100,10 +103,9 @@ function VieWS:update()
 	for i, w in ipairs(self.windows) do
 		w.z = i
 		
-		w.hover = w:onWindow(self.mouse.x, self.mouse.y)
-		w.hoverContent = w:onContent(self.mouse.x, self.mouse.y)
+		w.hover = w:isOver(Point(self.mouse.x, self.mouse.y))
 		
-		if w.hover or w.hoverContent then
+		if w.hover then
 			self.mouse.windowTmp = w -- gets topmost window
 		end
 		

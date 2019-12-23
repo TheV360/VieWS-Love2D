@@ -1,4 +1,4 @@
-require("views.views")
+require("views/views")
 
 function setup()
 	view = VieWS{

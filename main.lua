@@ -1,16 +1,16 @@
 function love.load()
-	Object = require("objects.object")
-	OptObject = require("objects.optobject")
+	Object = require("objects/object")
+	OptObject = require("objects/optobject")
 	
-	-- TileMap = require("objects.tilemap")
-	-- TileLayer = require("objects.tilelayer")
+	-- TileMap = require("objects/tilemap")
+	-- TileLayer = require("objects/tilelayer")
 	
-	GameWindow = require("window.window")
-	Util = require("window.util")
+	GameWindow = require("window/window")
+	Util = require("window/util")
 	GameWindow.pixelPerfect()
 	
 	-- Set up pixel font
-	local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~◆◇▼▲▽△★☆■□]]
+	local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~◆◇▼▲▽△★☆■□😔🙃]]
 	font = love.graphics.newImageFont("resources/font_6x8.png", supportedCharacters)
 	love.graphics.setFont(font)
 	
