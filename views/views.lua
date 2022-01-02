@@ -2,6 +2,8 @@
 
 require("views/geometry")
 
+Mouse = require("views/mouse")
+
 VieWSRect = require("views/viewsrect")
 VieWSEventRect = require("views/eventrect")
 Desktop = require("views/desktop")
@@ -88,8 +90,56 @@ function VieWS:new(o)
 	-- Stack of effects objects (window close, etc.)
 	self.effects = {}
 	
-	-- Handles all love callbacks
-	self.loveFunctions = o.loveFunctions
+	-- Mouse object (handles cursors and inputs)
+	self.mouseInput = Mouse(
+		function()
+			local p = screen:pointIn(Vec2(love.mouse.getPosition())):floor()
+			if Util.pointInBox(p, Vec2.zero(), screen.size) then
+				return p
+			else
+				return false
+			end
+		end,
+		{
+			-- cursors have their home coord on the first black pixel
+			[""] = {},
+			["mouse"] = {
+				image = "resources/cursors/mouse.png",
+				home = Vec2(1, 2)
+			},
+			["hand"] = {
+				image = "resources/cursors/hand.png",
+				home = Vec2(4, 1)
+			},
+			["movable"] = {
+				image = "resources/cursors/movable.png",
+				home = Vec2(4, 1)
+			},
+			["move"] = {
+				image = "resources/cursors/move.png",
+				home = Vec2(4, 1)
+			},
+			["pinch"] = {
+				image = "resources/cursors/pinch.png",
+				home = Vec2(4, 1)
+			},
+			["wait"] = {
+				image = "resources/cursors/wait.png",
+				home = Vec2(3, 1),
+				anim = {
+					ofs = Vec2(0, 0),
+					size = Vec2(16, 16),
+					time = 3,
+					
+					{}, -- no overrides of the above
+					{ ofs = Vec2(16, 0), }, -- only override ofs
+					{ ofs = Vec2(32, 0), },
+					{ ofs = Vec2(48, 0), },
+				}
+			}
+		}
+	)
+	self.mouseInput:setCursor("mouse")
 	
 	-- Lazy way to do this...
 	self.corner = love.graphics.newImage("resources/corner.png")
@@ -100,6 +150,10 @@ function VieWS:addWindow(w)
 	w.z = #self.windows + 1
 	
 	table.insert(self.windows, w)
+end
+
+function VieWS:switchCursor(k)
+	self.mouseInput:setCursor(k)
 end
 
 function VieWS:update(dt)
@@ -114,23 +168,25 @@ function VieWS:update(dt)
 		end
 	end
 	
-	self.mouse.x, self.mouse.y = window.mouse.sx, window.mouse.sy
+	self.mouseInput:update()
+	self.mouse.x = self.mouseInput.position.x
+	self.mouse.y = self.mouseInput.position.y
 	
 	if self.mouse.drag.window then
-		if not window.mouse.down[1] then
+		if not self.mouseInput.input.down[1] then
 			self.mouse.drag.window = nil
 			
-			window:switchCursor("mouse")
+			self.mouseInput:setCursor("mouse")
 		elseif self.mouse.drag.window then
 			-- self.mouse.drag.window.velocity = Util.degreeDistance(self.mouse.drag.window.velocity, (self.mouse.drag.window.position.x - (self.mouse.x - self.mouse.drag.x)) * dt * 16)
 			
 			self.mouse.drag.window.position.x = self.mouse.x - self.mouse.drag.x
 			self.mouse.drag.window.position.y = math.max(24, self.mouse.y - self.mouse.drag.y)
 			
-			window:switchCursor("move")
+			self.mouseInput:setCursor("move")
 		end
 	else
-		window:switchCursor("mouse")
+		self.mouseInput:setCursor("mouse")
 	end
 	
 	self.desktop:update()
@@ -163,10 +219,10 @@ function VieWS:update(dt)
 		
 		w:mouse(self.mouse)
 		
-		if window.mouse.down[1] then w:mouseDown(self.mouse) end
-		if window.mouse.release[1] then w:mouseUp(self.mouse) end
+		if self.mouseInput.input.down[1] then w:mouseDown(self.mouse) end
+		if self.mouseInput.input.release[1] then w:mouseUp(self.mouse) end
 		
-		if window.mouse.press[1] then
+		if self.mouseInput.input.press[1] then
 			-- Push window to front.
 			w.z = #self.windows + 1
 			
@@ -290,9 +346,11 @@ function VieWS:draw()
 	
 	love.graphics.setColor(VieWS.PALETTE[1])
 	love.graphics.draw(self.corner, 0, 0, 0)
-	love.graphics.draw(self.corner, window.screen.width, 0, math.rad(90))
-	love.graphics.draw(self.corner, 0, window.screen.height, math.rad(270))
-	love.graphics.draw(self.corner, window.screen.width, window.screen.height, math.rad(180))
+	love.graphics.draw(self.corner, screen.size.x, 0, math.rad(90))
+	love.graphics.draw(self.corner, 0, screen.size.y, math.rad(270))
+	love.graphics.draw(self.corner, screen.size.x, screen.size.y, math.rad(180))
+	
+	self.mouseInput:draw()
 end
 
 function VieWS:mousemoved(m)

@@ -36,7 +36,7 @@ function CheckBox:set(value)
 end
 
 function CheckBox:mouse(m)
-	window:switchCursor("hand")
+	view:switchCursor("hand")
 end
 
 function CheckBox:mouseClick(m)

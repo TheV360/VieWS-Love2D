@@ -1,4 +1,5 @@
 local utf8 = require("utf8")
+-- ! FIXME: unfinished utf8 support
 
 local Console = {
 	enabled = false,
@@ -22,9 +23,9 @@ local Console = {
 	-- selectTo = -1,
 	
 	inputPrefix = ">> ",
-	inputCursor = "█",
 	
 	log = {
+		-- Oooo dramatic splash screen
 		[[     _/_/   _/_/   _/    _/   _/_/   _/_/   _/     _/_/_/_/]],
 		[[  _/     _/    _/ _/_/  _/ _/     _/    _/ _/     _/       ]],
 		[[ _/     _/    _/ _/  _/_/   _/   _/    _/ _/     _/_/_/    ]],
@@ -36,7 +37,7 @@ local Console = {
 	},
 	logMax = 24,
 	
-	history = {}, -- {"for i=1,#c.log do if type(c.log[i])=="string" then local p=i/(#c.log) c.log[i]={text=c.log[i],color={0.25*p,0.5*p,p}}end end"},
+	history = {},
 	historyMax = 32,
 	historyNow = "",
 	currHistory = 0,
@@ -60,23 +61,37 @@ local Console = {
 	tabStep = 4,
 	
 	validVariable = "[%a_][%a%d_]*",
-	vagueIdentifier = "[%a_][%a%d_%.%:]*"
+	vagueIdentifier = "[%a_][%a%d_%.%:]*",
+	
+	-- TODO: better way to do this
+	init = false,
+	fontInit = false,
 }
 
 function Console:setup(o)
-	local window = o.window
+	o = o or {}
+	
+	self.logMax = o.logMax or self.logMax or 24
+	
+	self.init = true
+	
+	love.keyboard.setKeyRepeat(true)
+end
+
+function Console:setupChars(o)
+	o = o or {}
 	
 	self.charWidth  = o.charWidth  or math.max(Util.measureTextWidth("m"), Util.measureTextWidth("w"), Util.measureTextWidth("_"))
 	self.lineHeight = o.lineHeight or Util.measureTextHeight()
 	
-	self.logMax = o.logMax or self.logMax or 24
+	self.fontInit = true
 end
 
-local _debug_print_ = print
+console_print = print
 
 -- Hook to print function
 print = function(...)
-	_debug_print_(...)
+	console_print(...)
 	Console:print(...)
 end
 
@@ -199,18 +214,7 @@ function Console:printSpecial(entryTable)
 		table.remove(self.log, 1)
 	end
 	
-	-- Commented out because oftentimes the printSpecial is used for internal stuff.
-	-- if self.stealth then
-	-- 	self.stealthLog[#self.stealthLog + 1] = entryTable
-	-- 	self.stealthLog[#self.stealthLog].life = self.stealthLifetime
-		
-	-- 	-- Also "Scroll"
-	-- 	if #self.stealthLog > self.logMax then
-	-- 		table.remove(self.stealthLog, 1)
-	-- 	end
-	-- end
-	
-	_debug_print_(entryTable.text)
+	console_print(entryTable.text)
 end
 
 function Console:addAtCursor(str)
@@ -258,8 +262,7 @@ function Console:keypressed(key)
 			return
 		end
 	elseif love.keyboard.isDown("lshift", "rshift") then
-		--[[if key == "up" then
-		else]]if key == "tab" then
+		if key == "tab" then
 			self:tabCompletion(-1)
 			return
 		else
@@ -321,7 +324,7 @@ end
 
 function Console:hideTabMessage()
 	self.tabMessage = nil
-	end
+end
 
 function Console:tabCompletion(dir)
 	if self.currTab < 1 then
@@ -435,7 +438,7 @@ function Console:runInput()
 |`    | exit console |
 |cls  | clear console|
 |help | display this |
-|keyb | key shortcuts|
+|keys | key shortcuts|
 +-----+--------------+
 |Anything else will  |
 |be treated as a Lua |
@@ -448,7 +451,7 @@ function Console:runInput()
 		)
 		return
 	end
-	if line == "keyb" then
+	if line == "keys" then
 		self:print([[
 +------+-- Keyboard -+
 |up/dn | history     |
@@ -480,7 +483,7 @@ function Console:runInput()
 	-- If line has weird bracket equals sad face, encase the code in a pretty print function.
 	-- If line has weird arrow, encase the code in a look command.
 	if string.sub(line, 1, 2) == "==" then
-		self:runLine("print(\"\\\"\" .. (" .. string.sub(line, 3) .. ") .. \"\\\"\")")
+		self:runLine([[print('"' .. (]] .. string.sub(line, 3) .. [[) .. '"')]])
 	elseif string.sub(line, 1, 2) == "=[" then
 		self:runLine("print_table(" .. string.sub(line, 3) .. ")")
 	elseif string.sub(line, 1, 2) == "=>" then
@@ -496,7 +499,7 @@ function Console:runLine(code)
 	local HANDLE_WITH_CARE = loadstring(code)
 	local status, err = pcall(HANDLE_WITH_CARE)
 	if not status then
-		local errMsg = self.errorMessages[math.random(1, #self.errorMessages)]
+		local errMsg = self.errorMessages[love.math.random(1, #self.errorMessages)]
 		print(errMsg .. ": " .. err)
 	else
 		if err then print(tostring(err)) end
@@ -565,6 +568,10 @@ function Console:isValidIdentifier(str, openEnded)
 end
 
 function Console:update()
+	if not self.init then
+		Console:setup()
+	end
+	
 	if not self.enabled then
 		if self.stealth then
 			local i
@@ -584,10 +591,16 @@ function Console:update()
 	self.cursorBlink = self.cursorBlink + 1
 end
 
-function Console:draw()
+function Console:draw(scale)
+	if not self.fontInit then
+		Console:setupChars()
+	end
+	
+	-- kinda a disaster
+	if not self.init then return end
 	if not self.enabled then
 		if self.stealth then
-			local scale = math.max(2, window.screen.scale - 1)
+			local scale = math.max(2, scale - 1)
 			
 			love.graphics.setColor(0, 0, 0)
 			for i = 1, #self.stealthLog do
@@ -608,7 +621,7 @@ function Console:draw()
 				love.graphics.print(self.stealthLog[i].text, 8, 9 + (i - 1) * self.lineHeight * scale, 0, scale)
 				love.graphics.print(self.stealthLog[i].text, 9, 8 + (i - 1) * self.lineHeight * scale, 0, scale)
 				love.graphics.print(self.stealthLog[i].text, 9, 9 + (i - 1) * self.lineHeight * scale, 0, scale)
-			
+				
 				if changedColor then
 					love.graphics.setColor(0, 0, 0)
 				end
@@ -641,31 +654,41 @@ function Console:draw()
 		return
 	end
 	
+	local wWidth, wHeight = love.graphics.getDimensions()
+	
 	local i, msg
-	local bottomDist = (#self.log + (self.tabMessage and 2 or 1)) * (self.lineHeight * window.screen.scale)
+	local bottomDist = (#self.log + (self.tabMessage and 2 or 1)) * (self.lineHeight * scale)
 	
 	love.graphics.setColor(0.25, 0.25, 0.25, 0.5)
-	love.graphics.rectangle("fill", 0, window.height - bottomDist, self.width * self.charWidth * window.screen.scale, bottomDist)
+	love.graphics.rectangle("fill", 0, wHeight - bottomDist, self.width * self.charWidth * scale, bottomDist)
 	
 	love.graphics.setColor(1, 1, 1)
 			
 	for i = 1, #self.log do
-		self:drawLine(self.log[i], bottomDist, i)
-		end
+		love.graphics.print(
+			self:drawLineHelper(self.log[i], i),
+			0, wHeight - (bottomDist - self.lineHeight * scale * (i - 1)),
+			0, scale
+		)
+	end
 		
 	if self.tabMessage then
-		self:drawLine(self.tabMessage, bottomDist, #self.log + 1)
+		love.graphics.print(
+			self:drawLineHelper(self.tabMessage, #self.log + 1),
+			0, wHeight - (bottomDist - self.lineHeight * scale * #self.log),
+			0, scale
+		)
 	end
 	
 	love.graphics.setColor(0.5, 0.75, 1)
 	msg = self.inputPrefix .. string.sub(self.input, self.camera, self.camera + self.width - utf8.len(self.inputPrefix) - 1)
-	love.graphics.print(msg, 0, window.height - (self.lineHeight * window.screen.scale), 0, window.screen.scale)
+	love.graphics.print(msg, 0, wHeight - self.lineHeight * scale, 0, scale)
 	
 	love.graphics.setColor(0.25, 0.5, 1, 0.5 + Util.cosine(self.cursorBlink, 90, 0.5))
-	love.graphics.print("■", (self.cursor - self.camera + utf8.len(self.inputPrefix)) * self.charWidth * window.screen.scale, window.height - (self.lineHeight * window.screen.scale), 0, window.screen.scale)
+	love.graphics.print("■", (self.cursor - self.camera + utf8.len(self.inputPrefix)) * self.charWidth * scale, wHeight - (self.lineHeight * scale), 0, scale)
 end
 
-function Console:drawLine(line, bottomDist, i)
+function Console:drawLineHelper(line, i)
 	local msg
 	
 	if type(line) == "table" then
@@ -673,7 +696,7 @@ function Console:drawLine(line, bottomDist, i)
 		love.graphics.setColor(line.color)
 			
 		if not line.noCamera then
-				msg = string.sub(msg, self.camera, self.camera + self.width - 1)
+			msg = string.sub(msg, self.camera, self.camera + self.width - 1)
 		end
 	else
 		msg = line
@@ -681,8 +704,8 @@ function Console:drawLine(line, bottomDist, i)
 		
 		msg = string.sub(msg, self.camera, self.camera + self.width - 1)
 	end
-		
-	love.graphics.print(msg, 0, window.height - (bottomDist - (self.lineHeight * window.screen.scale * (i - 1))), 0, window.screen.scale)
+	
+	return msg
 end
 	
 return Console

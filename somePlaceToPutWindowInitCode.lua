@@ -27,7 +27,7 @@ function paletteWindow()
 end
 
 function rumblePakWindow()
-	view:addWindow(Controls.Window{
+	--[[ view:addWindow(Controls.Window{
 		title = "Rumble Pak",
 		
 		width = 64,
@@ -49,7 +49,7 @@ function rumblePakWindow()
 			end
 			wSelf:addControl(rumbleButton)
 		end
-	})
+	}) ]]
 end
 
 function colorTestWindow()

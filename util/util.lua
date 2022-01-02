@@ -3,6 +3,10 @@
 
 local Util = {}
 
+-- --------------------- --
+-- Lua Utility Functions --
+-- --------------------- --
+
 function Util.frac(n)
 	return n - math.floor(n)
 end
@@ -54,19 +58,19 @@ function Util.sign(n)
 end
 
 function Util.lerp(a, b, p)
-	return a + (b - a) * p
+	return a * p + b * (1 - p)
 end
-
 function Util.invLerp(a, b, x)
 	return (x - a) / (b - a)
 end
 
-function Util.pointSquare(x1, y1, x2, y2, w2, h2)
-	return x1 >= x2 and y1 >= y2 and x1 < x2 + w2 and y1 < y2 + h2
+function Util.map(x, aLow, aHigh, bLow, bHigh, clamp)
+	if clamp then x = Util.clamp(aLow, x, aHigh) end
+	return Util.lerp(bLow, bHigh, Util.invLerp(aLow, aHigh, x))
 end
 
 function Util.degreeAdd(alpha, beta)
-	local distance = (((alpha + beta) - 180) % 360) + 180
+	local distance = ((alpha + beta - 180) % 360) + 180
 	if distance < -180 then
 		distance = distance + 360
 	else
@@ -76,20 +80,6 @@ function Util.degreeAdd(alpha, beta)
 end
 function Util.degreeDistance(alpha, beta)
 	return Util.degreeAdd(alpha, -beta)
-end
-
-function Util.measureText(text)
-	local f = love.graphics.getFont()
-	
-	return f:getWidth(text), f:getHeight()
-end
-
-function Util.measureTextWidth(text)
-	return love.graphics.getFont():getWidth(text)
-end
-
-function Util.measureTextHeight()
-	return love.graphics.getFont():getHeight()
 end
 
 function Util.stringSplit(str, delimiter, max)
@@ -118,8 +108,7 @@ function Util.stringSplit(str, delimiter, max)
 	return result
 end
 
-function Util.watch(keyTable, checkFunction)
-	local _, value
+function Util.inputManager(keyTable, checkFunction)
 	local w = {
 		downTime = {},
 		down = {},
@@ -138,8 +127,6 @@ function Util.watch(keyTable, checkFunction)
 	end
 	
 	function w:update()
-		local index, value, _
-		
 		for _, value in ipairs(self.keys) do
 			self.down[value] = self.check(value)
 			self.press[value] = false
@@ -163,9 +150,65 @@ function Util.watch(keyTable, checkFunction)
 end
 
 function Util.keyRepeat(time, init, repeated)
+	time = time or 0
 	init = init or 15
 	repeated = repeated or init
 	return time and ((time == 1) or (time >= init and (time - init) % repeated == 0))
+end
+
+-- ---------------------- --
+-- Love Utility Functions --
+-- ---------------------- --
+
+function Util.measureText(text)
+	local f = love.graphics.getFont()
+	
+	return f:getWidth(text), f:getHeight()
+end
+
+function Util.measureTextWidth(text)
+	return love.graphics.getFont():getWidth(text)
+end
+
+function Util.measureTextHeight()
+	return love.graphics.getFont():getHeight()
+end
+
+function Util.setWindowIdentity(o)
+	local name = o.name or "Untitled"
+	local version = o.version or "0.1"
+	local icon = o.icon
+	
+	love.window.setTitle(name .. " " .. version)
+	love.filesystem.setIdentity(name)
+	
+	if icon ~= nil then
+		if type(icon) == "string" then
+			icon = love.image.newImageData(icon)
+		end
+		love.window.setIcon(icon)
+	end
+end
+
+-- ------------------------ --
+-- Vector Utility Functions --
+-- ------------------------ --
+
+local VectorTypes = require("util.geometry.vector")
+local Vec2, Vec3, Vec4 = unpack(VectorTypes.float)
+
+function Util.pointInBox(point, boxPosition, boxSize)
+	return point.x >= boxPosition.x 
+	and point.y >= boxPosition.y
+	and point.x < boxPosition.x + boxSize.x
+	and point.y < boxPosition.y + boxSize.y
+end
+
+function Util.boxInBox(boxAPosition, boxASize, boxBPosition, boxBSize)
+	return boxAPosition.x < boxBPosition.x + boxBSize.x
+	and boxAPosition.y < boxBPosition.y + boxBSize.y
+	and boxAPosition.x + boxASize.x > boxBPosition.x
+	and boxAPosition.y + boxASize.y > boxBPosition.y
 end
 
 return Util

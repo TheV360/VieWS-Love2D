@@ -1,4 +1,9 @@
--- Classic by rxi
+-- classic
+--
+-- Copyright (c) 2014, rxi
+--
+-- This module is free software; you can redistribute it and/or modify it under
+-- the terms of the MIT license. See LICENSE for details.
 
 local Object = {}
 Object.__index = Object
@@ -52,15 +57,6 @@ function Object:__call(...)
 	local obj = setmetatable({}, self)
 	obj:new(...)
 	return obj
-end
-
--- My dumb addition
-function Object:merge(t)
-	for k, v in pairs(t) do
-		if t[k] ~= nil then
-			self[k] = v
-		end
-	end
 end
 
 return Object

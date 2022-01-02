@@ -1,14 +1,27 @@
+-- OOP stuff.
+Object = require("util.object") -- Renamed from "Classic" by rxi
+OptObject = require("util.optobject")
+
+-- Math stuff.
+VectorTypes = require("util.geometry.vector")
+Vec2, Vec3, Vec4 = unpack(VectorTypes.float)
+
+-- Helpful stuff.
+CallbackWrapper = require("util.callbackwrapper")
+InputHandler = require "util.input" -- Renamed from "Baton" by Tesselode
+PixelScreen = require("util.pixelscreen")
+Util = require("util.util")
+utf8 = require("utf8")
+
+-- Gives you a console and a stats widget. Pretty good. Maybe I'm biased.
+-- You can pass "false" to this and the debug tools will be disabled.
+DebugHelper = require("debug.helper")(true)
+
 function love.load()
-	Object = require("objects/object")
-	OptObject = require("objects/optobject")
+	-- Makes everything nice and pixel-perfect.
+	PixelScreen.PixelPerfect()
 	
-	GameWindow = require("window/window")
-	Util = require("window/util")
-	GameWindow.pixelPerfect()
-	
-	utf8 = require("utf8")
-	
-	-- Set up pixel font
+	-- Set up pixel font.
 	local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~◆◇▼▲▽△★☆■□🙂☹←↑→↓😔🙃]]
 	font = love.graphics.newImageFont("resources/fonts/6x8.png", supportedCharacters)
 	
@@ -22,92 +35,59 @@ function love.load()
 	
 	require("views/views")
 	
-	window = GameWindow{
-		title = "VieWS",
-		version = "v0.1",
-		icon = love.image.newImageData("resources/icon.png"),
-		
-		screen = {
-			width  = 512,
-			height = 342
-		},
-		shake = true,
-		-- shader = "resources/shaders/shader.glsl",
-		
-		mouse = {
-			cursors = {
-				[""] = {},
-				["mouse"] = {
-					image = love.graphics.newImage("resources/cursors/mouse.png"),
-					-- home = {x = 0, y = 0} -- home on first white pixel
-					home = {x = 1, y = 2} -- home on first black pixel
-				},
-				["hand"] = {
-					image = love.graphics.newImage("resources/cursors/hand.png"),
-					-- home = {x = 4, y = 0} -- home on first white pixel
-					home = {x = 4, y = 1} -- home on first black pixel
-				},
-				["movable"] = {
-					image = love.graphics.newImage("resources/cursors/movable.png"),
-					-- home = {x = 4, y = 0} -- home on first white pixel
-					home = {x = 4, y = 1} -- home on first black pixel
-				},
-				["move"] = {
-					image = love.graphics.newImage("resources/cursors/move.png"),
-					-- home = {x = 4, y = 0} -- home on first white pixel
-					home = {x = 4, y = 1} -- home on first black pixel
-				},
-				["pinch"] = {
-					image = love.graphics.newImage("resources/cursors/pinch.png"),
-					-- home = {x = 4, y = 0} -- home on first white pixel
-					home = {x = 4, y = 1} -- home on first black pixel
-				},
-				["wait"] = {
-					image = love.graphics.newImage("resources/cursors/wait.png"),
-					home = {x = 3, y = 1},
-					anim = {
-						x = 0,
-						y = 0,
-						width = 16,
-						height = 16,
-						time = 3,
-						
-						{},
-						{x = 16},
-						{x = 32},
-						{x = 48}
-					}
-				}
-			},
-			defaultCursor = "mouse"
-		},
-		debug = true,
-		
-		setup = function()
-			view = VieWS{
-				width  = window.screen.width,
-				height = window.screen.height,
-				
-				loveFunctions = window.loveFunctions
-			}
-			
-			require("somePlaceToPutWindowInitCode")
-		end,
-		update = function(dt)
-			view:update(dt)
-		end,
-		draw = function()
-			view:draw()
+	screen = PixelScreen(Vec2(512, 342))
+	screen:centerScaleIn(Vec2(love.graphics.getDimensions()))
+	CallbackWrapper:addLoveFunction('resize', function(width, height)
+		screen:centerScaleIn(Vec2(width, height))
+	end, "screen resize")
+	
+	-- Adds a few (okay, one... so far) shortcuts to do common tasks.
+	CallbackWrapper:addLoveFunction("keypressed", function(key)
+		if key == "f4" then
+			love.window.setFullscreen(not love.window.getFullscreen())
+			screen:centerScaleIn(Vec2(love.graphics.getDimensions()))
 		end
+	end, "shortcuts")
+	
+	Util.setWindowIdentity {
+		name = "VieWS", version = "0.1",
+		icon = "resources/icon.png",
 	}
 	
-	window:setup()
+	-- Keyboard repeaaaaaaaaaaaaaaaaaaaaaaaat
+	love.keyboard.setKeyRepeat(true)
+	
+	view = VieWS{
+		width  = screen.size.x,
+		height = screen.size.y,
+	}
+	
+	require("somePlaceToPutWindowInitCode")
+	
+	timeSpent = 0
 end
 
 function love.update(dt)
-	window:update(dt)
+	-- Update VieWS
+	view:update(dt)
+	
+	-- Maybe update the debug tools.
+	DebugHelper:update(dt)
+	
+	-- Push time forward.
+	timeSpent = timeSpent + dt
 end
 
 function love.draw()
-	window:draw()
+	love.graphics.clear()
+	
+	love.graphics.setColor(1, 1, 1)
+	screen:renderThenDraw(function()
+		-- Update VieWS
+		view:draw()
+	end)
+	
+	-- Maybe draw the debug tools.
+	love.graphics.setColor(1, 1, 1)
+	DebugHelper:draw(screen, font)
 end

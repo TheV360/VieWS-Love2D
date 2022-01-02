@@ -60,7 +60,7 @@ function PixelGrid:draw()
 end
 
 function PixelGrid:mouse(m)
-	window:switchCursor("hand")
+	view:switchCursor("hand")
 	
 	local newX, newY = self:getLocalCoords(m)
 	newX = Util.clamp(0, math.floor(newX / self.celSize.width ), self.cels.width  - 1)

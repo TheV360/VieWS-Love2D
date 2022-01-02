@@ -50,7 +50,7 @@ function PickerControl:draw()
 end
 
 function PickerControl:mouse(m)
-	window:switchCursor("hand")
+	view:switchCursor("hand")
 	
 	local hackX = m.x - self.position.x - self.parent.position.x
 	

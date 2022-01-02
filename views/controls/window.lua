@@ -22,15 +22,15 @@ function Window:new(o)
 		Window.DefaultPosition.x = Window.DefaultPosition.x + 8
 		Window.DefaultPosition.y = Window.DefaultPosition.y + 8
 		
-		if Window.DefaultPosition.x > window.screen.width * 0.75 then
+		if Window.DefaultPosition.x > screen.size.x * 0.75 then
 			Window.DefaultDefaultPosition.x = Window.DefaultDefaultPosition.x + 1
 			Window.DefaultPosition.x = Window.DefaultDefaultPosition.x
 			
-			if Window.DefaultDefaultPosition.x > window.screen.width * 0.5 then
+			if Window.DefaultDefaultPosition.x > screen.size.x * 0.5 then
 				Window.DefaultDefaultPosition.x = 8
 			end
 		end
-		if Window.DefaultPosition.y > window.screen.height * 0.6 then
+		if Window.DefaultPosition.y > screen.size.y * 0.6 then
 			Window.DefaultPosition.y = Window.DefaultDefaultPosition.y
 		end
 	end
@@ -62,14 +62,13 @@ end
 
 function Window:isOver(checkPoint)
 	if self.border then
-		return Util.pointSquare(checkPoint.x, checkPoint.y,
-			self.position.x - self.border.left,
-			self.position.y - self.border.top,
-			self.size.width + self.border.left + self.border.right,
-			self.size.height + self.border.top + self.border.bottom
+		return Util.pointInBox(
+			checkPoint,
+			Vec2(self.position.x, self.position.y) - Vec2(self.border.left, self.border.top),
+			Vec2(self.size.width, self.size.height) + Vec2(self.border.left, self.border.top) + Vec2(self.border.right, self.border.bottom)
 		)
 	else
-		return Util.pointSquare(checkPoint.x, checkPoint.y, self.position.x, self.position.y, self.size.width, self.size.height)
+		return Util.pointInBox(checkPoint, self.position, Vec2(self.size.width, self.size.height))
 	end
 end
 
@@ -217,12 +216,12 @@ function Window:mouse(m)
 		Window.super.mouse(self, m)
 	else
 		if m.x - self.position.x >= self.size.width - Window.ButtonRadius * 2 - 1 then
-			window:switchCursor("hand")
+			view:switchCursor("hand")
 		else
 			if m.drag.window == self then
-				window:switchCursor("move")
+				view:switchCursor("move")
 			else
-				window:switchCursor("movable")
+				view:switchCursor("movable")
 			end
 		end
 	end

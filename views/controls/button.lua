@@ -29,7 +29,7 @@ function Button:draw()
 end
 
 function Button:mouse(m)
-	window:switchCursor("hand")
+	view:switchCursor("hand")
 end
 
 return Button

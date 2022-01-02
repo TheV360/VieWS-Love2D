@@ -102,7 +102,7 @@ function Slider:draw()
 end
 
 function Slider:mouse(m)
-	window:switchCursor('hand')
+	view:switchCursor('hand')
 end
 
 function Slider:mouseDown(m)

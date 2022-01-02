@@ -7,7 +7,7 @@ function Bar.setup()
 		x = 0,
 		y = 0,
 		
-		width = window.screen.width,
+		width = view.size.width,
 		height = 12,
 		
 		border = Sides(0, 0, 1, 0),
