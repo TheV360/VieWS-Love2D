@@ -11,7 +11,7 @@ end
 function Effect:draw()
 	if self.life < 0 then return end
 	
-	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.setColor(VieWS.PALETTE[4])
 	love.graphics.points(self.position.x, self.position.y)
 end
 

@@ -41,7 +41,7 @@ function Stats:draw()
 	
 	local txt = "-- Stats --\n"
 	txt = txt .. "FPS:  " .. self.fps .. ",\n"
-	txt = txt .. "Draw: " .. self.stats.drawcalls .. ",\n"
+	txt = txt .. "Draw: ~" .. self.stats.drawcalls .. ",\n"
 	txt = txt .. "WindowSize:\n" .. window.width .. ", " .. window.height .. ",\n"
 	if window.screen then
 		txt = txt .. "ScreenSize:\n" .. window.screen.width .. ", " .. window.screen.height .. " (x" .. scale .. ")\n"

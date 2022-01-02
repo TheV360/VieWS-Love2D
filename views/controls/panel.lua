@@ -7,7 +7,7 @@ function Panel:new(o)
 	self.canvas = love.graphics.newCanvas(self.size.width, self.size.height)
 	
 	-- Color
-	self.color = o.color or {0, 0, 0, 0}
+	self.color = o.color or 4
 	
 	-- Make controls
 	self.controls = {}
@@ -18,8 +18,9 @@ function Panel:new(o)
 	end
 end
 
-function Panel:addControl(name, c)
-	self.controls[name] = c
+function Panel:addControl(control)
+	self.controls[control.name or (#self.controls + 1)] = control
+	control.parent = self
 end
 
 function Panel:update()
@@ -42,14 +43,14 @@ function Panel:draw()
 				
 				if debugRects then
 					love.graphics.origin()
-					love.graphics.setColor(0, 0, 0, 0.125)
+					love.graphics.setColor(1, 0, 0, 0.125)
 					c:drawRect("line")
 				end
 				
 				love.graphics.translate(c.position.x, c.position.y)
 				love.graphics.setScissor(c.position.x, c.position.y, c.size.width, c.size.height)
 				
-				love.graphics.setColor(0, 0, 0)
+				love.graphics.setColor(VieWS.PALETTE[1])
 				c:draw()
 				
 				c.redraw = false
@@ -60,7 +61,7 @@ function Panel:draw()
 		end
 	end)
 	
-	love.graphics.setColor(self.color)
+	love.graphics.setColor(VieWS.PALETTE[self.color])
 	love.graphics.rectangle("fill", 0, 0, self.size.width, self.size.height)
 	
 	love.graphics.setColor(1, 1, 1)
@@ -96,13 +97,24 @@ function Panel:mouse(m)
 end
 
 function Panel:mouseClick(m)
-	local i, c
-	
 	for i, c in pairs(self.controls) do
-		local x, y, w, h = c:getPaddingRect(true)
-		
 		if c:isOver(Point(m.x - self.position.x, m.y - self.position.y)) then
 			c:mouseClick(m)
+		end
+	end
+end
+
+function Panel:mouseDown(m)
+	for i, c in pairs(self.controls) do
+		if c:isOver(Point(m.x - self.position.x, m.y - self.position.y)) then
+			c:mouseDown(m)
+		end
+	end
+end
+function Panel:mouseUp(m)
+	for i, c in pairs(self.controls) do
+		if c:isOver(Point(m.x - self.position.x, m.y - self.position.y)) then
+			c:mouseUp(m)
 		end
 	end
 end

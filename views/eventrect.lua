@@ -10,6 +10,8 @@ end
 
 function VieWSEventRect:mouse(m) end -- Takes "m" - mouse table
 function VieWSEventRect:mouseClick(m) end -- Takes "m" - mouse table
+function VieWSEventRect:mouseDown(m) end -- Takes "m" - mouse table
+function VieWSEventRect:mouseUp(m) end -- Takes "m" - mouse table
 function VieWSEventRect:mouseEnter(m) end -- Takes "m" - mouse table
 function VieWSEventRect:mouseExit(m) end -- Takes "m" - mouse table
 function VieWSEventRect:wheelMoved(x, y) end -- Takes "x" and "y" - wheel offset

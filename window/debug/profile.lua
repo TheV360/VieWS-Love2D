@@ -228,7 +228,6 @@ function profile.query(s, n)
 	if n and _i > n then
 		_i2 = _i - n
 	end
-	-- todo: check for nested queries
 	return _iterator
 end
 

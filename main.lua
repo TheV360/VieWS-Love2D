@@ -2,19 +2,25 @@ function love.load()
 	Object = require("objects/object")
 	OptObject = require("objects/optobject")
 	
-	-- TileMap = require("objects/tilemap")
-	-- TileLayer = require("objects/tilelayer")
-	
 	GameWindow = require("window/window")
 	Util = require("window/util")
 	GameWindow.pixelPerfect()
 	
+	utf8 = require("utf8")
+	
 	-- Set up pixel font
-	local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~◆◇▼▲▽△★☆■□😔🙃]]
-	font = love.graphics.newImageFont("resources/font_6x8.png", supportedCharacters)
+	local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~◆◇▼▲▽△★☆■□🙂☹←↑→↓😔🙃]]
+	font = love.graphics.newImageFont("resources/fonts/6x8.png", supportedCharacters)
+	
+	-- local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~]]
+	-- font = love.graphics.newImageFont("resources/fonts/graph.png", supportedCharacters, 1)
+	
+	-- local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~]]
+	-- font = love.graphics.newImageFont("resources/fonts/ms_gothic.png", supportedCharacters)
+	
 	love.graphics.setFont(font)
 	
-	require "game"
+	require("views/views")
 	
 	window = GameWindow{
 		title = "VieWS",
@@ -22,10 +28,11 @@ function love.load()
 		icon = love.image.newImageData("resources/icon.png"),
 		
 		screen = {
-			width  = 360,
-			height = 240
+			width  = 512,
+			height = 342
 		},
 		shake = true,
+		-- shader = "resources/shaders/shader.glsl",
 		
 		mouse = {
 			cursors = {
@@ -50,6 +57,11 @@ function love.load()
 					-- home = {x = 4, y = 0} -- home on first white pixel
 					home = {x = 4, y = 1} -- home on first black pixel
 				},
+				["pinch"] = {
+					image = love.graphics.newImage("resources/cursors/pinch.png"),
+					-- home = {x = 4, y = 0} -- home on first white pixel
+					home = {x = 4, y = 1} -- home on first black pixel
+				},
 				["wait"] = {
 					image = love.graphics.newImage("resources/cursors/wait.png"),
 					home = {x = 3, y = 1},
@@ -71,9 +83,22 @@ function love.load()
 		},
 		debug = true,
 		
-		setup = setup,
-		update = update,
-		draw = draw
+		setup = function()
+			view = VieWS{
+				width  = window.screen.width,
+				height = window.screen.height,
+				
+				loveFunctions = window.loveFunctions
+			}
+			
+			require("somePlaceToPutWindowInitCode")
+		end,
+		update = function(dt)
+			view:update(dt)
+		end,
+		draw = function()
+			view:draw()
+		end
 	}
 	
 	window:setup()

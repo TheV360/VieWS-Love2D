@@ -4,74 +4,76 @@ function About.setup()
 	view:addWindow(Controls.Window{
 		title = "About VieWS",
 		
-		x = 16 + math.random(0, 256),
-		y = 32 + math.random(0, 128),
+		-- x = 16 + math.random(0, window.screen.width),
+		-- y = 32 + math.random(0, window.screen.height),
 		
 		width = 128,
 		height = 64,
 		
-		setup = About.setupComponents
+		setup = About.setupComponents,
+		
+		border = Sides(Controls.Window.SideWidth * 3, Controls.Window.SideWidth, Controls.Window.SideWidth),
 	})
 end
 
 function About.setupComponents(wSelf)
-	logoImage = Controls.Image{
+	local logoImage = Controls.Image{
 		x = 4,
 		y = 6,
-		image = love.graphics.newImage("resources/logo.png")
+		image = love.graphics.newImage("resources/logo.png"),
 	}
-	wSelf:addControl("logoImage", logoImage)
+	wSelf:addControl(logoImage)
 	
-	versionLabel = Controls.Label{
+	local versionLabel = Controls.Label{
 		x = 94,
 		y = 14,
 		
 		text = "v0.1?",
-		color = {0.5, 0.5, 0.5, 1}
+		color = 1,
 	}
-	wSelf:addControl("versionLabel", versionLabel)
+	wSelf:addControl(versionLabel)
 	
-	nameLabel = Controls.Label{
+	local nameLabel = Controls.Label{
 		x = 4,
 		y = 24,
-		text = "V360 Window System"
+		text = "V360 Window System",
 	}
-	wSelf:addControl("nameLabel", nameLabel)
+	wSelf:addControl(nameLabel)
 	
-	authorLabel = Controls.Label{
+	local authorLabel = Controls.Label{
 		x = 4,
 		y = 34,
-		text = "By V360 (v360.dev)"
+		text = "By V360 (v360.dev)",
 	}
-	wSelf:addControl("authorLabel", authorLabel)
+	wSelf:addControl(authorLabel)
 	
-	githubButton = Controls.Button{
+	local githubButton = Controls.Button{
 		x = 4,
 		y = 44,
 		
 		width = 58,
 		height = 16,
 		
-		text = "Website"
+		text = "Website",
 	}
 	githubButton.mouseClick = function(cSelf, m)
 		love.system.openURL("https://thev360.github.io/VieWS/")
 	end
-	wSelf:addControl("githubButton", githubButton)
+	wSelf:addControl(githubButton)
 	
-	closeButton = Controls.Button{
+	local closeButton = Controls.Button{
 		x = 66,
 		y = 44,
 		
 		width = 58,
 		height = 16,
 		
-		text = "Close"
+		text = "Close",
 	}
 	closeButton.mouseClick = function(cSelf, m)
 		wSelf:close()
 	end
-	wSelf:addControl("closeButton", closeButton)
+	wSelf:addControl(closeButton)
 end
 
 return About

@@ -2,13 +2,38 @@
 
 local Window = Controls.Panel:extend()
 
-Window.TitleBarWidth = 11
-Window.SideWidth = 1
-Window.ShadowDistance = 2
+Window.TitleBarWidth = 7+4
+Window.SideWidth = 2
+Window.ShadowDistance = 1
 Window.ButtonRadius = 3
+Window.DefaultDefaultPosition = Point(8, 32)
+Window.DefaultPosition = Point(Window.DefaultDefaultPosition.x, Window.DefaultDefaultPosition.y)
 
 function Window:new(o)
 	self.title = o.title or "Window"
+	
+	-- THIS IS A HACK
+	if not (o.position and (o.position.x or o.position.y) or (o.x or o.y)) then
+		o.position = o.position or {}
+		
+		o.position.x = Window.DefaultPosition.x
+		o.position.y = Window.DefaultPosition.y
+		
+		Window.DefaultPosition.x = Window.DefaultPosition.x + 8
+		Window.DefaultPosition.y = Window.DefaultPosition.y + 8
+		
+		if Window.DefaultPosition.x > window.screen.width * 0.75 then
+			Window.DefaultDefaultPosition.x = Window.DefaultDefaultPosition.x + 1
+			Window.DefaultPosition.x = Window.DefaultDefaultPosition.x
+			
+			if Window.DefaultDefaultPosition.x > window.screen.width * 0.5 then
+				Window.DefaultDefaultPosition.x = 8
+			end
+		end
+		if Window.DefaultPosition.y > window.screen.height * 0.6 then
+			Window.DefaultPosition.y = Window.DefaultDefaultPosition.y
+		end
+	end
 	
 	Window.super.new(self, o)
 	
@@ -21,14 +46,18 @@ function Window:new(o)
 	end
 	
 	self.style = {
-		borderBackground = {0, 0, 0},
-		borderForeground = {0.85, 0.8, 0.8},
-		contentBackground = {0.85, 0.8, 0.8},
-		shadow = {0, 0, 0, 0.25}
+		borderBackground = 1,
+		borderForeground = 4,
+		contentBackground = 4,
+		shadow = 4,
 	}
 	self.color = self.style.contentBackground -- todo: please make this better,
 	
+	self.onTop = o.onTop or false
+	
 	self.status = "open"
+	
+	-- self.velocity = 0
 end
 
 function Window:isOver(checkPoint)
@@ -44,17 +73,18 @@ function Window:isOver(checkPoint)
 	end
 end
 
-function Window:update()
+function Window:update(dt)
 	Window.super.update(self)
+	
+	--self.velocity = self.velocity * 0.9
 end
 
 function Window:draw()
 	love.graphics.setColor(1, 1, 1)
 	
 	love.graphics.push()
-	love.graphics.origin()
 	
-	love.graphics.translate(self.position.x, self.position.y)
+	-- love.graphics.translate(self.position.x, self.position.y)
 	Window.super.draw(self)
 	
 	love.graphics.pop()
@@ -62,7 +92,7 @@ end
 
 function Window:drawBorder()
 	if self.border then
-		love.graphics.setColor(self.style.borderBackground)
+		love.graphics.setColor(VieWS.PALETTE[self.style.borderBackground])
 		
 		-- Top
 		love.graphics.rectangle(
@@ -101,7 +131,7 @@ function Window:drawBorder()
 		)
 		
 		if self.border.top >= Window.TitleBarWidth then
-			love.graphics.setColor(self.style.borderForeground)
+			love.graphics.setColor(VieWS.PALETTE[self.style.borderForeground])
 			
 			-- Title
 			love.graphics.print(self.title, self.position.x, self.position.y - self.border.top + 1)
@@ -118,8 +148,25 @@ function Window:drawBorder()
 end
 
 function Window:drawShadow()
-	love.graphics.setColor(self.style.shadow)
+	love.graphics.setColor(VieWS.PALETTE[self.style.shadow])
 	
+	if self.border then
+		love.graphics.rectangle("line",
+			self.position.x - self.border.left - Window.ShadowDistance + 0.5,
+			self.position.y - self.border.top - Window.ShadowDistance + 0.5,
+			self.size.width + self.border.left + self.border.right + 2 * Window.ShadowDistance - 1,
+			self.size.height + self.border.top + self.border.bottom + 2 * Window.ShadowDistance - 1
+		)
+	else
+		love.graphics.rectangle("line",
+			self.position.x - Window.ShadowDistance + 0.5,
+			self.position.y - Window.ShadowDistance + 0.5,
+			self.size.width + 2 * Window.ShadowDistance - 1,
+			self.size.height + 2 * Window.ShadowDistance - 1
+		)
+	end
+	
+	--[[
 	if self.border then
 		-- Right
 		love.graphics.rectangle(
@@ -157,6 +204,7 @@ function Window:drawShadow()
 			Window.ShadowDistance
 		)
 	end
+	]]
 end
 
 function Window:close()

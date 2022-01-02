@@ -2,7 +2,7 @@ local Image = Controls.Control:extend()
 
 function Image:new(o)
 	self.image = o.image
-	self.color = o.color or {1, 1, 1, 1}
+	self.color = o.color or 4
 	
 	if self.image then
 		if not (o.size and o.size.width  or o.width ) then o.width  = self.image:getWidth () end
@@ -13,7 +13,7 @@ function Image:new(o)
 end
 
 function Image:draw()
-	love.graphics.setColor(self.color)
+	love.graphics.setColor(VieWS.PALETTE[self.color])
 	self:clearRect()
 	
 	love.graphics.draw(self.image)

@@ -39,6 +39,7 @@ function Window:new(o)
 	-- Game Frames
 	self.frames = 0
 	self.trueFrames = 0
+	self.time = 0
 	-- === Why have separate window.frames and window.trueFrames? ===
 	-- Your draw function should use window.frames so that it completely freezes when the debug menu is up.
 	-- If you never debug, you can just delete window.trueFrames and nothing will be different.
@@ -77,10 +78,7 @@ function Window:new(o)
 		local n = {}
 		self.backdrop = n
 		
-		assert(isTable(o.backdrop), "(Window.backdrop) Please make backdrop a table.")
-		assert(o.backdrop.image, "(Window.backdrop) Please include a background image.")
-		
-		n.image = o.backdrop.image
+		n.image = love.graphics.newImage(isTable(o.backdrop) and o.backdrop.image or o.backdrop)
 		n.image:setWrap("repeat", "repeat")
 		
 		n.width, n.height = n.image:getDimensions()
@@ -122,6 +120,25 @@ function Window:new(o)
 			
 			self.button = Util.watch(buttons, function(key) return love.keyboard.isDown(self.button.map[key]) end)
 			self.button.map = o.button
+		end
+	end
+	
+	-- Shader
+	-- MAYBE: lol u gotta move this to o.screen.shader, because it only works on screens.
+	-- MAYBE: or maybe not
+	if o.shader then
+		if isTable(o.shader) then
+			self.shader = love.graphics.newShader(o.shader.path)
+			if o.shader.reload then
+				-- TODO: implement hot reloading?
+			end
+		else
+			self.shader = love.graphics.newShader(o.shader)
+		end
+		
+		if self.screen then
+			self.shader:send("w_scr_size", { self.screen.width, self.screen.height })
+			-- self.shader:send("w_scr_scale", self.screen.scale)
 		end
 	end
 	
@@ -180,6 +197,19 @@ function Window:new(o)
 			end
 		end
 		
+		-- Deprecated way of handling cursors. Still works with new way!
+		-- if o.mouse.image then
+		-- 	n.cursors[#n.cursors + 1] = {
+		-- 		image = o.mouse.image or nil,
+		-- 		home = {
+		-- 			x = o.mouse.home and o.mouse.home.x or 0,
+		-- 			y = o.mouse.home and o.mouse.home.y or 0
+		-- 		}
+		-- 	}
+			
+		-- 	self:switchCursor(#n.cursors)
+		-- end
+		
 		if o.mouse.defaultCursor then
 			self:switchCursor(o.mouse.defaultCursor)
 		end
@@ -235,6 +265,7 @@ function Window:new(o)
 		
 		self.debug.menu:addOption("Toggle Stats", function() self.debug.stats.enabled = not self.debug.stats.enabled end)
 		self.debug.menu:addOption("Toggle Console", function() self.debug.console.enabled = not self.debug.console.enabled end)
+		self.debug.menu:addOption("Toggle Shader", function() local tmp = self.shaderStored self.shaderStored = self.shader self.shader = tmp end)
 		self.debug.menu:addDivider()
 		self.debug.menu:addOption("Take Screenshot", function()
 			if window.backdrop and window.backdrop.enabled then
@@ -291,6 +322,7 @@ function Window:new(o)
 		if key == "f4" then
 			self.fullscreen = not self.fullscreen
 			love.window.setFullscreen(self.fullscreen)
+			if self.screen then self:updateScreen() end
 		end
 	end)
 	
@@ -320,12 +352,19 @@ function Window:update(dt)
 		self.tick = self.tick - self.tickMaximum
 	end
 	
+	self.time = self.time + dt
+	
 	-- Update button and mouse
 	if self.button then
 		self.button:update()
 	end
 	if self.mouse then
 		self:updateMouse()
+	end
+	
+	-- If there's a shader, update its time uniform
+	if self.shader then
+		-- self.shader:send("w_time", self.trueFrames)
 	end
 	
 	if self.running then
@@ -364,9 +403,7 @@ function Window:draw()
 	if self.backdrop then
 		love.graphics.draw(
 			self.backdrop.image,
-			self.backdrop.quad,
-			-(math.floor(self.trueFrames / 2) % self.backdrop.width),
-			-(math.floor(self.trueFrames / 2) % self.backdrop.height)
+			self.backdrop.quad
 		)
 	end
 	
@@ -376,6 +413,13 @@ function Window:draw()
 	if self.screen then
 		if self.callbacks.draw and self.running then
 			self.screen.canvas:renderTo(self.callbacks.draw)
+			self.screen.canvas:renderTo(function() self:drawMouse() end)
+		end
+	
+		local other_shader
+		if self.shader then
+			other_shader = love.graphics.getShader()
+			love.graphics.setShader(self.shader)
 		end
 		
 		-- Reset Color
@@ -392,6 +436,10 @@ function Window:draw()
 			end
 		else
 			love.graphics.draw(self.screen.canvas, self.screen.x, self.screen.y, 0, self.screen.scale)
+		end
+	
+		if self.shader then
+			love.graphics.setShader(other_shader)
 		end
 	else
 		if self.callbacks.draw then
@@ -413,7 +461,7 @@ function Window:draw()
 	love.graphics.setColor(1, 1, 1)
 	
 	-- Draw mouse
-	if self.mouse then
+	if self.mouse and ((self.screen and not self.running) or not self.screen) then
 		self:drawMouse()
 	end
 	
@@ -440,7 +488,10 @@ function Window:updateScreen()
 end
 
 function Window:updateBackdropQuad()
-	self.backdrop.quad = love.graphics.newQuad(0, 0, self.width + self.backdrop.width, self.height + self.backdrop.height, self.backdrop.width, self.backdrop.height)
+	self.backdrop.quad = love.graphics.newQuad(
+		-self.backdrop.width / 2, -self.backdrop.height / 2,
+		self.width + self.backdrop.width, self.height + self.backdrop.height,
+		self.backdrop.width, self.backdrop.height)
 end
 
 function Window:updateMouse()
@@ -481,33 +532,26 @@ function Window:drawMouse()
 	local cci = cc.image
 	if not cci then return end
 	
-	if cc.anim and cc.anim[self.mouse.anim.frame] then
-		local cciq = cc.anim[self.mouse.anim.frame].quad
-		
-		if self.screen then
-			if self.running then
-				love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
-				love.graphics.draw(cci, cciq, self.screen.x + (self.mouse.sx - cc.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - cc.home.y) * self.screen.scale, 0, self.screen.scale)
-				love.graphics.setScissor()
-			else
-				love.graphics.draw(cci, cciq, self.mouse.x - cc.home.x * self.screen.scale, self.mouse.y - cc.home.y * self.screen.scale, 0, self.screen.scale)
-			end
+	local args = {cci, (cc.anim and cc.anim[self.mouse.anim.frame]) and cc.anim[self.mouse.anim.frame].quad or nil}
+	
+	love.graphics.setColor(1, 1, 1)
+	
+	if self.screen then
+		if self.running then
+			table.insert(args, self.mouse.sx - cc.home.x)
+			table.insert(args, self.mouse.sy - cc.home.y)
 		else
-			love.graphics.draw(cci, cciq, self.mouse.x - cc.home.x, self.mouse.y - cc.home.y)
+			table.insert(args, self.mouse.x - cc.home.x * self.screen.scale)
+			table.insert(args, self.mouse.y - cc.home.y * self.screen.scale)
+			table.insert(args, 0)
+			table.insert(args, self.screen.scale)
 		end
 	else
-		if self.screen then
-			if self.running then
-				love.graphics.setScissor(self.screen.x, self.screen.y, self.screen.width * self.screen.scale, self.screen.height * self.screen.scale)
-				love.graphics.draw(cci, self.screen.x + (self.mouse.sx - cc.home.x) * self.screen.scale, self.screen.y + (self.mouse.sy - cc.home.y) * self.screen.scale, 0, self.screen.scale)
-				love.graphics.setScissor()
-			else
-				love.graphics.draw(cci, self.mouse.x - cc.home.x * self.screen.scale, self.mouse.y - cc.home.y * self.screen.scale, 0, self.screen.scale)
-			end
-		else
-			love.graphics.draw(cci, self.mouse.x - cc.home.x, self.mouse.y - cc.home.y)
-		end
+		table.insert(args, self.mouse.x - cc.home.x)
+		table.insert(args, self.mouse.y - cc.home.y)
 	end
+	
+	love.graphics.draw(unpack(args))
 end
 
 -- Automatically enables/disables shake when values do things

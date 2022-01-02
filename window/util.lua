@@ -3,12 +3,12 @@
 
 local Util = {}
 
+function Util.frac(n)
+	return n - math.floor(n)
+end
+
 function Util.round(n)
-	if n > 0 then
-		return math.floor(n + 0.5)
-	else
-		return math.ceil(n - 0.5)
-	end
+	return math.floor(n + 0.5)
 end
 
 function Util.sine(offset, cycle, height, center)
@@ -43,21 +43,39 @@ function Util.cosine(offset, cycle, height, center)
 	end
 end
 
-function Util.mid(a, b, c)
-	return math.min(math.max(a, b), c)
+function Util.mid(low, mid, high)
+	return math.min(math.max(low, mid), high)
 end
 
+Util.clamp = Util.mid
+
 function Util.sign(n)
-	if n == 0 then return 0 end
-	return n > 0 and 1 or -1
+	return n == 0 and 0 or (n > 0 and 1 or -1)
 end
 
 function Util.lerp(a, b, p)
 	return a + (b - a) * p
 end
 
+function Util.invLerp(a, b, x)
+	return (x - a) / (b - a)
+end
+
 function Util.pointSquare(x1, y1, x2, y2, w2, h2)
 	return x1 >= x2 and y1 >= y2 and x1 < x2 + w2 and y1 < y2 + h2
+end
+
+function Util.degreeAdd(alpha, beta)
+	local distance = (((alpha + beta) - 180) % 360) + 180
+	if distance < -180 then
+		distance = distance + 360
+	else
+		distance = distance - 360
+	end
+	return distance
+end
+function Util.degreeDistance(alpha, beta)
+	return Util.degreeAdd(alpha, -beta)
 end
 
 function Util.measureText(text)
@@ -79,20 +97,21 @@ function Util.stringSplit(str, delimiter, max)
 	local current = 0
 	local next = string.find(str, delimiter, current, true)
 	
-	if not next then return {str} end
+	if #delimiter < 1 then return result end
+	if max and max < 1 then return result end
 	
-	repeat
+	while next do
 		table.insert(result, string.sub(str, current, next - 1))
 		current = next + 1
 		
-		if max and #result > max then
+		if max and #result >= max then
 			break
 		end
 		
 		next = string.find(str, delimiter, current, true)
-	until not next
+	end
 	
-	if not (max and #result > max) then
+	if not (max and #result >= max) then
 		table.insert(result, string.sub(str, current))
 	end
 	
@@ -141,6 +160,12 @@ function Util.watch(keyTable, checkFunction)
 	end
 	
 	return w
+end
+
+function Util.keyRepeat(time, init, repeated)
+	init = init or 15
+	repeated = repeated or init
+	return time and ((time == 1) or (time >= init and (time - init) % repeated == 0))
 end
 
 return Util

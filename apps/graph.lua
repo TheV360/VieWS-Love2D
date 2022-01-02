@@ -18,7 +18,7 @@ function Graph.setupComponents(wSelf)
 	somethingWindow = Controls.Window{
 		title = "smaller window",
 		
-		x = 64,
+		x = 120,
 		y = 16,
 		
 		width = 128,
@@ -31,10 +31,10 @@ function Graph.setupComponents(wSelf)
 				text = "Something"
 			}
 			somethingButton.mouseClick = function(cSelf, m)
-				love.window.showMessageBox("hi")
+				love.window.showMessageBox("hi","hello")
 			end
 			
-			wSelf:addControl("somethingWindow", somethingWindow)
+			wSelf:addControl(somethingButton)
 		end
 	}
 	
@@ -45,7 +45,7 @@ function Graph.setupComponents(wSelf)
 		width = 96,
 		height = 96,
 		
-		color = {0.25, 0.5, 1}
+		color = 2
 	}
 	
 	horrible2 = Controls.Panel{
@@ -55,20 +55,23 @@ function Graph.setupComponents(wSelf)
 		width = 64,
 		height = 64,
 		
-		color = {1, 0.25, 0.5}
+		color = 3
 	}
 	
 	logoImage = Controls.Image{
 		x = 4,
 		y = 4,
-		image = love.graphics.newImage("resources/logo.png")
+		image = love.graphics.newImage("resources/colorTest.png")
 	}
-	horrible2:addControl("logoImage", logoImage)
+	logoImage.mouseClick = function(cSelf, m)
+		love.window.showMessageBox("hi","hello")
+	end
+	horrible2:addControl(logoImage)
 	
-	horrible1:addControl("horrible2", horrible2)
+	horrible1:addControl(horrible2)
 	
-	wSelf:addControl("somethingWindow", somethingWindow)
-	wSelf:addControl("horrible1", horrible1)
+	wSelf:addControl(somethingWindow)
+	wSelf:addControl(horrible1)
 end
 
 return Graph

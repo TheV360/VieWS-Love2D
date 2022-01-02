@@ -67,19 +67,11 @@ end
 function Control:drawRect(mode)
 	local x, y, w, h = self:getPaddingRect(true)
 	
-	-- if self.drawStyle.round then
-	-- 	if mode == "line" then
-	-- 		love.graphics.rectangle("line", 0.5, 0.5, w - 1, h - 1, self.drawStyle.round, self.drawStyle.round, 1)
-	-- 	else
-	-- 		love.graphics.rectangle("fill", 0, 0, w, h, self.drawStyle.round, self.drawStyle.round, 1)
-	-- 	end
-	-- else
-		if mode == "line" then
-			love.graphics.rectangle("line", 0.5, 0.5, w - 1, h - 1)
-		else
-			love.graphics.rectangle("fill", 0, 0, w, h)
-		end
-	-- end
+	if mode == "line" then
+		love.graphics.rectangle("line", 0.5, 0.5, w - 1, h - 1)
+	else
+		love.graphics.rectangle("fill", 0, 0, w, h)
+	end
 end
 
 function Control:clearRect()
@@ -93,5 +85,13 @@ function Control:clearRect()
 	
 	love.graphics.pop()
 end
+
+-- function Control:isOver(checkPoint)
+-- 	if padding then
+		
+-- 	else
+-- 		Control.super.isOver(self, checkPoint)
+-- 	end
+-- end
 
 return Control
