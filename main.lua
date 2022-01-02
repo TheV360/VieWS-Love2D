@@ -62,7 +62,7 @@ function love.load()
 		height = screen.size.y,
 	}
 	
-	require("somePlaceToPutWindowInitCode")
+	require("apps/init")
 	
 	timeSpent = 0
 end

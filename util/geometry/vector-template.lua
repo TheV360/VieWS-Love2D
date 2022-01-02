@@ -67,6 +67,13 @@ local vector⊗f_mt_index = {
 	magnitude = function(self) return math.sqrt(self:squaredMagnitude()) end,
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
+	lerp = function(self, other, progress)
+		return self * progress + other * (-progress + 1)
+	end,
+	invLerp = function(self, other, progress)
+		return (-self + progress) / (other - self)
+	end,
+	
 	project = function(self, other)
 		return (other:dot(self) / other:magnitude()) * other
 	end,

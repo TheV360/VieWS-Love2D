@@ -2,6 +2,8 @@ local Slider = Controls.Control:extend()
 
 -- TODO: put through paces
 
+-- print('min', 'max', 'direction', 'vert?', 'inv?')
+
 function Slider:new(o)
 	Slider.super.new(self, o)
 	
@@ -23,12 +25,11 @@ function Slider:new(o)
 	self.vertical = self.direction == 'topToBottom' or self.direction == 'bottomToTop'
 	self.inverted = self.direction == 'rightToLeft' or self.direction == 'bottomToTop'
 	
-	-- local minLen = (self.range.max - self.range.min) / self.range.step
+	-- print(self.range.min, self.range.max, self.direction, self.vertical, self.inverted)
+	
 	if self.vertical then
 		self.size.x = 7
-		-- self.size.y = math.max(self.size.y, minLen)
 	else
-		-- self.size.x = math.max(self.size.x, minLen)
 		self.size.y = 7
 	end
 	
@@ -42,9 +43,6 @@ end
 
 function Slider:draw()
 	self:clearRect()
-	
-	-- love.graphics.setColor(VieWS.PALETTE[2])
-	-- self:drawRect('line')
 	
 	love.graphics.setColor(VieWS.PALETTE[1])
 	local sigAxis = (self.vertical and self.size.y or self.size.x) - 1

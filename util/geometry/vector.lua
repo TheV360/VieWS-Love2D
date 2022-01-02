@@ -60,6 +60,13 @@ local vector2f_mt_index = {
 	magnitude = function(self) return math.sqrt(self:squaredMagnitude()) end,
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
+	lerp = function(self, other, progress)
+		return self * progress + other * (-progress + 1)
+	end,
+	invLerp = function(self, other, progress)
+		return (-self + progress) / (other - self)
+	end,
+	
 	project = function(self, other)
 		return (other:dot(self) / other:magnitude()) * other
 	end,
@@ -161,6 +168,13 @@ local vector2i_mt_index = {
 	squaredMagnitude = function(self) return (self.x * self.x) + (self.y * self.y) end,
 	magnitude = function(self) return math.sqrt(self:squaredMagnitude()) end,
 	normalize = function(self) return self:divs(self:magnitude()) end,
+	
+	lerp = function(self, other, progress)
+		return self * progress + other * (-progress + 1)
+	end,
+	invLerp = function(self, other, progress)
+		return (-self + progress) / (other - self)
+	end,
 	
 	project = function(self, other)
 		return (other:dot(self) / other:magnitude()) * other
@@ -276,6 +290,13 @@ local vector3f_mt_index = {
 	magnitude = function(self) return math.sqrt(self:squaredMagnitude()) end,
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
+	lerp = function(self, other, progress)
+		return self * progress + other * (-progress + 1)
+	end,
+	invLerp = function(self, other, progress)
+		return (-self + progress) / (other - self)
+	end,
+	
 	project = function(self, other)
 		return (other:dot(self) / other:magnitude()) * other
 	end,
@@ -377,6 +398,13 @@ local vector3i_mt_index = {
 	magnitude = function(self) return math.sqrt(self:squaredMagnitude()) end,
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
+	lerp = function(self, other, progress)
+		return self * progress + other * (-progress + 1)
+	end,
+	invLerp = function(self, other, progress)
+		return (-self + progress) / (other - self)
+	end,
+	
 	project = function(self, other)
 		return (other:dot(self) / other:magnitude()) * other
 	end,
@@ -476,6 +504,13 @@ local vector4f_mt_index = {
 	magnitude = function(self) return math.sqrt(self:squaredMagnitude()) end,
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
+	lerp = function(self, other, progress)
+		return self * progress + other * (-progress + 1)
+	end,
+	invLerp = function(self, other, progress)
+		return (-self + progress) / (other - self)
+	end,
+	
 	project = function(self, other)
 		return (other:dot(self) / other:magnitude()) * other
 	end,
@@ -572,6 +607,13 @@ local vector4i_mt_index = {
 	squaredMagnitude = function(self) return (self.x * self.x) + (self.y * self.y) + (self.z * self.z) + (self.w * self.w) end,
 	magnitude = function(self) return math.sqrt(self:squaredMagnitude()) end,
 	normalize = function(self) return self:divs(self:magnitude()) end,
+	
+	lerp = function(self, other, progress)
+		return self * progress + other * (-progress + 1)
+	end,
+	invLerp = function(self, other, progress)
+		return (-self + progress) / (other - self)
+	end,
 	
 	project = function(self, other)
 		return (other:dot(self) / other:magnitude()) * other

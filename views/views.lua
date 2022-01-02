@@ -55,7 +55,7 @@ VieWS.PALETTE_AYU_DARK = {
 	{ 178/255, 148/255, 187/255 },
 	{ 15/255, 20/255, 26/255 },
 }
-VieWS.PALETTE = VieWS.PALETTE_CGA
+VieWS.PALETTE = VieWS.PALETTE_PURPLE
 
 function VieWS:new(o)
 	VieWS.super.new(self, o)
@@ -94,8 +94,8 @@ function VieWS:new(o)
 	self.mouseInput = Mouse(
 		function()
 			local p = screen:pointIn(Vec2(love.mouse.getPosition())):floor()
-			if Util.pointInBox(p, Vec2.zero(), screen.size) then
-				return p
+			if Util.pointInBox(p, Vec2.zero() - 4, screen.size + 4) then
+				return p:clamp(Vec2.zero(), screen.size)
 			else
 				return false
 			end
