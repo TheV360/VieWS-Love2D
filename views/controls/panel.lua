@@ -4,7 +4,7 @@ function Panel:new(o)
 	Panel.super.new(self, o)
 	
 	-- Canvas
-	self.canvas = love.graphics.newCanvas(self.size.width, self.size.height)
+	self.canvas = love.graphics.newCanvas(self.size.x, self.size.y)
 	
 	-- Color
 	self.color = o.color or 4
@@ -48,7 +48,7 @@ function Panel:draw()
 				end
 				
 				love.graphics.translate(c.position.x, c.position.y)
-				love.graphics.setScissor(c.position.x, c.position.y, c.size.width, c.size.height)
+				love.graphics.setScissor(c.position.x, c.position.y, c.size.x, c.size.y)
 				
 				love.graphics.setColor(VieWS.PALETTE[1])
 				c:draw()
@@ -62,7 +62,7 @@ function Panel:draw()
 	end)
 	
 	love.graphics.setColor(VieWS.PALETTE[self.color])
-	love.graphics.rectangle("fill", 0, 0, self.size.width, self.size.height)
+	love.graphics.rectangle("fill", 0, 0, self.size.x, self.size.y)
 	
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(self.canvas, 0, 0)

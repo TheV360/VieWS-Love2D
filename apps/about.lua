@@ -4,8 +4,8 @@ function About.setup()
 	view:addWindow(Controls.Window{
 		title = "About VieWS",
 		
-		-- x = 16 + math.random(0, view.size.width),
-		-- y = 32 + math.random(0, view.size.height),
+		-- x = 16 + math.random(0, view.size.x),
+		-- y = 32 + math.random(0, view.size.y),
 		
 		width = 128,
 		height = 64,

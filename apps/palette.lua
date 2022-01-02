@@ -28,8 +28,8 @@ function Palette.setupApp(wSelf)
 			x = 36,
 			y = i * 16,
 			
-			width = math.ceil(wSelf.size.width / 2),
-			-- height = math.ceil(wSelf.size.height / 2) + 4,
+			width = math.ceil(wSelf.size.x / 2),
+			-- height = math.ceil(wSelf.size.y / 2) + 4,
 			
 			min = 0, max = 1,
 			steps = 5,

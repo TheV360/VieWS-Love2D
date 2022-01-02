@@ -5,8 +5,8 @@ function Image:new(o)
 	self.color = o.color or 4
 	
 	if self.image then
-		if not (o.size and o.size.width  or o.width ) then o.width  = self.image:getWidth () end
-		if not (o.size and o.size.height or o.height) then o.height = self.image:getHeight() end
+		if not (o.size and o.size.x or o.width ) then o.width  = self.image:getWidth () end
+		if not (o.size and o.size.y or o.height) then o.height = self.image:getHeight() end
 	end
 	
 	Image.super.new(self, o)

@@ -94,7 +94,7 @@ end
 function Desktop:setPattern(data)
 	self.pattern = Desktop.MakePatternFromData(data)
 	self.patternData = data
-	self.patternQuad = love.graphics.newQuad(0, 0, self.parent.size.width, self.parent.size.height, self.pattern:getDimensions())
+	self.patternQuad = love.graphics.newQuad(0, 0, self.parent.size.x, self.parent.size.y, self.pattern:getDimensions())
 end
 
 return Desktop

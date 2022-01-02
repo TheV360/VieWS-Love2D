@@ -239,15 +239,15 @@ function VieWS:update(dt)
 				table.insert(self.effects, Effects.OpenWindow{
 					x = w.position.x - w.border.left,
 					y = w.position.y - w.border.top,
-					width = w.size.width + w.border.left + w.border.right,
-					height = w.size.height + w.border.top + w.border.bottom
+					width = w.size.x + w.border.left + w.border.right,
+					height = w.size.y + w.border.top + w.border.bottom
 				})
 			else
 				table.insert(self.effects, Effects.OpenWindow{
 					x = w.position.x,
 					y = w.position.y,
-					width = w.size.width,
-					height = w.size.height
+					width = w.size.x,
+					height = w.size.y
 				})
 			end
 			w.status = "normal"
@@ -256,15 +256,15 @@ function VieWS:update(dt)
 				table.insert(self.effects, Effects.CloseWindow{
 					x = w.position.x - w.border.left,
 					y = w.position.y - w.border.top,
-					width = w.size.width + w.border.left + w.border.right,
-					height = w.size.height + w.border.top + w.border.bottom
+					width = w.size.x + w.border.left + w.border.right,
+					height = w.size.y + w.border.top + w.border.bottom
 				})
 			else
 				table.insert(self.effects, Effects.CloseWindow{
 					x = w.position.x,
 					y = w.position.y,
-					width = w.size.width,
-					height = w.size.height
+					width = w.size.x,
+					height = w.size.y
 				})
 			end
 			table.remove(self.windows, i)
@@ -279,15 +279,15 @@ function VieWS:update(dt)
 					table.insert(self.effects, Effects.OpenWindow{
 						x = w.position.x - w.border.left,
 						y = w.position.y - w.border.top,
-						width = w.size.width + w.border.left + w.border.right,
-						height = w.size.height + w.border.top + w.border.bottom
+						width = w.size.x + w.border.left + w.border.right,
+						height = w.size.y + w.border.top + w.border.bottom
 					})
 				else
 					table.insert(self.effects, Effects.OpenWindow{
 						x = w.position.x,
 						y = w.position.y,
-						width = w.size.width,
-						height = w.size.height
+						width = w.size.x,
+						height = w.size.y
 					})
 				end
 				w.status = "normal"
@@ -296,15 +296,15 @@ function VieWS:update(dt)
 					table.insert(self.effects, Effects.CloseWindow{
 						x = w.position.x - w.border.left,
 						y = w.position.y - w.border.top,
-						width = w.size.width + w.border.left + w.border.right,
-						height = w.size.height + w.border.top + w.border.bottom
+						width = w.size.x + w.border.left + w.border.right,
+						height = w.size.y + w.border.top + w.border.bottom
 					})
 				else
 					table.insert(self.effects, Effects.CloseWindow{
 						x = w.position.x,
 						y = w.position.y,
-						width = w.size.width,
-						height = w.size.height
+						width = w.size.x,
+						height = w.size.y
 					})
 				end
 				self.windows[i] = nil
@@ -325,9 +325,9 @@ function VieWS:draw()
 		-- love.graphics.origin()
 		love.graphics.translate(w.position.x, w.position.y)
 		
-		-- love.graphics.translate(w.size.width / 2, 0)
+		-- love.graphics.translate(w.size.x / 2, 0)
 		-- love.graphics.rotate(math.rad(w.velocity))
-		-- love.graphics.translate(-w.size.width / 2, 0)
+		-- love.graphics.translate(-w.size.x / 2, 0)
 		
 		love.graphics.translate(-w.position.x, -w.position.y)
 		w:drawShadow()

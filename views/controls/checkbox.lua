@@ -5,8 +5,8 @@ function CheckBox:new(o)
 	self.color = o.color or 1
 	self.value = o.value or false
 	
-	if not (o.size and o.size.width  or o.width ) then o.width  = view.font:getWidth (o.text) + 4 + 8 end
-	if not (o.size and o.size.height or o.height) then o.height = view.font:getHeight(o.text) + 4 end
+	if not (o.size and o.size.x or o.width ) then o.width  = view.font:getWidth (o.text) + 4 + 8 end
+	if not (o.size and o.size.y or o.height) then o.height = view.font:getHeight(o.text) + 4 end
 	
 	CheckBox.super.new(self, o)
 end
@@ -24,7 +24,7 @@ function CheckBox:draw()
 	
 	love.graphics.print(
 		(self.value and '■' or '□') .. ' ' .. self.text,
-		2, math.ceil((self.size.height - view.font:getHeight()) / 2)
+		2, math.ceil((self.size.y - view.font:getHeight()) / 2)
 	)
 end
 

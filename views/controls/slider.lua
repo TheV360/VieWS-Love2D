@@ -25,11 +25,11 @@ function Slider:new(o)
 	
 	-- local minLen = (self.range.max - self.range.min) / self.range.step
 	if self.vertical then
-		self.size.width = 7
-		-- self.size.height = math.max(self.size.height, minLen)
+		self.size.x = 7
+		-- self.size.y = math.max(self.size.y, minLen)
 	else
-		-- self.size.width = math.max(self.size.width, minLen)
-		self.size.height = 7
+		-- self.size.x = math.max(self.size.x, minLen)
+		self.size.y = 7
 	end
 	
 	self.progress = o.progress or false
@@ -47,7 +47,7 @@ function Slider:draw()
 	-- self:drawRect('line')
 	
 	love.graphics.setColor(VieWS.PALETTE[1])
-	local sigAxis = (self.vertical and self.size.height or self.size.width) - 1
+	local sigAxis = (self.vertical and self.size.y or self.size.x) - 1
 	local dispVal = self.displayValue
 	local val = self.value
 	
@@ -64,14 +64,14 @@ function Slider:draw()
 	
 	-- yes, minLen == intSteps
 	local intSteps = (self.range.max - self.range.min) / self.range.step
-	if intSteps > math.min(64, bit.rshift(self.size.width, 2)) then intSteps = 1 end
+	if intSteps > math.min(64, bit.rshift(self.size.x, 2)) then intSteps = 1 end
 	
 	local t = self.hover and "◆" or "◇"
 	if self.vertical then
 		if self.progress then
 			love.graphics.setColor(VieWS.PALETTE[2])
 			if self.inverted then
-				love.graphics.rectangle("fill", 2, dispVal + 2, 3, self.size.height - dispVal - 3)
+				love.graphics.rectangle("fill", 2, dispVal + 2, 3, self.size.y - dispVal - 3)
 			else
 				love.graphics.rectangle("fill", 2, 0, 3, dispVal - 1)
 			end
@@ -79,7 +79,7 @@ function Slider:draw()
 		end
 		
 		for i = 0, intSteps do -- not 1->i because inclusive
-			love.graphics.points(self.size.width / 2, Util.round(i / intSteps * sigAxis) + 0.5)
+			love.graphics.points(self.size.x / 2, Util.round(i / intSteps * sigAxis) + 0.5)
 		end
 		
 		love.graphics.print(t, 1, dispVal - 3)
@@ -87,7 +87,7 @@ function Slider:draw()
 		if self.progress then
 			love.graphics.setColor(VieWS.PALETTE[2])
 			if self.inverted then
-				love.graphics.rectangle("fill", dispVal + 2, 2, self.size.width - dispVal - 3, 3)
+				love.graphics.rectangle("fill", dispVal + 2, 2, self.size.x - dispVal - 3, 3)
 			else
 				love.graphics.rectangle("fill", 0, 2, dispVal - 1, 3)
 			end
@@ -95,7 +95,7 @@ function Slider:draw()
 		end
 		
 		for i = 0, intSteps do -- not 1->i because inclusive
-			love.graphics.points(Util.round(i / intSteps * sigAxis) + 0.5, self.size.height / 2)
+			love.graphics.points(Util.round(i / intSteps * sigAxis) + 0.5, self.size.y / 2)
 		end
 		love.graphics.print(t, dispVal - 2, 0)
 	end
@@ -110,7 +110,7 @@ function Slider:mouseDown(m)
 	local hY = m.y - self.position.y - self.parent.position.y
 	
 	local mSig = self.vertical and hY or hX
-	local sigAxis = (self.vertical and self.size.height or self.size.width) - 1
+	local sigAxis = (self.vertical and self.size.y or self.size.x) - 1
 	
 	local mProgress = Util.invLerp(0, sigAxis, mSig)
 	if self.inverted then mProgress = 1 - mProgress end

@@ -21,10 +21,10 @@ function OpenWindow:draw()
 	love.graphics.setColor(VieWS.PALETTE[color], 1)
 	love.graphics.rectangle(
 		"line",
-		Util.lerp(self.position.x - 1, self.position.x - self.size.width  / 8, p),
-		Util.lerp(self.position.y - 1, self.position.y - self.size.height / 8, p),
-		Util.lerp(self.size.width  + 2, self.size.width  * (5/4), p),
-		Util.lerp(self.size.height + 2, self.size.height * (5/4), p)
+		Util.lerp(self.position.x - 1, self.position.x - self.size.x / 8, p),
+		Util.lerp(self.position.y - 1, self.position.y - self.size.y / 8, p),
+		Util.lerp(self.size.x + 2, self.size.x * (5/4), p),
+		Util.lerp(self.size.y + 2, self.size.y * (5/4), p)
 	)
 end
 

@@ -8,8 +8,8 @@ function VieWSRect:new(o)
 		o.y or (o.position and o.position.y) or 0
 	)
 	self.size = Size(
-		o.width  or (o.size and o.size.width ) or 1,
-		o.height or (o.size and o.size.height) or 1
+		o.width  or (o.size and o.size.x) or 1,
+		o.height or (o.size and o.size.y) or 1
 	)
 end
 
@@ -21,13 +21,13 @@ function VieWSRect:draw()
 		"fill",
 		self.position.x,
 		self.position.y,
-		self.size.width,
-		self.size.height
+		self.size.x,
+		self.size.y
 	)
 end
 
 function VieWSRect:isOver(checkPoint)
-	return Util.pointInBox(checkPoint, self.position, Vec2(self.size.width, self.size.height))
+	return Util.pointInBox(checkPoint, self.position, Vec2(self.size.x, self.size.y))
 end
 
 return VieWSRect

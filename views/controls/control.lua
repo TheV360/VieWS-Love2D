@@ -38,8 +38,8 @@ function Control:draw()
 		"fill",
 		0,
 		0,
-		self.size.width,
-		self.size.height
+		self.size.x,
+		self.size.y
 	)
 end
 
@@ -50,10 +50,10 @@ function Control:getPaddingRect(round)
 		local r = SidesAroundRect(self.padding, self)
 		
 		x, y = r.position.x, r.position.y
-		w, h = r.size.width, r.size.height
+		w, h = r.size.x, r.size.y
 	else
 		x, y = self.position.x, self.position.y
-		w, h = self.size.width, self.size.height
+		w, h = self.size.x, self.size.y
 	end
 	
 	if round then

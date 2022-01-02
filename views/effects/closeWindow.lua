@@ -16,10 +16,10 @@ function CloseWindow:draw()
 	love.graphics.setColor(VieWS.PALETTE[1])
 	love.graphics.rectangle(
 		"line",
-		Util.lerp(self.position.x, self.position.x + self.size.width  / 2, p),
-		Util.lerp(self.position.y, self.position.y + self.size.height / 2, p),
-		Util.lerp(self.size.width , 0, p),
-		Util.lerp(self.size.height, 0, p)
+		Util.lerp(self.position.x, self.position.x + self.size.x / 2, p),
+		Util.lerp(self.position.y, self.position.y + self.size.y / 2, p),
+		Util.lerp(self.size.x, 0, p),
+		Util.lerp(self.size.y, 0, p)
 	)
 end
 

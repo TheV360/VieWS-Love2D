@@ -1,13 +1,13 @@
 function Point(x, y)
-	return {x = x or 0, y = y or 0}
+	return Vec2(x or 0, y or 0)
 end
 
-function Size(width, height)
-	return {width = width or 1, height = height or 1}
+function Size(x, y)
+	return Vec2(x or 1, y or 1)
 end
 
-function Rect(x, y, width, height)
-	return {position = Point(x, y), size = Size(width, height)}
+function Rect(x, y, x, y)
+	return {position = Point(x, y), size = Size(x, y)}
 end
 
 function Sides(top, right, bottom, left)
@@ -48,15 +48,15 @@ end
 
 function AlignRect(r, h, v)
 	if     h == "center" then
-		r.position.x = r.position.x - math.floor(r.size.width / 2)
+		r.position.x = r.position.x - math.floor(r.size.x / 2)
 	elseif h == "right"  then
-		r.position.x = r.position.x - r.size.width - 1
+		r.position.x = r.position.x - r.size.x - 1
 	end
 	
 	if     v == "center" then
-		r.position.y = r.position.y - math.floor(r.size.height / 2)
+		r.position.y = r.position.y - math.floor(r.size.y / 2)
 	elseif v == "bottom" then
-		r.position.y = r.position.y - r.size.height - 1
+		r.position.y = r.position.y - r.size.y - 1
 	end
 	
 	return r
@@ -66,7 +66,7 @@ function SidesAroundRect(s, r)
 	return Rect(
 		r.position.x - s.left,
 		r.position.y - s.top,
-		r.size.width + s.left + s.right,
-		r.size.height + s.top + s.bottom
+		r.size.x + s.left + s.right,
+		r.size.y + s.top + s.bottom
 	)
 end

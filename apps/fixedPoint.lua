@@ -21,7 +21,7 @@ function FixedPoint.setupApp(wSelf)
 	
 	local numberLabel = Controls.Label{
 		x = 4, y = 4,
-		width = wSelf.size.width - 8,
+		width = wSelf.size.x - 8,
 		text = "0",
 	}
 	local displayNumber
@@ -31,8 +31,8 @@ function FixedPoint.setupApp(wSelf)
 	
 	for i = 1, FixedPoint.BITS do
 		local c = Controls.Button{
-			x = wSelf.size.width - i * 12,
-			y = wSelf.size.height - fontHeight - 6,
+			x = wSelf.size.x - i * 12,
+			y = wSelf.size.y - fontHeight - 6,
 			
 			text = "0",
 		}
@@ -48,9 +48,9 @@ function FixedPoint.setupApp(wSelf)
 	
 	local realSlider = Controls.Slider{
 		x = 2,
-		y = wSelf.size.height - fontHeight - 16,
+		y = wSelf.size.y - fontHeight - 16,
 		
-		width = wSelf.size.width - 4,
+		width = wSelf.size.x - 4,
 		
 		min = 0, max = FixedPoint.BITS,
 		step = 1,

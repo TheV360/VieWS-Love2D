@@ -65,10 +65,10 @@ function Window:isOver(checkPoint)
 		return Util.pointInBox(
 			checkPoint,
 			Vec2(self.position.x, self.position.y) - Vec2(self.border.left, self.border.top),
-			Vec2(self.size.width, self.size.height) + Vec2(self.border.left, self.border.top) + Vec2(self.border.right, self.border.bottom)
+			Vec2(self.size.x, self.size.y) + Vec2(self.border.left, self.border.top) + Vec2(self.border.right, self.border.bottom)
 		)
 	else
-		return Util.pointInBox(checkPoint, self.position, Vec2(self.size.width, self.size.height))
+		return Util.pointInBox(checkPoint, self.position, Vec2(self.size.x, self.size.y))
 	end
 end
 
@@ -98,7 +98,7 @@ function Window:drawBorder()
 			"fill",
 			self.position.x - self.border.left,
 			self.position.y - self.border.top,
-			self.size.width + self.border.left + self.border.right,
+			self.size.x + self.border.left + self.border.right,
 			self.border.top
 		)
 		
@@ -108,24 +108,24 @@ function Window:drawBorder()
 			self.position.x - self.border.left,
 			self.position.y,
 			self.border.left,
-			self.size.height
+			self.size.y
 		)
 		
 		-- Right
 		love.graphics.rectangle(
 			"fill",
-			self.position.x + self.size.width,
+			self.position.x + self.size.x,
 			self.position.y,
 			self.border.right,
-			self.size.height
+			self.size.y
 		)
 		
 		-- Bottom
 		love.graphics.rectangle(
 			"fill",
 			self.position.x - self.border.left,
-			self.position.y + self.size.height,
-			self.size.width + self.border.left + self.border.right,
+			self.position.y + self.size.y,
+			self.size.x + self.border.left + self.border.right,
 			self.border.bottom
 		)
 		
@@ -138,7 +138,7 @@ function Window:drawBorder()
 			-- Button
 			love.graphics.circle(
 				"fill",
-				self.position.x + self.size.width - Window.ButtonRadius,
+				self.position.x + self.size.x - Window.ButtonRadius,
 				self.position.y - Window.ButtonRadius - 3,
 				Window.ButtonRadius
 			)
@@ -153,15 +153,15 @@ function Window:drawShadow()
 		love.graphics.rectangle("line",
 			self.position.x - self.border.left - Window.ShadowDistance + 0.5,
 			self.position.y - self.border.top - Window.ShadowDistance + 0.5,
-			self.size.width + self.border.left + self.border.right + 2 * Window.ShadowDistance - 1,
-			self.size.height + self.border.top + self.border.bottom + 2 * Window.ShadowDistance - 1
+			self.size.x + self.border.left + self.border.right + 2 * Window.ShadowDistance - 1,
+			self.size.y + self.border.top + self.border.bottom + 2 * Window.ShadowDistance - 1
 		)
 	else
 		love.graphics.rectangle("line",
 			self.position.x - Window.ShadowDistance + 0.5,
 			self.position.y - Window.ShadowDistance + 0.5,
-			self.size.width + 2 * Window.ShadowDistance - 1,
-			self.size.height + 2 * Window.ShadowDistance - 1
+			self.size.x + 2 * Window.ShadowDistance - 1,
+			self.size.y + 2 * Window.ShadowDistance - 1
 		)
 	end
 	
@@ -170,36 +170,36 @@ function Window:drawShadow()
 		-- Right
 		love.graphics.rectangle(
 			"fill",
-			self.position.x + self.size.width + self.border.right,
+			self.position.x + self.size.x + self.border.right,
 			self.position.y - self.border.top + Window.ShadowDistance,
 			Window.ShadowDistance,
-			self.size.height + self.border.top + self.border.bottom - Window.ShadowDistance
+			self.size.y + self.border.top + self.border.bottom - Window.ShadowDistance
 		)
 		
 		-- Bottom
 		love.graphics.rectangle(
 			"fill",
 			self.position.x - self.border.left + Window.ShadowDistance,
-			self.position.y + self.size.height + self.border.bottom,
-			self.size.width + self.border.left + self.border.right,-- - Window.ShadowDistance,
+			self.position.y + self.size.y + self.border.bottom,
+			self.size.x + self.border.left + self.border.right,-- - Window.ShadowDistance,
 			Window.ShadowDistance
 		)
 	else
 		-- Right
 		love.graphics.rectangle(
 			"fill",
-			self.position.x + self.size.width,
+			self.position.x + self.size.x,
 			self.position.y + Window.ShadowDistance,
 			Window.ShadowDistance,
-			self.size.height
+			self.size.y
 		)
 		
 		-- Bottom
 		love.graphics.rectangle(
 			"fill",
 			self.position.x + Window.ShadowDistance,
-			self.position.y + self.size.height,
-			self.size.width - Window.ShadowDistance,
+			self.position.y + self.size.y,
+			self.size.x - Window.ShadowDistance,
 			Window.ShadowDistance
 		)
 	end
@@ -215,7 +215,7 @@ function Window:mouse(m)
 	if self.borderless or m.y - self.position.y >= 0 then
 		Window.super.mouse(self, m)
 	else
-		if m.x - self.position.x >= self.size.width - Window.ButtonRadius * 2 - 1 then
+		if m.x - self.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
 			view:switchCursor("hand")
 		else
 			if m.drag.window == self then
@@ -231,7 +231,7 @@ function Window:mouseClick(m)
 	if self.borderless or m.y - self.position.y >= 0 then
 		Window.super.mouseClick(self, m)
 	else
-		if m.x - self.position.x >= self.size.width - Window.ButtonRadius * 2 - 1 then
+		if m.x - self.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
 			self:close()
 		else
 			m.drag.window = self
