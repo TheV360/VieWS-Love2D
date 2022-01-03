@@ -52,7 +52,7 @@ end
 function PickerControl:mouse(m)
 	view:switchCursor("hand")
 	
-	local hackX = m.x - self.position.x - self.parent.position.x
+	local hackX = m.position.x - self.position.x - self.parent.position.x
 	
 	-- redraw if mouse moved to new item
 	local hoverIndex = math.floor(hackX / self.celSize.x) + 1
@@ -68,7 +68,7 @@ function PickerControl:mouseDown(m)
 	self.redraw = true
 end
 function PickerControl:mouseEnter(m)
-	local hackX = m.x - self.position.x - self.parent.position.x
+	local hackX = m.position.x - self.position.x - self.parent.position.x
 	local hoverIndex = math.floor(hackX / self.celSize.x) + 1
 	self.hoverIndex = Util.clamp(1, hoverIndex, #self.elements)
 end

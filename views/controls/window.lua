@@ -43,6 +43,8 @@ function Window:new(o)
 		else
 			self.border = Sides(Window.TitleBarWidth, Window.SideWidth, Window.SideWidth)
 		end
+	else
+		self.border = Sides(0)
 	end
 	
 	self.style = {
@@ -57,25 +59,23 @@ function Window:new(o)
 	
 	self.status = "open"
 	
-	-- self.velocity = 0
+	self.velocity = Vec2(0, 0)
 end
 
 function Window:isOver(checkPoint)
 	if self.border then
 		return Util.pointInBox(
 			checkPoint,
-			Vec2(self.position.x, self.position.y) - Vec2(self.border.left, self.border.top),
-			Vec2(self.size.x, self.size.y) + Vec2(self.border.left, self.border.top) + Vec2(self.border.right, self.border.bottom)
+			self.position - Vec2(self.border.left, self.border.top),
+			self.size + Vec2(self.border.left, self.border.top) + Vec2(self.border.right, self.border.bottom)
 		)
-	else
-		return Util.pointInBox(checkPoint, self.position, Vec2(self.size.x, self.size.y))
 	end
 end
 
 function Window:update(dt)
 	Window.super.update(self)
 	
-	--self.velocity = self.velocity * 0.9
+	self.velocity = self.velocity * 0.9
 end
 
 function Window:draw()
@@ -90,10 +90,10 @@ function Window:draw()
 end
 
 function Window:drawBorder()
-	if self.border then
-		love.graphics.setColor(VieWS.PALETTE[self.style.borderBackground])
-		
-		-- Top
+	love.graphics.setColor(VieWS.PALETTE[self.style.borderBackground])
+	
+	-- Top
+	if self.border.top > 0 then
 		love.graphics.rectangle(
 			"fill",
 			self.position.x - self.border.left,
@@ -101,8 +101,10 @@ function Window:drawBorder()
 			self.size.x + self.border.left + self.border.right,
 			self.border.top
 		)
-		
-		-- Left
+	end
+	
+	-- Left
+	if self.border.left > 0 then
 		love.graphics.rectangle(
 			"fill",
 			self.position.x - self.border.left,
@@ -110,8 +112,10 @@ function Window:drawBorder()
 			self.border.left,
 			self.size.y
 		)
-		
-		-- Right
+	end
+	
+	-- Right
+	if self.border.right > 0 then
 		love.graphics.rectangle(
 			"fill",
 			self.position.x + self.size.x,
@@ -119,8 +123,10 @@ function Window:drawBorder()
 			self.border.right,
 			self.size.y
 		)
-		
-		-- Bottom
+	end
+	
+	-- Bottom
+	if self.border.bottom > 0 then
 		love.graphics.rectangle(
 			"fill",
 			self.position.x - self.border.left,
@@ -128,82 +134,34 @@ function Window:drawBorder()
 			self.size.x + self.border.left + self.border.right,
 			self.border.bottom
 		)
+	end
+	
+	-- Decorations
+	if self.border.top >= Window.TitleBarWidth then
+		love.graphics.setColor(VieWS.PALETTE[self.style.borderForeground])
 		
-		if self.border.top >= Window.TitleBarWidth then
-			love.graphics.setColor(VieWS.PALETTE[self.style.borderForeground])
-			
-			-- Title
-			love.graphics.print(self.title, self.position.x, self.position.y - self.border.top + 1)
-			
-			-- Button
-			love.graphics.circle(
-				"fill",
-				self.position.x + self.size.x - Window.ButtonRadius,
-				self.position.y - Window.ButtonRadius - 3,
-				Window.ButtonRadius
-			)
-		end
+		-- Title
+		love.graphics.print(self.title, self.position.x, self.position.y - self.border.top + 1)
+		
+		-- Button
+		love.graphics.circle(
+			"fill",
+			self.position.x + self.size.x - Window.ButtonRadius,
+			self.position.y - Window.ButtonRadius - 3,
+			Window.ButtonRadius
+		)
 	end
 end
 
 function Window:drawShadow()
 	love.graphics.setColor(VieWS.PALETTE[self.style.shadow])
 	
-	if self.border then
-		love.graphics.rectangle("line",
-			self.position.x - self.border.left - Window.ShadowDistance + 0.5,
-			self.position.y - self.border.top - Window.ShadowDistance + 0.5,
-			self.size.x + self.border.left + self.border.right + 2 * Window.ShadowDistance - 1,
-			self.size.y + self.border.top + self.border.bottom + 2 * Window.ShadowDistance - 1
-		)
-	else
-		love.graphics.rectangle("line",
-			self.position.x - Window.ShadowDistance + 0.5,
-			self.position.y - Window.ShadowDistance + 0.5,
-			self.size.x + 2 * Window.ShadowDistance - 1,
-			self.size.y + 2 * Window.ShadowDistance - 1
-		)
-	end
-	
-	--[[
-	if self.border then
-		-- Right
-		love.graphics.rectangle(
-			"fill",
-			self.position.x + self.size.x + self.border.right,
-			self.position.y - self.border.top + Window.ShadowDistance,
-			Window.ShadowDistance,
-			self.size.y + self.border.top + self.border.bottom - Window.ShadowDistance
-		)
-		
-		-- Bottom
-		love.graphics.rectangle(
-			"fill",
-			self.position.x - self.border.left + Window.ShadowDistance,
-			self.position.y + self.size.y + self.border.bottom,
-			self.size.x + self.border.left + self.border.right,-- - Window.ShadowDistance,
-			Window.ShadowDistance
-		)
-	else
-		-- Right
-		love.graphics.rectangle(
-			"fill",
-			self.position.x + self.size.x,
-			self.position.y + Window.ShadowDistance,
-			Window.ShadowDistance,
-			self.size.y
-		)
-		
-		-- Bottom
-		love.graphics.rectangle(
-			"fill",
-			self.position.x + Window.ShadowDistance,
-			self.position.y + self.size.y,
-			self.size.x - Window.ShadowDistance,
-			Window.ShadowDistance
-		)
-	end
-	]]
+	love.graphics.rectangle("line",
+		self.position.x - self.border.left - Window.ShadowDistance + 0.5,
+		self.position.y - self.border.top - Window.ShadowDistance + 0.5,
+		self.size.x + self.border.left + self.border.right + 2 * Window.ShadowDistance - 1,
+		self.size.y + self.border.top + self.border.bottom + 2 * Window.ShadowDistance - 1
+	)
 end
 
 function Window:close()
@@ -212,10 +170,10 @@ end
 
 
 function Window:mouse(m)
-	if self.borderless or m.y - self.position.y >= 0 then
+	if self.borderless or m.position.y - self.position.y >= 0 then
 		Window.super.mouse(self, m)
 	else
-		if m.x - self.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
+		if m.position.x - self.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
 			view:switchCursor("hand")
 		else
 			if m.drag.window == self then
@@ -228,15 +186,15 @@ function Window:mouse(m)
 end
 
 function Window:mouseClick(m)
-	if self.borderless or m.y - self.position.y >= 0 then
+	if self.borderless or m.position.y - self.position.y >= 0 then
 		Window.super.mouseClick(self, m)
 	else
-		if m.x - self.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
+		if m.position.x - self.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
 			self:close()
 		else
 			m.drag.window = self
-			m.drag.x = m.x - self.position.x
-			m.drag.y = m.y - self.position.y
+			m.drag.x = m.position.x - self.position.x
+			m.drag.y = m.position.y - self.position.y
 		end
 	end
 end

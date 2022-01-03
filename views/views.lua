@@ -32,10 +32,10 @@ VieWS = VieWSRect:extend()
 VieWS.WindowSort = function(wa, wb) return wa.z < wb.z end
 
 VieWS.PALETTE_GRAY = {
-	{ 0, 0, 0 },
+	{   0,   0,   0 },
 	{ 1/3, 1/3, 1/3 },
 	{ 2/3, 2/3, 2/3 },
-	{ 1, 1, 1 },
+	{   1,   1,   1 },
 }
 VieWS.PALETTE_CGA = {
 	{ 0, 0, 0 },
@@ -44,25 +44,31 @@ VieWS.PALETTE_CGA = {
 	{ 1, 1, 1 },
 }
 VieWS.PALETTE_PURPLE = {
-	{ 0, 0, 0 },
-	{ 3/5, 9/20, 13/15 },
-	{ 9/10, 17/20, 1 },
-	{ 1, 1, 1 },
+	{     0,      0,      0 },
+	{ 3/  5,  9/ 20, 13/ 15 },
+	{ 9/ 10, 17/ 20,      1 },
+	{     1,      1,      1 },
 }
 VieWS.PALETTE_AYU_DARK = {
-	{ 3/4, 3/4, 3/4 },
-	{ 1, 180/255, 84/255 },
+	{   3/  4,   3/  4,   3/  4 },
+	{       1, 180/255,  84/255 },
 	{ 178/255, 148/255, 187/255 },
-	{ 15/255, 20/255, 26/255 },
+	{  15/255,  20/255,  26/255 },
 }
-VieWS.PALETTE = VieWS.PALETTE_PURPLE
+VieWS.PALETTE_DIM = {
+	{   0,   0,   0 },
+	{   0, 0.5, 0.5 },
+	{ 0.5,   0, 0.5 },
+	{ 0.5, 0.5, 0.5 },
+}
+VieWS.PALETTE = VieWS.PALETTE_CGA
 
 function VieWS:new(o)
 	VieWS.super.new(self, o)
 	
 	-- The mouse
 	self.mouse = {
-		x = 0, y = 0,
+		position = Vec2(0, 0),
 		
 		drag = {
 			index = nil,
@@ -70,16 +76,14 @@ function VieWS:new(o)
 			-- Offset while dragging
 			x = 0,
 			y = 0
-		}
+		},
+		window = nil,
 	}
 	
 	-- Desktop
 	self.desktop = Desktop{
 		parent = self
 	}
-	
-	-- Popups (right click stuff, menu bar stuff.)
-	self.popups = {}
 	
 	-- Window stuff
 	self.windows = {}
@@ -169,8 +173,7 @@ function VieWS:update(dt)
 	end
 	
 	self.mouseInput:update()
-	self.mouse.x = self.mouseInput.position.x
-	self.mouse.y = self.mouseInput.position.y
+	self.mouse.position = self.mouseInput.position
 	
 	if self.mouse.drag.window then
 		if not self.mouseInput.input.down[1] then
@@ -180,8 +183,8 @@ function VieWS:update(dt)
 		elseif self.mouse.drag.window then
 			-- self.mouse.drag.window.velocity = Util.degreeDistance(self.mouse.drag.window.velocity, (self.mouse.drag.window.position.x - (self.mouse.x - self.mouse.drag.x)) * dt * 16)
 			
-			self.mouse.drag.window.position.x = self.mouse.x - self.mouse.drag.x
-			self.mouse.drag.window.position.y = math.max(24, self.mouse.y - self.mouse.drag.y)
+			self.mouse.drag.window.position.x = self.mouse.position.x - self.mouse.drag.x
+			self.mouse.drag.window.position.y = math.max(24, self.mouse.position.y - self.mouse.drag.y)
 			
 			self.mouseInput:setCursor("move")
 		end
@@ -198,7 +201,7 @@ function VieWS:update(dt)
 			w.z = i
 		end
 		
-		w.hover = w:isOver(Point(self.mouse.x, self.mouse.y))
+		w.hover = w:isOver(self.mouse.position)
 		
 		if w.hover then
 			self.mouse.windowTmp = w -- gets topmost window
@@ -344,7 +347,7 @@ function VieWS:draw()
 		self.effects[i]:draw()
 	end
 	
-	love.graphics.setColor(VieWS.PALETTE[1])
+	love.graphics.setColor(0, 0, 0)
 	love.graphics.draw(self.corner, 0, 0, 0)
 	love.graphics.draw(self.corner, screen.size.x, 0, math.rad(90))
 	love.graphics.draw(self.corner, 0, screen.size.y, math.rad(270))

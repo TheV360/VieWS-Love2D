@@ -33,7 +33,7 @@ function Palette.setupApp(wSelf)
 			
 			min = 0, max = 1,
 			steps = 5,
-			value = 0,
+			value = VieWS.PALETTE[selectedColor][i],
 			direction = 'leftToRight',
 			progress = true,
 			

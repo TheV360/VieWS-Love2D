@@ -74,7 +74,7 @@ function Panel:mouse(m)
 	for i, c in pairs(self.controls) do
 		local x, y, w, h = c:getPaddingRect(true)
 		
-		if c:isOver(Point(m.x - self.position.x, m.y - self.position.y)) then
+		if c:isOver(m.position - self.position) then
 			if not c.hover then
 				c:mouseEnter(m)
 				
@@ -98,7 +98,7 @@ end
 
 function Panel:mouseClick(m)
 	for i, c in pairs(self.controls) do
-		if c:isOver(Point(m.x - self.position.x, m.y - self.position.y)) then
+		if c:isOver(m.position - self.position) then
 			c:mouseClick(m)
 		end
 	end
@@ -106,14 +106,14 @@ end
 
 function Panel:mouseDown(m)
 	for i, c in pairs(self.controls) do
-		if c:isOver(Point(m.x - self.position.x, m.y - self.position.y)) then
+		if c:isOver(m.position - self.position) then
 			c:mouseDown(m)
 		end
 	end
 end
 function Panel:mouseUp(m)
 	for i, c in pairs(self.controls) do
-		if c:isOver(Point(m.x - self.position.x, m.y - self.position.y)) then
+		if c:isOver(m.position - self.position) then
 			c:mouseUp(m)
 		end
 	end

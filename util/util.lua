@@ -58,7 +58,7 @@ function Util.sign(n)
 end
 
 function Util.lerp(a, b, p)
-	return a * p + b * (1 - p)
+	return a * (1 - p) + b * p
 end
 function Util.invLerp(a, b, x)
 	return (x - a) / (b - a)

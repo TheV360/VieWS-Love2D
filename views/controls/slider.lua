@@ -104,8 +104,8 @@ function Slider:mouse(m)
 end
 
 function Slider:mouseDown(m)
-	local hX = m.x - self.position.x - self.parent.position.x
-	local hY = m.y - self.position.y - self.parent.position.y
+	local hX = m.position.x - self.position.x - self.parent.position.x
+	local hY = m.position.y - self.position.y - self.parent.position.y
 	
 	local mSig = self.vertical and hY or hX
 	local sigAxis = (self.vertical and self.size.y or self.size.x) - 1
