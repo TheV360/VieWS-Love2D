@@ -25,12 +25,6 @@ function love.load()
 	local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~◆◇▼▲▽△★☆■□🙂☹←↑→↓😔🙃]]
 	font = love.graphics.newImageFont("resources/fonts/6x8.png", supportedCharacters)
 	
-	-- local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~]]
-	-- font = love.graphics.newImageFont("resources/fonts/graph.png", supportedCharacters, 1)
-	
-	-- local supportedCharacters = [[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~]]
-	-- font = love.graphics.newImageFont("resources/fonts/ms_gothic.png", supportedCharacters)
-	
 	love.graphics.setFont(font)
 	
 	require("views/views")
@@ -57,7 +51,7 @@ function love.load()
 	-- Keyboard repeaaaaaaaaaaaaaaaaaaaaaaaat
 	love.keyboard.setKeyRepeat(true)
 	
-	view = VieWS{
+	view = VieWS {
 		width  = screen.size.x,
 		height = screen.size.y,
 	}

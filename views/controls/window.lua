@@ -83,7 +83,6 @@ function Window:draw()
 	
 	love.graphics.push()
 	
-	-- love.graphics.translate(self.position.x, self.position.y)
 	Window.super.draw(self)
 	
 	love.graphics.pop()
@@ -170,10 +169,10 @@ end
 
 
 function Window:mouse(m)
-	if self.borderless or m.position.y - self.position.y >= 0 then
+	if self.borderless or m.position.y >= 0 then
 		Window.super.mouse(self, m)
 	else
-		if m.position.x - self.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
+		if m.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
 			view:switchCursor("hand")
 		else
 			if m.drag.window == self then
@@ -186,15 +185,15 @@ function Window:mouse(m)
 end
 
 function Window:mouseClick(m)
-	if self.borderless or m.position.y - self.position.y >= 0 then
+	if self.borderless or m.position.y >= 0 then
 		Window.super.mouseClick(self, m)
 	else
-		if m.position.x - self.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
+		if m.position.x >= self.size.x - Window.ButtonRadius * 2 - 1 then
 			self:close()
 		else
 			m.drag.window = self
-			m.drag.x = m.position.x - self.position.x
-			m.drag.y = m.position.y - self.position.y
+			m.drag.x = m.position.x
+			m.drag.y = m.position.y
 		end
 	end
 end

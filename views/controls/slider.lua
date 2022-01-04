@@ -1,9 +1,5 @@
 local Slider = Controls.Control:extend()
 
--- TODO: put through paces
-
--- print('min', 'max', 'direction', 'vert?', 'inv?')
-
 function Slider:new(o)
 	Slider.super.new(self, o)
 	
@@ -24,8 +20,6 @@ function Slider:new(o)
 	self.direction = o.direction or 'leftToRight'
 	self.vertical = self.direction == 'topToBottom' or self.direction == 'bottomToTop'
 	self.inverted = self.direction == 'rightToLeft' or self.direction == 'bottomToTop'
-	
-	-- print(self.range.min, self.range.max, self.direction, self.vertical, self.inverted)
 	
 	if self.vertical then
 		self.size.x = 7
@@ -57,8 +51,8 @@ function Slider:draw()
 		val = Util.invLerp(self.range.min, self.range.max, val)
 	end
 	
-	dispVal = Util.lerp(0, sigAxis, dispVal)
-	val = Util.lerp(0, sigAxis, val)
+	dispVal = Util.clampLerp(0, sigAxis, dispVal)
+	val = Util.clampLerp(0, sigAxis, val)
 	
 	-- yes, minLen == intSteps
 	local intSteps = (self.range.max - self.range.min) / self.range.step
@@ -104,16 +98,13 @@ function Slider:mouse(m)
 end
 
 function Slider:mouseDown(m)
-	local hX = m.position.x - self.position.x - self.parent.position.x
-	local hY = m.position.y - self.position.y - self.parent.position.y
-	
-	local mSig = self.vertical and hY or hX
+	local mSig = self.vertical and m.position.y or m.position.x
 	local sigAxis = (self.vertical and self.size.y or self.size.x) - 1
 	
 	local mProgress = Util.invLerp(0, sigAxis, mSig)
 	if self.inverted then mProgress = 1 - mProgress end
 	
-	self.displayValue = Util.lerp(self.range.min, self.range.max, mProgress)
+	self.displayValue = Util.clampLerp(self.range.min, self.range.max, mProgress)
 	self.value = Util.round(self.displayValue / self.range.step) * self.range.step
 	self.redraw = true
 	self.applied(self.value)

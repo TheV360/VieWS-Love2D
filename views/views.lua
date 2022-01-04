@@ -194,6 +194,7 @@ function VieWS:update(dt)
 	
 	self.desktop:update()
 	
+	local windowTmp = nil
 	for i, w in ipairs(self.windows) do
 		if w.onTop then
 			w.z = 999 + i
@@ -204,21 +205,30 @@ function VieWS:update(dt)
 		w.hover = w:isOver(self.mouse.position)
 		
 		if w.hover then
-			self.mouse.windowTmp = w -- gets topmost window
+			windowTmp = w -- gets topmost window
 		end
 		
 		w:update(dt)
 	end
 	
-	if self.mouse.window and self.mouse.window ~= self.mouse.windowTmp then
+	if self.mouse.window and self.mouse.window ~= windowTmp then
+		local w = self.mouse.window
+		
+		local b4 = self.mouse.position
+		self.mouse.position = self.mouse.position - w.position
+		
 		self.mouse.window:mouseExit(self.mouse)
+		
+		self.mouse.position = b4
 	end
 	
-	self.mouse.window = self.mouse.windowTmp
-	self.mouse.windowTmp = nil
+	self.mouse.window = windowTmp
 	
 	if self.mouse.window then
 		local w = self.mouse.window
+		
+		local b4 = self.mouse.position
+		self.mouse.position = self.mouse.position - w.position
 		
 		w:mouse(self.mouse)
 		
@@ -231,6 +241,8 @@ function VieWS:update(dt)
 			
 			w:mouseClick(self.mouse)
 		end
+		
+		self.mouse.position = b4
 	end
 	
 	-- Delete windows marked for deletion

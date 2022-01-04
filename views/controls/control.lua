@@ -86,12 +86,4 @@ function Control:clearRect()
 	love.graphics.pop()
 end
 
--- function Control:isOver(checkPoint)
--- 	if padding then
-		
--- 	else
--- 		Control.super.isOver(self, checkPoint)
--- 	end
--- end
-
 return Control

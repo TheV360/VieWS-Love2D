@@ -1,8 +1,4 @@
 local PixelGrid = Controls.Control:extend()
-	
-function PixelGrid:getLocalCoords(m)
-	return m.position - self.position - self.parent.position
-end
 
 function PixelGrid:new(o)
 	PixelGrid.super.new(self, o)
@@ -66,7 +62,7 @@ end
 function PixelGrid:mouse(m)
 	view:switchCursor("hand")
 	
-	local newX, newY = self:getLocalCoords(m):unpack()
+	local newX, newY = m.position:unpack()
 	newX = Util.clamp(0, math.floor(newX / self.celSize.x), self.cels.x - 1)
 	newY = Util.clamp(0, math.floor(newY / self.celSize.y), self.cels.y - 1)
 	
@@ -82,7 +78,7 @@ function PixelGrid:mouseDown(m)
 	self.redraw = true
 end
 function PixelGrid:mouseEnter(m)
-	local newX, newY = self:getLocalCoords(m):unpack()
+	local newX, newY = m.position:unpack()
 	newX = Util.clamp(0, math.floor(newX / self.celSize.x), self.cels.x - 1)
 	newY = Util.clamp(0, math.floor(newX / self.celSize.y), self.cels.y - 1)
 	

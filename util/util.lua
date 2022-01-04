@@ -64,6 +64,14 @@ function Util.invLerp(a, b, x)
 	return (x - a) / (b - a)
 end
 
+function Util.clampLerp(a, b, p)
+	p = math.min(math.max(0, p), 1)
+	return a * (1 - p) + b * p
+end
+function Util.clampInvLerp(a, b, x)
+	return (math.min(math.max(a, x), b) - a) / (b - a)
+end
+
 function Util.map(x, aLow, aHigh, bLow, bHigh, clamp)
 	if clamp then x = Util.clamp(aLow, x, aHigh) end
 	return Util.lerp(bLow, bHigh, Util.invLerp(aLow, aHigh, x))

@@ -27,7 +27,7 @@ function VieWSRect:draw()
 end
 
 function VieWSRect:isOver(checkPoint)
-	return Util.pointInBox(checkPoint, self.position, Vec2(self.size.x, self.size.y))
+	return Util.pointInBox(checkPoint, Vec2.zero(), Vec2(self.size.x, self.size.y))
 end
 
 return VieWSRect
