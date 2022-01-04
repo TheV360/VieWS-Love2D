@@ -1,0 +1,15 @@
+fix the cha-cha slide:
+	- click in one window,
+	- drag the mouse out the boundary of that window
+	- directly onto a button
+	- that button gets a mouseClick event
+	- when it should get a mouse event and maybe a mouseDown
+	
+mouseDown
+- triggered when mouse enters a thing
+- & the thing hasn't yet recieved a mouseDown event
+
+mouseClick
+- triggered when the mouse is already over a thing and just clicked
+
+this'll need me to make big changes to the "views" object, which really makes me want to switch languages right now lol.
