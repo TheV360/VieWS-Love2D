@@ -68,7 +68,7 @@ local vector⊗f_mt_index = {
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
 	lerp = function(self, other, progress)
-		return self * progress + other * (-progress + 1)
+		return self * (-progress + 1) + other * progress
 	end,
 	invLerp = function(self, other, progress)
 		return (-self + progress) / (other - self)

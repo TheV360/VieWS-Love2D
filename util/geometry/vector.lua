@@ -61,7 +61,7 @@ local vector2f_mt_index = {
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
 	lerp = function(self, other, progress)
-		return self * progress + other * (-progress + 1)
+		return self * (-progress + 1) + other * progress
 	end,
 	invLerp = function(self, other, progress)
 		return (-self + progress) / (other - self)
@@ -170,7 +170,7 @@ local vector2i_mt_index = {
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
 	lerp = function(self, other, progress)
-		return self * progress + other * (-progress + 1)
+		return self * (-progress + 1) + other * progress
 	end,
 	invLerp = function(self, other, progress)
 		return (-self + progress) / (other - self)
@@ -291,7 +291,7 @@ local vector3f_mt_index = {
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
 	lerp = function(self, other, progress)
-		return self * progress + other * (-progress + 1)
+		return self * (-progress + 1) + other * progress
 	end,
 	invLerp = function(self, other, progress)
 		return (-self + progress) / (other - self)
@@ -399,7 +399,7 @@ local vector3i_mt_index = {
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
 	lerp = function(self, other, progress)
-		return self * progress + other * (-progress + 1)
+		return self * (-progress + 1) + other * progress
 	end,
 	invLerp = function(self, other, progress)
 		return (-self + progress) / (other - self)
@@ -505,7 +505,7 @@ local vector4f_mt_index = {
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
 	lerp = function(self, other, progress)
-		return self * progress + other * (-progress + 1)
+		return self * (-progress + 1) + other * progress
 	end,
 	invLerp = function(self, other, progress)
 		return (-self + progress) / (other - self)
@@ -609,7 +609,7 @@ local vector4i_mt_index = {
 	normalize = function(self) return self:divs(self:magnitude()) end,
 	
 	lerp = function(self, other, progress)
-		return self * progress + other * (-progress + 1)
+		return self * (-progress + 1) + other * progress
 	end,
 	invLerp = function(self, other, progress)
 		return (-self + progress) / (other - self)

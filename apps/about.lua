@@ -43,7 +43,7 @@ function About.setupComponents(wSelf)
 	local authorLabel = Controls.Label{
 		x = 4,
 		y = 34,
-		text = "By V360 (v360.dev)",
+		text = "By V360 (@V360dev)",
 	}
 	wSelf:addControl(authorLabel)
 	
@@ -54,11 +54,11 @@ function About.setupComponents(wSelf)
 		width = 58,
 		height = 16,
 		
-		text = "Website",
+		text = "Nothing",
 	}
-	githubButton.mouseClick = function(cSelf, m)
+	--[[githubButton.mouseClick = function(cSelf, m)
 		love.system.openURL("https://thev360.github.io/VieWS/")
-	end
+	end]]
 	wSelf:addControl(githubButton)
 	
 	local closeButton = Controls.Button{

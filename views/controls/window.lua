@@ -59,7 +59,7 @@ function Window:new(o)
 	
 	self.status = "open"
 	
-	self.velocity = Vec2(0, 0)
+	-- self.velocity = Vec2(0, 0)
 end
 
 function Window:isOver(checkPoint)
@@ -75,7 +75,16 @@ end
 function Window:update(dt)
 	Window.super.update(self)
 	
-	self.velocity = self.velocity * 0.9
+	--[[if view.mouse.drag.window ~= self then
+		self.position = self.position + self.velocity
+		if self.velocity:squaredMagnitude() ~= 0 then
+			if self.position.x < 0 then self.position.x = 0 self.velocity.x = math.abs(self.velocity.x) end
+			if self.position.y < 16 then self.position.y = 16 self.velocity.y = math.abs(self.velocity.y) end
+			if self.position.x + self.size.x >= view.size.x then self.position.x = view.size.x - self.size.x self.velocity.x = -math.abs(self.velocity.x) end
+			if self.position.y + self.size.y >= view.size.y then self.position.y = view.size.y - self.size.y self.velocity.y = -math.abs(self.velocity.y) end
+			self.velocity = self.velocity * 0.975
+		end
+	end]]
 end
 
 function Window:draw()

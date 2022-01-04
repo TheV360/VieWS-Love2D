@@ -27,11 +27,11 @@ function PixelGrid:draw()
 	
 	love.graphics.setColor(VieWS.PALETTE[1])
 	self:drawRect("line")
-	for vLine = 1, self.cels.y - 1 do
+	for vLine = 1, self.cels.x - 1 do
 		local x = vLine * self.celSize.x + 1
 		love.graphics.line(x, 1, x, self.cels.y * self.celSize.y + 1)
 	end
-	for hLine = 1, self.cels.x - 1 do
+	for hLine = 1, self.cels.y - 1 do
 		local y = hLine * self.celSize.y + 1
 		love.graphics.line(1, y, self.cels.x * self.celSize.x + 1, y)
 	end

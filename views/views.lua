@@ -43,6 +43,12 @@ VieWS.PALETTE_CGA = {
 	{ 1, 0, 1 },
 	{ 1, 1, 1 },
 }
+VieWS.PALETTE_ICE = {
+	{ 0/5, 0/5, 1/5 },
+	{ 1/5, 1/5, 3/5 },
+	{ 2/5, 2/5, 4/5 },
+	{ 3/5, 3/5, 5/5 },
+}
 VieWS.PALETTE_PURPLE = {
 	{     0,      0,      0 },
 	{ 3/  5,  9/ 20, 13/ 15 },
@@ -61,7 +67,7 @@ VieWS.PALETTE_DIM = {
 	{ 0.5,   0, 0.5 },
 	{ 0.5, 0.5, 0.5 },
 }
-VieWS.PALETTE = VieWS.PALETTE_CGA
+VieWS.PALETTE = VieWS.PALETTE_ICE
 
 function VieWS:new(o)
 	VieWS.super.new(self, o)
@@ -176,15 +182,14 @@ function VieWS:update(dt)
 	self.mouse.position = self.mouseInput.position
 	
 	if self.mouse.drag.window then
+		local dw = self.mouse.drag.window
 		if not self.mouseInput.input.down[1] then
 			self.mouse.drag.window = nil
 			
 			self.mouseInput:setCursor("mouse")
 		elseif self.mouse.drag.window then
-			-- self.mouse.drag.window.velocity = Util.degreeDistance(self.mouse.drag.window.velocity, (self.mouse.drag.window.position.x - (self.mouse.x - self.mouse.drag.x)) * dt * 16)
-			
-			self.mouse.drag.window.position.x = self.mouse.position.x - self.mouse.drag.x
-			self.mouse.drag.window.position.y = math.max(24, self.mouse.position.y - self.mouse.drag.y)
+			-- dw.velocity = (self.mouse.position - self.mouse.drag) - dw.position
+			dw.position = self.mouse.position - self.mouse.drag
 			
 			self.mouseInput:setCursor("move")
 		end
@@ -337,20 +342,13 @@ function VieWS:draw()
 	
 	for _, w in ipairs(self.windows) do
 		love.graphics.push()
-		-- love.graphics.origin()
-		love.graphics.translate(w.position.x, w.position.y)
 		
-		-- love.graphics.translate(w.size.x / 2, 0)
-		-- love.graphics.rotate(math.rad(w.velocity))
-		-- love.graphics.translate(-w.size.x / 2, 0)
-		
-		love.graphics.translate(-w.position.x, -w.position.y)
 		w:drawShadow()
-		
 		w:drawBorder()
 		
 		love.graphics.translate(w.position.x, w.position.y)
 		w:draw()
+		
 		love.graphics.pop()
 	end
 	
