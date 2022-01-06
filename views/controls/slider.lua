@@ -32,7 +32,8 @@ function Slider:new(o)
 	self.value = o.value or 0
 	self.displayValue = self.value
 	
-	self.applied = o.applied
+	self.applied = o.applied or function(_) end
+	self.finalized = o.finalized or function(_) end
 end
 
 function Slider:draw()
@@ -105,15 +106,26 @@ function Slider:mouseDown(m)
 	if self.inverted then mProgress = 1 - mProgress end
 	
 	self.displayValue = Util.clampLerp(self.range.min, self.range.max, mProgress)
+	
+	local prevValue = self.value
 	self.value = Util.round(self.displayValue / self.range.step) * self.range.step
+	if prevValue ~= self.value then
+		self.applied(self.value)
+	end
+	
 	self.redraw = true
-	self.applied(self.value)
 end
 
 function Slider:mouseUp(m)
 	self.displayValue = self.value
+	self.finalized(self.value)
+	
 	self.redraw = true
 end
-Slider.mouseExit = Slider.mouseUp
+function Slider:mouseExit(m)
+	if self.displayValue ~= self.value then
+		self:mouseUp(m)
+	end
+end
 
 return Slider
