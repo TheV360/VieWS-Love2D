@@ -14,15 +14,17 @@ end
 function CloseWindow:draw()
 	local p = 1 - (self.life / CloseWindow.maxLife)
 	
-	love.graphics.setColor(VieWS.PALETTE[Util.round(Util.lerp(4, 1, p))])
 	love.graphics.push()
 		local fall = Vec2(p * self.fallDir, math.sin(math.pi * p * 1.25) * -60)
 		local pos = self.position + self.size / 2 + fall
 		local scale = Vec2.lerp(self.size, Vec2(0), p)
+		local scale2 = scale / 2
 		love.graphics.translate(pos:unpack())
 		love.graphics.rotate(p * p * self.fallDir * 4)
-		love.graphics.scale(scale:unpack())
-		love.graphics.rectangle("fill", -0.5, -0.5, 1, 1)
+		love.graphics.setColor(VieWS.PALETTE[4])
+		love.graphics.rectangle("fill", -scale2.x, -scale2.y, scale.x, scale.y)
+		love.graphics.setColor(VieWS.PALETTE[1])
+		love.graphics.rectangle("line", 0.5 - scale2.x, 0.5 - scale2.y, scale.x + 1, scale.y + 1)
 	love.graphics.pop()
 end
 

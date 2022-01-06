@@ -13,19 +13,11 @@ end
 function OpenWindow:draw()
 	local p = 1 - (self.life / OpenWindow.maxLife)
 	
-	local color = 1
-	if p > 3/4 then color = 4
-	elseif p > 1/2 then color = 3
-	end
+	local pos = Vec2.lerp(self.position - 1, self.position - self.size / 8, p)
+	local size = Vec2.lerp(self.size + 2, self.size * 5/4, p)
 	
-	love.graphics.setColor(VieWS.PALETTE[color], 1)
-	love.graphics.rectangle(
-		"line",
-		Util.lerp(self.position.x - 1, self.position.x - self.size.x / 8, p),
-		Util.lerp(self.position.y - 1, self.position.y - self.size.y / 8, p),
-		Util.lerp(self.size.x + 2, self.size.x * (5/4), p),
-		Util.lerp(self.size.y + 2, self.size.y * (5/4), p)
-	)
+	love.graphics.setColor(VieWS.PALETTE[1], 1)
+	love.graphics.rectangle("line", pos.x, pos.y, size.x, size.y)
 end
 
 return OpenWindow
