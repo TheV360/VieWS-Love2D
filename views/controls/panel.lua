@@ -68,6 +68,12 @@ function Panel:draw()
 	love.graphics.draw(self.canvas, 0, 0)
 end
 
+function Panel:doRedraw()
+	for i, c in pairs(self.controls) do
+		c:doRedraw()
+	end
+end
+
 function Panel:mouse(m)
 	local i, c
 	

@@ -39,9 +39,7 @@ function Palette.setupApp(wSelf)
 			
 			applied = function(v)
 				VieWS.PALETTE[selectedColor][i] = v
-				palettePicker.redraw = true
-				-- sliderLabel.text = ""..v
-				-- sliderLabel.redraw = true
+				view:switchPalette(VieWS.PALETTE)
 			end,
 		}
 		

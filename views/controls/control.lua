@@ -64,6 +64,10 @@ function Control:getPaddingRect(round)
 	return x, y, w, h
 end
 
+function Control:doRedraw()
+	self.redraw = true
+end
+
 function Control:drawRect(mode)
 	local x, y, w, h = self:getPaddingRect(true)
 	

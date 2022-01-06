@@ -12,6 +12,16 @@ Desktop.PATTERN_TILES = {
 	4,4,4,1,4,1,4,4,
 	4,4,4,4,1,4,4,4,
 }
+Desktop.PATTERN_TILES_MID = {
+	3,3,3,3,3,3,3,3,
+	3,3,3,3,2,3,3,3,
+	3,3,3,2,2,2,3,3,
+	3,3,2,2,2,2,2,3,
+	3,2,2,2,2,2,2,2,
+	3,3,2,2,2,2,2,3,
+	3,3,3,2,2,2,3,3,
+	3,3,3,3,2,3,3,3,
+}
 Desktop.PATTERN_SPECKS = {
 	2,4,4,4,4,4,4,4,
 	4,2,4,4,4,4,4,4,
@@ -81,7 +91,7 @@ end
 function Desktop:new(o)
 	self.parent = o.parent
 	
-	self:setPattern(o.pattern or Desktop.PATTERN_TILES)
+	self:setPattern(o.pattern or Desktop.PATTERN_TILES_MID)
 end
 
 function Desktop:update()
@@ -95,6 +105,10 @@ function Desktop:setPattern(data)
 	self.pattern = Desktop.MakePatternFromData(data)
 	self.patternData = data
 	self.patternQuad = love.graphics.newQuad(0, 0, self.parent.size.x, self.parent.size.y, self.pattern:getDimensions())
+end
+
+function Desktop:recreatePattern()
+	self.pattern = Desktop.MakePatternFromData(self.patternData)
 end
 
 return Desktop

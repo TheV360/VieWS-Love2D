@@ -43,6 +43,18 @@ VieWS.PALETTE_CGA = {
 	{ 1, 0, 1 },
 	{ 1, 1, 1 },
 }
+VieWS.PALETTE_WARM = {
+	{ 1/5, 1/5, 0/5 },
+	{ 3/5, 2/5, 1/5 },
+	{ 4/5, 3/5, 2/5 },
+	{ 5/5, 4/5, 3/5 },
+}
+VieWS.PALETTE_FOREST = {
+	{ 0/5, 1/5, 0/5 },
+	{ 1/5, 2/5, 1/5 },
+	{ 2/5, 3/5, 2/5 },
+	{ 3/5, 4/5, 3/5 },
+}
 VieWS.PALETTE_ICE = {
 	{ 0/5, 0/5, 1/5 },
 	{ 1/5, 1/5, 3/5 },
@@ -55,19 +67,7 @@ VieWS.PALETTE_PURPLE = {
 	{ 9/ 10, 17/ 20,      1 },
 	{     1,      1,      1 },
 }
-VieWS.PALETTE_AYU_DARK = {
-	{   3/  4,   3/  4,   3/  4 },
-	{       1, 180/255,  84/255 },
-	{ 178/255, 148/255, 187/255 },
-	{  15/255,  20/255,  26/255 },
-}
-VieWS.PALETTE_DIM = {
-	{   0,   0,   0 },
-	{   0, 0.5, 0.5 },
-	{ 0.5,   0, 0.5 },
-	{ 0.5, 0.5, 0.5 },
-}
-VieWS.PALETTE = VieWS.PALETTE_ICE
+VieWS.PALETTE = VieWS.PALETTE_FOREST
 
 function VieWS:new(o)
 	VieWS.super.new(self, o)
@@ -153,6 +153,8 @@ function VieWS:new(o)
 	
 	-- Lazy way to do this...
 	self.corner = love.graphics.newImage("resources/corner.png")
+	
+	self.palette = VieWS.PALETTE
 end
 
 function VieWS:addWindow(w)
@@ -164,6 +166,17 @@ end
 
 function VieWS:switchCursor(k)
 	self.mouseInput:setCursor(k)
+end
+
+function VieWS:switchPalette(pal)
+	VieWS.PALETTE = pal
+	self.palette = pal
+	
+	self.desktop:recreatePattern()
+	
+	for i = 1, #self.windows do
+		self.windows[i]:doRedraw()
+	end
 end
 
 function VieWS:update(dt)
