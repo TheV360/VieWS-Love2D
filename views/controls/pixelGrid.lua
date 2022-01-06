@@ -36,26 +36,27 @@ function PixelGrid:draw()
 		love.graphics.line(1, y, self.cels.x * self.celSize.x + 1, y)
 	end
 	
-	if self.hover then
-		love.graphics.setColor(VieWS.PALETTE[self.foolishGetData()])
-		love.graphics.rectangle(
-			"fill",
-			1 + self.hoverX * self.celSize.x, 1 + self.hoverY * self.celSize.y,
-			self.celSize.x - 1, self.celSize.y - 1
-		)
-	end
-	
 	local index = 1
 	for y = 1, self.cels.y do
 		for x = 1, self.cels.x do
 			love.graphics.setColor(VieWS.PALETTE[self.celData[index] or 1])
 			love.graphics.rectangle(
 				"fill",
-				(x - 1) * self.celSize.x + 2, (y - 1) * self.celSize.y + 2,
-				self.celSize.x - 3, self.celSize.y - 3
+				(x - 1) * self.celSize.x + 1, (y - 1) * self.celSize.y + 1,
+				self.celSize.x - 1, self.celSize.y - 1
 			)
 			index = index + 1
 		end
+	end
+	
+	if self.hover then
+		love.graphics.setColor(VieWS.PALETTE[self.foolishGetData()])
+		love.graphics.rectangle(
+			"line",
+			1.5 + self.hoverX * self.celSize.x,
+			1.5 + self.hoverY * self.celSize.y,
+			self.celSize.x - 2, self.celSize.y - 2
+		)
 	end
 end
 
