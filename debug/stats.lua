@@ -75,9 +75,15 @@ function Stats:draw(scale, someScreenToLookAt)
 	local tx, ty = wWidth - (80 * scale), 65 * scale
 	
 	love.graphics.setColor(0, 0, 0)
-	for j = -2, 2, 2 do
-		for i = -2, 2, 2 do
-			love.graphics.print(txt, tx + 2 + i, ty + 2 + j, 0, scale)
+	for j = -1, 1 do
+		for i = -1, 1 do
+			if i ~= 0 or j ~= 0 then
+				love.graphics.print(
+					txt,
+					tx + 2 + i * scale, ty + 2 + j * scale,
+					0, scale
+				)
+			end
 		end
 	end
 	love.graphics.setColor(0.25, 1, 0.5)
