@@ -3,14 +3,14 @@ local PixelGrid = Controls.Control:extend()
 function PixelGrid:new(o)
 	PixelGrid.super.new(self, o)
 	
-	self.cels = o.cels or Size(8, 8)
-	self.celSize = o.celSize or Size(8, 8)
+	self.cells = o.cells or Size(8, 8)
+	self.cellSize = o.cellSize or Size(8, 8)
 	
-	self.celData = {}
+	self.cellData = {}
 	local index = 1
-	for y = 1, self.cels.y do
-		for x = 1, self.cels.x do
-			self.celData[index] = o.celData and o.celData[index] or #VieWS.PALETTE
+	for y = 1, self.cells.y do
+		for x = 1, self.cells.x do
+			self.cellData[index] = o.cellData and o.cellData[index] or #VieWS.PALETTE
 			index = index + 1
 		end
 	end
@@ -27,23 +27,23 @@ function PixelGrid:draw()
 	
 	love.graphics.setColor(VieWS.PALETTE[1])
 	self:drawRect("line")
-	for vLine = 1, self.cels.x - 1 do
-		local x = vLine * self.celSize.x + 1
-		love.graphics.line(x, 1, x, self.cels.y * self.celSize.y + 1)
+	for vLine = 1, self.cells.x - 1 do
+		local x = vLine * self.cellSize.x + 1
+		love.graphics.line(x, 1, x, self.cells.y * self.cellSize.y + 1)
 	end
-	for hLine = 1, self.cels.y - 1 do
-		local y = hLine * self.celSize.y + 1
-		love.graphics.line(1, y, self.cels.x * self.celSize.x + 1, y)
+	for hLine = 1, self.cells.y - 1 do
+		local y = hLine * self.cellSize.y + 1
+		love.graphics.line(1, y, self.cells.x * self.cellSize.x + 1, y)
 	end
 	
 	local index = 1
-	for y = 1, self.cels.y do
-		for x = 1, self.cels.x do
-			love.graphics.setColor(VieWS.PALETTE[self.celData[index] or 1])
+	for y = 1, self.cells.y do
+		for x = 1, self.cells.x do
+			love.graphics.setColor(VieWS.PALETTE[self.cellData[index] or 1])
 			love.graphics.rectangle(
 				"fill",
-				(x - 1) * self.celSize.x + 1, (y - 1) * self.celSize.y + 1,
-				self.celSize.x - 1, self.celSize.y - 1
+				(x - 1) * self.cellSize.x + 1, (y - 1) * self.cellSize.y + 1,
+				self.cellSize.x - 1, self.cellSize.y - 1
 			)
 			index = index + 1
 		end
@@ -53,9 +53,9 @@ function PixelGrid:draw()
 		love.graphics.setColor(VieWS.PALETTE[self.foolishGetData()])
 		love.graphics.rectangle(
 			"line",
-			1.5 + self.hoverX * self.celSize.x,
-			1.5 + self.hoverY * self.celSize.y,
-			self.celSize.x - 2, self.celSize.y - 2
+			1.5 + self.hoverX * self.cellSize.x,
+			1.5 + self.hoverY * self.cellSize.y,
+			self.cellSize.x - 2, self.cellSize.y - 2
 		)
 	end
 end
@@ -64,27 +64,28 @@ function PixelGrid:mouse(m)
 	view:switchCursor("hand")
 	
 	local newX, newY = m.position:unpack()
-	newX = Util.clamp(0, math.floor(newX / self.celSize.x), self.cels.x - 1)
-	newY = Util.clamp(0, math.floor(newY / self.celSize.y), self.cels.y - 1)
+	-- TODO: ewww.
+	newX = Util.clamp(0, math.floor(newX / self.cellSize.x), self.cells.x - 1)
+	newY = Util.clamp(0, math.floor(newY / self.cellSize.y), self.cells.y - 1)
 	
 	-- redraw if mouse moved to new cel
 	if newX ~= self.hoverX or newY ~= self.hoverY then
 		self.hoverX, self.hoverY = newX, newY
-		self.hoverIndex = Util.clamp(0, newY * self.cels.x + newX, #self.celData - 1) + 1
+		self.hoverIndex = Util.clamp(0, newY * self.cells.x + newX, #self.cellData - 1) + 1
 		self.redraw = true
 	end
 end
 function PixelGrid:mouseDown(m)
-	self.celData[self.hoverIndex] = self.foolishGetData()
+	self.cellData[self.hoverIndex] = self.foolishGetData()
 	self.redraw = true
 end
 function PixelGrid:mouseEnter(m)
 	local newX, newY = m.position:unpack()
-	newX = Util.clamp(0, math.floor(newX / self.celSize.x), self.cels.x - 1)
-	newY = Util.clamp(0, math.floor(newX / self.celSize.y), self.cels.y - 1)
+	newX = Util.clamp(0, math.floor(newX / self.cellSize.x), self.cells.x - 1)
+	newY = Util.clamp(0, math.floor(newX / self.cellSize.y), self.cells.y - 1)
 	
 	self.hoverX, self.hoverY = newX, newY
-	self.hoverIndex = Util.clamp(0, newY * self.cels.x + newX, #self.celData - 1) + 1
+	self.hoverIndex = Util.clamp(0, newY * self.cells.x + newX, #self.cellData - 1) + 1
 end
 function PixelGrid:mouseExit(m)
 	self.hoverX = -1

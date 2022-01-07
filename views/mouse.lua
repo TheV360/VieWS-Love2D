@@ -14,9 +14,9 @@ local Mouse = Object:extend()
 			time = 3,
 			
 			{}, -- no overrides of the above
-			{ ofs = Vec(16, 0), }, -- only override ofs
-			{ ofs = Vec(32, 0), },
-			{ ofs = Vec(48, 0), },
+			{ ofs = Vec2(16, 0), }, -- only override ofs
+			{ ofs = Vec2(32, 0), },
+			{ ofs = Vec2(48, 0), },
 		}
 	}
 ]]

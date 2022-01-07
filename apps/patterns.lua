@@ -3,10 +3,10 @@ local Patterns = {}
 function Patterns.setup(s)
 	s = s or {}
 	local secret = {
-		cels = s.cels or Vec2(8, 8),
-		celSize = s.celSize or Vec2(8, 8),
+		cells = s.cells or Vec2(8, 8),
+		cellSize = s.cellSize or Vec2(8, 8),
 	}
-	secret.total = secret.cels * secret.celSize + 1
+	secret.total = secret.cells * secret.cellSize + 1
 	
 	view:addWindow(Controls.Window {
 		title = "Desktop Patterns",
@@ -16,7 +16,7 @@ function Patterns.setup(s)
 		setup = function(wSelf)
 			local currentPattern = view.desktop.patternData
 			local appliedPatternData = {}
-			for i = 1, (secret.cels.x * secret.cels.y) do
+			for i = 1, (secret.cells.x * secret.cells.y) do
 				appliedPatternData[i] = currentPattern[i] or #VieWS.PALETTE
 			end
 			local appliedPatternFlipH = currentPattern.flipH or false
@@ -44,10 +44,10 @@ function Patterns.setup(s)
 				position = Vec2(8, 32),
 				size = secret.total,
 				
-				cels = secret.cels,
-				celSize = secret.celSize,
+				cells = secret.cells,
+				cellSize = secret.cellSize,
 				
-				celData = appliedPatternData,
+				cellData = appliedPatternData,
 				
 				foolishGetData = function() return selectedColor end,
 			}
@@ -79,8 +79,8 @@ function Patterns.setup(s)
 				text = "Fill",
 			}
 			clearButton.mouseDown = function(m)
-				for i = 1, #patternPixelGrid.celData do
-					patternPixelGrid.celData[i] = selectedColor
+				for i = 1, #patternPixelGrid.cellData do
+					patternPixelGrid.cellData[i] = selectedColor
 				end
 				patternPixelGrid.redraw = true
 			end
@@ -92,8 +92,8 @@ function Patterns.setup(s)
 				text = "Orig",
 			}
 			resetButton.mouseClick = function(m)
-				for i = 1, #patternPixelGrid.celData do
-					patternPixelGrid.celData[i] = appliedPatternData[i]
+				for i = 1, #patternPixelGrid.cellData do
+					patternPixelGrid.cellData[i] = appliedPatternData[i]
 				end
 				patternPixelGrid.redraw = true
 				
@@ -108,12 +108,12 @@ function Patterns.setup(s)
 				text = "Apply",
 			}
 			applyButton.mouseClick = function(cSelf, m)
-				for i = 1, #patternPixelGrid.celData do
-					appliedPatternData[i] = patternPixelGrid.celData[i]
+				for i = 1, #patternPixelGrid.cellData do
+					appliedPatternData[i] = patternPixelGrid.cellData[i]
 				end
 				
-				appliedPatternData.width  = secret.cels.x
-				appliedPatternData.height = secret.cels.y
+				appliedPatternData.width  = secret.cells.x
+				appliedPatternData.height = secret.cells.y
 				
 				appliedPatternData.flipH = flipHCheckBox.value
 				appliedPatternData.flipV = flipVCheckBox.value
