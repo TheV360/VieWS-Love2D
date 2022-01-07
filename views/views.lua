@@ -333,13 +333,8 @@ function VieWS:draw()
 	
 	for _, w in ipairs(self.windows) do
 		love.graphics.push()
-		
-		w:drawShadow()
-		w:drawBorder()
-		
-		love.graphics.translate(w.position.x, w.position.y)
+		love.graphics.translate(w.position:unpack())
 		w:draw()
-		
 		love.graphics.pop()
 	end
 	

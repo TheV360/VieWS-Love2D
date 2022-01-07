@@ -92,6 +92,8 @@ function Window:draw()
 	
 	love.graphics.push()
 	
+	self:drawShadow()
+	self:drawBorder()
 	Window.super.draw(self)
 	
 	love.graphics.pop()
@@ -104,8 +106,8 @@ function Window:drawBorder()
 	if self.border.top > 0 then
 		love.graphics.rectangle(
 			"fill",
-			self.position.x - self.border.left,
-			self.position.y - self.border.top,
+			-self.border.left,
+			-self.border.top,
 			self.size.x + self.border.left + self.border.right,
 			self.border.top
 		)
@@ -115,8 +117,7 @@ function Window:drawBorder()
 	if self.border.left > 0 then
 		love.graphics.rectangle(
 			"fill",
-			self.position.x - self.border.left,
-			self.position.y,
+			-self.border.left, 0,
 			self.border.left,
 			self.size.y
 		)
@@ -126,8 +127,7 @@ function Window:drawBorder()
 	if self.border.right > 0 then
 		love.graphics.rectangle(
 			"fill",
-			self.position.x + self.size.x,
-			self.position.y,
+			self.size.x, 0,
 			self.border.right,
 			self.size.y
 		)
@@ -137,8 +137,7 @@ function Window:drawBorder()
 	if self.border.bottom > 0 then
 		love.graphics.rectangle(
 			"fill",
-			self.position.x - self.border.left,
-			self.position.y + self.size.y,
+			-self.border.left, self.size.y,
 			self.size.x + self.border.left + self.border.right,
 			self.border.bottom
 		)
@@ -149,13 +148,13 @@ function Window:drawBorder()
 		love.graphics.setColor(VieWS.PALETTE[self.style.borderForeground])
 		
 		-- Title
-		love.graphics.print(self.title, self.position.x, self.position.y - self.border.top + 1)
+		love.graphics.print(self.title, 0, -self.border.top + 1)
 		
 		-- Button
 		love.graphics.circle(
 			"fill",
-			self.position.x + self.size.x - Window.ButtonRadius,
-			self.position.y - Window.ButtonRadius - 3,
+			self.size.x - Window.ButtonRadius,
+			-Window.ButtonRadius - 3,
 			Window.ButtonRadius
 		)
 	end
@@ -165,8 +164,8 @@ function Window:drawShadow()
 	love.graphics.setColor(VieWS.PALETTE[self.style.shadow])
 	
 	love.graphics.rectangle("line",
-		self.position.x - self.border.left - Window.ShadowDistance + 0.5,
-		self.position.y - self.border.top - Window.ShadowDistance + 0.5,
+		-self.border.left - Window.ShadowDistance + 0.5,
+		-self.border.top - Window.ShadowDistance + 0.5,
 		self.size.x + self.border.left + self.border.right + 2 * Window.ShadowDistance - 1,
 		self.size.y + self.border.top + self.border.bottom + 2 * Window.ShadowDistance - 1
 	)
