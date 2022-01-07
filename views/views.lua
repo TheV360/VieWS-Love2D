@@ -166,6 +166,39 @@ function VieWS:addWindow(w)
 	table.insert(self.windows, w)
 end
 
+function VieWS:modal(text, title, callback, parent)
+	local mw = Controls.Window {
+		title = title or "Modal",
+		size = Vec2(128, 64),
+		setup = function(wSelf)
+			local label = Controls.Label {
+				text = text,
+				position = Vec2(8, 4),
+				size = Vec2(112, 32),
+			}
+			wSelf:addControl(label)
+			
+			local button = Controls.Button {
+				text = "OK",
+				position = Vec2(48, 48),
+				size = Vec2(32, 12),
+			}
+			button.mouseClick = function()
+				wSelf:close()
+				if callback then callback() end
+			end
+			wSelf:addControl(button)
+		end,
+	}
+	if parent then
+		mw.title = title or parent.title
+		mw.position = (parent.position + (parent.size - mw.size) / 2):floor()
+		parent.z = #self.windows + 1
+	end
+	self:addWindow(mw)
+	mw.z = #self.windows + 2
+end
+
 function VieWS:switchCursor(k)
 	self.mouseInput:setCursor(k)
 end

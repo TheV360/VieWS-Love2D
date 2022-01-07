@@ -119,6 +119,7 @@ function Patterns.setup(s)
 				appliedPatternData.flipV = flipVCheckBox.value
 				
 				view.desktop:setPattern(appliedPatternData)
+				-- view:modal("Pattern applied to desktop!", nil, nil, wSelf)
 			end
 			wSelf:addControl(applyButton)
 		end,
