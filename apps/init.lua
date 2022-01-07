@@ -42,8 +42,11 @@ function windowMakerWindow()
 					size = cfg.buttonSize,
 				}
 				nwButton.mouseClick = function()
-					view:try(function() require("apps/" .. appFile).setup() end)
+					view:try(function()
+						dofile("apps/" .. appFile .. ".lua").setup()
+					end)
 				end
+				
 				wSelf:addControl(nwButton)
 			end
 		end

@@ -167,9 +167,12 @@ function VieWS:addWindow(w)
 end
 
 function VieWS:try(fn, ...)
-	local succ, msg = pcall(fn, ...)
-	if not succ then
-		self:modal(tostring(msg), "Error Caught!")
+	local res = { pcall(fn, ...) }
+	if res[1] then
+		table.remove(res, 1)
+		return unpack(res)
+	else
+		self:modal(tostring(res[1]), "Error Caught!")
 	end
 end
 
@@ -277,7 +280,7 @@ function VieWS:update(dt)
 		local b4 = self.mouse.position
 		self.mouse.position = self.mouse.position - w.position
 		
-		self:try(w.mouseExit, w, self.mouse)
+		w:mouseExit(self.mouse)
 		
 		self.mouse.position = b4
 	end
@@ -290,16 +293,16 @@ function VieWS:update(dt)
 		local b4 = self.mouse.position
 		self.mouse.position = self.mouse.position - w.position
 		
-		self:try(w.mouse, w, self.mouse)
+		w:mouse(self.mouse)
 		
-		if self.mouseInput.input.down[1] then self:try(w.mouseDown, w, self.mouse) end
-		if self.mouseInput.input.release[1] then self:try(w.mouseUp, w, self.mouse) end
+		if self.mouseInput.input.down[1] then w:mouseDown(self.mouse) end
+		if self.mouseInput.input.release[1] then w:mouseUp(self.mouse) end
 		
 		if self.mouseInput.input.press[1] then
 			-- Push window to front.
 			w.z = #self.windows + 1
 			
-			self:try(w.mouseClick, w, self.mouse)
+			w:mouseClick(self.mouse)
 		end
 		
 		self.mouse.position = b4

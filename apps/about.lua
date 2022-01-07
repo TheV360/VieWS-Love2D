@@ -7,8 +7,6 @@ function About.setup()
 		size = Vec2(128, 64),
 		
 		setup = About.setupComponents,
-		
-		border = Sides(Controls.Window.SideWidth * 3, Controls.Window.SideWidth, Controls.Window.SideWidth),
 	})
 end
 
@@ -22,8 +20,9 @@ function About.setupComponents(wSelf)
 	}
 	wSelf:addControl(logoImage)
 	
+	-- TODO: version right align
 	local versionLabel = Controls.Label {
-		position = Vec2(94, 14),
+		position = Vec2(wSelf.size.x - 4 - Util.measureTextWidth("0.1"), 14),
 		text = "0.1",
 		color = 1,
 	}
