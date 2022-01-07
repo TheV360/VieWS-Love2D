@@ -14,7 +14,7 @@ function Panel:new(o)
 	
 	-- Run initialization function
 	if type(o.setup) == "function" then
-		o.setup(self)
+		view:try(o.setup, self)
 	end
 end
 

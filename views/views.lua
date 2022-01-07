@@ -166,21 +166,28 @@ function VieWS:addWindow(w)
 	table.insert(self.windows, w)
 end
 
+function VieWS:try(fn, ...)
+	local succ, msg = pcall(fn, ...)
+	if not succ then
+		self:modal(tostring(msg), "Error Caught!")
+	end
+end
+
 function VieWS:modal(text, title, callback, parent)
 	local mw = Controls.Window {
 		title = title or "Modal",
-		size = Vec2(128, 64),
+		size = Vec2(160, 64),
 		setup = function(wSelf)
 			local label = Controls.Label {
 				text = text,
 				position = Vec2(8, 4),
-				size = Vec2(112, 32),
+				size = Vec2(wSelf.size.x - 16, 32),
 			}
 			wSelf:addControl(label)
 			
 			local button = Controls.Button {
 				text = "OK",
-				position = Vec2(48, 48),
+				position = Vec2((wSelf.size.x - 32) / 2, wSelf.size.y - 16),
 				size = Vec2(32, 12),
 			}
 			button.mouseClick = function()
@@ -270,7 +277,7 @@ function VieWS:update(dt)
 		local b4 = self.mouse.position
 		self.mouse.position = self.mouse.position - w.position
 		
-		self.mouse.window:mouseExit(self.mouse)
+		self:try(w.mouseExit, w, self.mouse)
 		
 		self.mouse.position = b4
 	end
@@ -283,16 +290,16 @@ function VieWS:update(dt)
 		local b4 = self.mouse.position
 		self.mouse.position = self.mouse.position - w.position
 		
-		w:mouse(self.mouse)
+		self:try(w.mouse, w, self.mouse)
 		
-		if self.mouseInput.input.down[1] then w:mouseDown(self.mouse) end
-		if self.mouseInput.input.release[1] then w:mouseUp(self.mouse) end
+		if self.mouseInput.input.down[1] then self:try(w.mouseDown, w, self.mouse) end
+		if self.mouseInput.input.release[1] then self:try(w.mouseUp, w, self.mouse) end
 		
 		if self.mouseInput.input.press[1] then
 			-- Push window to front.
 			w.z = #self.windows + 1
 			
-			w:mouseClick(self.mouse)
+			self:try(w.mouseClick, w, self.mouse)
 		end
 		
 		self.mouse.position = b4
