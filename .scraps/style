@@ -1,0 +1,11 @@
+well it goes like this
+the the the fifth
+
+title
+pos/size (space if not combined into a Vec2)
+border
+data
+callbacks
+flags
+
+in that order
