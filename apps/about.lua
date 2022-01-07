@@ -4,9 +4,6 @@ function About.setup()
 	view:addWindow(Controls.Window {
 		title = "About VieWS",
 		
-		-- x = 16 + math.random(0, view.size.x),
-		-- y = 32 + math.random(0, view.size.y),
-		
 		size = Vec2(128, 64),
 		
 		setup = About.setupComponents,
@@ -23,22 +20,11 @@ function About.setupComponents(wSelf)
 		image = img,
 		color = 1,
 	}
-	local logoImageGhost = Controls.Image {
-		position = Vec2(4, 6) + 1,
-		image = img,
-		color = 3,
-	}
-	
-	logoImageGhost.mouseEnter = function(m)
-		self.redraw = false
-		logoImage:doRedraw()
-	end
-	wSelf:addControl(logoImageGhost)
 	wSelf:addControl(logoImage)
 	
 	local versionLabel = Controls.Label {
 		position = Vec2(94, 14),
-		text = "v0.1?",
+		text = "0.1",
 		color = 1,
 	}
 	wSelf:addControl(versionLabel)
@@ -55,15 +41,15 @@ function About.setupComponents(wSelf)
 	}
 	wSelf:addControl(authorLabel)
 	
-	local githubButton = Controls.Button {
+	local moreButton = Controls.Button {
 		position = Vec2(4, 44),
 		size = Vec2(58, 16),
-		text = "Nothing",
+		text = "More",
 	}
-	--[[githubButton.mouseClick = function(cSelf, m)
-		love.system.openURL("https://thev360.github.io/VieWS/")
-	end]]
-	wSelf:addControl(githubButton)
+	moreButton.mouseClick = function(cSelf, m)
+		About.setup()
+	end
+	wSelf:addControl(moreButton)
 	
 	local closeButton = Controls.Button {
 		position = Vec2(66, 44),
