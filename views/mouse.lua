@@ -29,6 +29,7 @@ function Mouse:new(posFn, cursors)
 	
 	self.cursor = {
 		key = false, -- if false, the mouse is not displayed.
+		drawnKey = false,
 		
 		anim = {
 			frame = 1,
@@ -88,15 +89,21 @@ end
 function Mouse:setCursor(key)
 	key = key or ""
 	if self.cursor.key == key then return end
-	
 	self.cursor.key = key
-	local value = self.cursors[self.cursor.key]
-	local anim = self.cursor.anim
+	-- self:resetAnim()
+end
+
+function Mouse:resetAnim()
+	if not self.cursor.key then return end
 	
+	local value = self.cursors[self.cursor.key]
+	
+	if not value.image then return end
+	if not value.anim then return end
+	
+	local anim = self.cursor.anim
 	anim.frame = 1
 	anim.timer = value.frames[anim.frame].time
-	
-	love.mouse.setVisible(not value.image)
 end
 
 function Mouse:update()
@@ -114,7 +121,7 @@ function Mouse:update()
 		anim.timer = anim.timer - 1
 		if anim.timer <= 0 then
 			anim.frame = anim.frame + 1
-			if anim.frame >= #value.frames then
+			if anim.frame > #value.frames then
 				anim.frame = 1
 			end
 			anim.timer = value.frames[anim.frame].time
@@ -129,6 +136,14 @@ function Mouse:draw()
 	local value = self.cursors[self.cursor.key]
 	local anim = self.cursor.anim
 	
+	if self.cursor.drawnKey ~= self.cursor.key then
+		self.cursor.drawnKey = self.cursor.key
+		
+		anim.frame = 1
+		anim.timer = value.frames[anim.frame].time
+	end
+	
+	if not self.cursor.key then return end
 	if not value.image then return end
 	
 	love.graphics.setColor(1, 1, 1)

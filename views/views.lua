@@ -104,9 +104,11 @@ function VieWS:new(o)
 	self.mouseInput = Mouse(
 		function()
 			local p = screen:pointIn(Vec2(love.mouse.getPosition())):floor()
-			if Util.pointInBox(p, Vec2.zero() - 4, screen.size + 4) then
-				return p:clamp(Vec2.zero(), screen.size)
+			if Util.pointInBox(p, Vec2.zero() - 4, screen.size + 8) then
+				love.mouse.setVisible(false)
+				return p:clamp(Vec2.zero(), screen.size - 1)
 			else
+				love.mouse.setVisible(true)
 				return false
 			end
 		end,
