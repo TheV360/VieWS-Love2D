@@ -1,11 +1,10 @@
 local FixedPoint = {}
 
 function FixedPoint.setup()
-	view:addWindow(Controls.Window{
+	view:addWindow(Controls.Window {
 		title = "Fixed Point",
 		
-		width = 98,
-		height = 40,
+		size = Vec2(98, 40),
 		
 		setup = FixedPoint.setupApp,
 	})
@@ -19,9 +18,10 @@ function FixedPoint.setupApp(wSelf)
 	local function bit_at(val, n) return bit.band(bit.rshift(val, n - 1), 1) end
 	local function bit_to(val, n) return bit.bxor(val, bit.lshift(1, n - 1)) end
 	
-	local numberLabel = Controls.Label{
-		x = 4, y = 4,
-		width = wSelf.size.x - 8,
+	local numberLabel = Controls.Label {
+		position = Vec2(4, 4),
+		size = Vec2(wSelf.size.x - 8, fontHeight),
+		
 		text = "0",
 	}
 	local displayNumber
@@ -30,10 +30,8 @@ function FixedPoint.setupApp(wSelf)
 	local bitsButtons = {}
 	
 	for i = 1, FixedPoint.BITS do
-		local c = Controls.Button{
-			x = wSelf.size.x - i * 12,
-			y = wSelf.size.y - fontHeight - 6,
-			
+		local c = Controls.Button {
+			position = wSelf.size - Vec2(i * 12, fontHeight + 6),
 			text = "0",
 		}
 		c.mouseClick = function(m)
@@ -46,18 +44,16 @@ function FixedPoint.setupApp(wSelf)
 		bitsButtons[i] = c
 	end
 	
-	local realSlider = Controls.Slider{
-		x = 2,
-		y = wSelf.size.y - fontHeight - 16,
-		
-		width = wSelf.size.x - 4,
+	local realSlider = Controls.Slider {
+		position = Vec2(2, wSelf.size.y - fontHeight - 16),
+		size = Vec2(wSelf.size.x - 4, 0),
 		
 		min = 0, max = FixedPoint.BITS,
 		step = 1,
 		value = 0,
 		direction = 'rightToLeft',
 		
-		applied = function(self)displayNumber()end,
+		applied = function(self) displayNumber() end,
 	}
 	wSelf:addControl(realSlider)
 	

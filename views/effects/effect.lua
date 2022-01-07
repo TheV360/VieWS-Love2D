@@ -3,7 +3,7 @@ local Effect = OptObject:extend()
 function Effect:new(o)
 	Effect.super.new(self, o)
 	
-	self.position = Point(o.x, o.y)
+	self.position = o.position or Point(o.x, o.y)
 	
 	self.life = -1
 end

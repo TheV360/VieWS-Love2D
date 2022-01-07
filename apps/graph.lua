@@ -1,33 +1,25 @@
 local Graph = {}
 
 function Graph.setup()
-	view:addWindow(Controls.Window{
-		title = "Graph, or more accurately, Panel test",
+	view:addWindow(Controls.Window {
+		title = "Panel test",
 		
-		x = 16,
-		y = 16,
-		
-		width = 256,
-		height = 128,
+		size = Vec2(256, 128),
 		
 		setup = Graph.setupComponents
 	})
 end
 
 function Graph.setupComponents(wSelf)
-	somethingWindow = Controls.Window{
+	local somethingWindow = Controls.Window {
 		title = "smaller window",
 		
-		x = 120,
-		y = 16,
-		
-		width = 128,
-		height = 64,
+		position = Vec2(120, 16),
+		size = Vec2(128, 64),
 		
 		setup = function(wSelf)
-			somethingButton = Controls.Button{
-				x = 8,
-				y = 8,
+			local somethingButton = Controls.Button {
+				position = Vec2(8, 8),
 				text = "Something"
 			}
 			somethingButton.mouseClick = function(cSelf, m)
@@ -38,29 +30,22 @@ function Graph.setupComponents(wSelf)
 		end
 	}
 	
-	horrible1 = Controls.Panel{
-		x = 4,
-		y = 4,
-		
-		width = 96,
-		height = 96,
+	local horrible1 = Controls.Panel {
+		position = Vec2(4, 4),
+		size = Vec2(96, 96),
 		
 		color = 2
 	}
 	
-	horrible2 = Controls.Panel{
-		x = 4,
-		y = 4,
-		
-		width = 64,
-		height = 64,
+	local horrible2 = Controls.Panel {
+		position = Vec2(4, 4),
+		size = Vec2(64, 64),
 		
 		color = 3
 	}
 	
-	logoImage = Controls.Image{
-		x = 4,
-		y = 4,
+	local logoImage = Controls.Image {
+		position = Vec2(4, 4),
 		image = love.graphics.newImage("resources/colorTest.png")
 	}
 	logoImage.mouseClick = function(cSelf, m)

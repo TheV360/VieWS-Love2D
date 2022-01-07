@@ -268,38 +268,16 @@ function VieWS:update(dt)
 		w = self.windows[i]
 		
 		if w.status == "open" then
-			if w.border then
-				table.insert(self.effects, Effects.OpenWindow{
-					x = w.position.x - w.border.left,
-					y = w.position.y - w.border.top,
-					width = w.size.x + w.border.left + w.border.right,
-					height = w.size.y + w.border.top + w.border.bottom
-				})
-			else
-				table.insert(self.effects, Effects.OpenWindow{
-					x = w.position.x,
-					y = w.position.y,
-					width = w.size.x,
-					height = w.size.y
-				})
-			end
+			table.insert(self.effects, Effects.OpenWindow{
+				position = w.position - Vec2(w.border.left, w.border.top),
+				size = w.size + Vec2(w.border.left, w.border.top) + Vec2(w.border.right, w.border.bottom),
+			})
 			w.status = "normal"
 		elseif w.status == "close" then
-			if w.border then
-				table.insert(self.effects, Effects.CloseWindow{
-					x = w.position.x - w.border.left,
-					y = w.position.y - w.border.top,
-					width = w.size.x + w.border.left + w.border.right,
-					height = w.size.y + w.border.top + w.border.bottom
-				})
-			else
-				table.insert(self.effects, Effects.CloseWindow{
-					x = w.position.x,
-					y = w.position.y,
-					width = w.size.x,
-					height = w.size.y
-				})
-			end
+			table.insert(self.effects, Effects.CloseWindow{
+				position = w.position - Vec2(w.border.left, w.border.top),
+				size = w.size + Vec2(w.border.left, w.border.top) + Vec2(w.border.right, w.border.bottom),
+			})
 			table.remove(self.windows, i)
 		end
 	end

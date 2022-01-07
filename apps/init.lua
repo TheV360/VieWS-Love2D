@@ -26,42 +26,15 @@ function paletteWindow()
 	require("apps/palette").setup()
 end
 
-function rumblePakWindow()
-	--[[ view:addWindow(Controls.Window{
-		title = "Rumble Pak",
-		
-		width = 64,
-		height = 64,
-		
-		setup = function(wSelf)
-			rumbleButton = Controls.Button{
-				x = 8,
-				y = 8,
-				
-				width = 48,
-				height = 48,
-				
-				text = "Test\nRumble"
-			}
-			rumbleButton.mouseClick = function(cSelf, m)
-				window.shake.x = window.shake.x > 0 and 0 or 16
-				window.shake.y = window.shake.x
-			end
-			wSelf:addControl(rumbleButton)
-		end
-	}) ]]
-end
-
 function colorTestWindow()
-	view:addWindow(Controls.Window{
+	view:addWindow(Controls.Window {
 		title = "Lo-fi Color test",
 		
-		width = 128,
-		height = 160,
+		size = Vec2(128, 160),
 		
 		setup = function(wSelf)
-			imgControl = Controls.Image{
-				x = 0, y = 0,
+			imgControl = Controls.Image {
+				position = Vec2(0, 0),
 				
 				image = love.graphics.newImage("resources/colorTest.png")
 			}
@@ -71,93 +44,69 @@ function colorTestWindow()
 end
 
 function windowMakerWindow()
-	view:addWindow(Controls.Window{
+	view:addWindow(Controls.Window {
 		title = "Window Maker",
 		
-		-- x = 52,
-		-- y = 56,
-		
-		width = 128,
-		height = 96,
-		
-		-- border = Sides(1),
+		size = Vec2(128, 96),
 		
 		setup = function(wSelf)
-			infoLabel = Controls.Label{
+			infoLabel = Controls.Label {
 				text = "Hello! This window makes windows.",
 				
-				x = 8,
-				y = 8,
-				
-				width = 112,
-				height = 16,
+				position = Vec2(8, 8),
+				size = Vec2(112, 16),
 			}
 			wSelf:addControl(infoLabel)
 			
-			newAboutWindowButton = Controls.Button{
-				text = "About Window",
-				
-				x = 8,
-				y = 32,
-				
-				width = 112,
-				height = 16
+			local bTopLeft = Vec2(8, 32)
+			local bMargin = Vec2(0, 4)
+			local bSize = Vec2(56, 16)
+			local bOfs = bSize + bMargin
+			
+			newAboutWindowButton = Controls.Button {
+				text = "About",
+				position = bTopLeft,
+				size = bSize,
 			}
 			newAboutWindowButton.mouseClick = function(cSelf, m)
 				aboutWindow()
 			end
 			wSelf:addControl(newAboutWindowButton)
 			
-			newRumblePakWindowButton = Controls.Button{
-				text = "Rumble Pak",
-				
-				x = 8,
-				y = 52,
-				
-				width = 56,
-				height = 16
+			newPaletteWindow = Controls.Button {
+				text = "Palette",
+				position = bTopLeft + Vec2(0, 1) * bOfs,
+				size = bSize,
 			}
-			newRumblePakWindowButton.mouseClick = function(cSelf, m)
-				rumblePakWindow()
+			newPaletteWindow.mouseClick = function(cSelf, m)
+				paletteWindow()
 			end
-			wSelf:addControl(newRumblePakWindowButton)
+			wSelf:addControl(newPaletteWindow)
 			
-			newColorTestWindow = Controls.Button{
-				text = "Color Test",
-				
-				x = 64,
-				y = 52,
-				
-				width = 56,
-				height = 16
+			newPatternsWindow = Controls.Button {
+				text = "Patterns",
+				position = bTopLeft + Vec2(1, 1) * bOfs,
+				size = bSize,
 			}
-			newColorTestWindow.mouseClick = function(cSelf, m)
-				colorTestWindow()
+			newPatternsWindow.mouseClick = function(cSelf, m)
+				patternsWindow()
 			end
-			wSelf:addControl(newColorTestWindow)
+			wSelf:addControl(newPatternsWindow)
 			
-			newGraphWindow = Controls.Button{
+			newGraphWindow = Controls.Button {
 				text = "Panels",
-				
-				x = 64,
-				y = 72,
-				
-				width = 56,
-				height = 16
+				position = bTopLeft + Vec2(0, 2) * bOfs,
+				size = bSize,
 			}
 			newGraphWindow.mouseClick = function(cSelf, m)
 				graphWindow()
 			end
 			wSelf:addControl(newGraphWindow)
 			
-			newAlwaysOnTopWindowButton = Controls.Button{
-				text = "Always On Top",
-				
-				x = 8,
-				y = 72,
-				
-				width = 56,
-				height = 16
+			newAlwaysOnTopWindowButton = Controls.Button {
+				text = "ways On T",
+				position = bTopLeft + Vec2(1, 2) * bOfs,
+				size = bSize,
 			}
 			newAlwaysOnTopWindowButton.mouseClick = function(cSelf, m)
 				alwaysOnTopWindow()

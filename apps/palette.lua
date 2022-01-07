@@ -1,11 +1,10 @@
 local Palette = {}
 
 function Palette.setup()
-	view:addWindow(Controls.Window{
+	view:addWindow(Controls.Window {
 		title = "Palette Editor",
 		
-		width = 96,
-		height = 64,
+		size = Vec2(96, 64),
 		
 		setup = Palette.setupApp,
 	})
@@ -24,7 +23,7 @@ function Palette.setupApp(wSelf)
 			text = ({"Red", "Green", "Blue"})[i],
 		}
 		
-		local sliderControl = Controls.Slider{
+		local sliderControl = Controls.Slider {
 			x = 36,
 			y = i * 16,
 			
@@ -48,12 +47,9 @@ function Palette.setupApp(wSelf)
 		wSelf:addControl(sliderLabel)
 	end
 	
-	palettePicker = Controls.Picker{
-		x = 2,
-		y = 2,
-		
-		width = 89,
-		height = 8,
+	palettePicker = Controls.Picker {
+		position = Vec2(2, 2),
+		size = Vec2(89, 8),
 		
 		elements = {
 			{ value = 1 },

@@ -1,14 +1,13 @@
 local CloseWindow = Effects.Effect:extend()
 
-CloseWindow.maxLife = 120
+CloseWindow.maxLife = 60
 
 function CloseWindow:new(o)
 	CloseWindow.super.new(self, o)
 	
-	self.size = Size(o.width or 8, o.height or 8)
-	self.fallDir = (math.random() > 0.5 and 1 or -1) * (1 + math.floor(math.random() * 10 + 0.5) / 10)
-	
+	self.size = o.size or Size(o.width or 8, o.height or 8)
 	self.life = CloseWindow.maxLife
+	self.fallDir = (math.random() > 0.5 and 1 or -1) * (1 + math.floor(math.random() * 10 + 0.5) / 10)
 end
 
 function CloseWindow:draw()

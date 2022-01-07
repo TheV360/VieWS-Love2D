@@ -1,14 +1,13 @@
 local About = {}
 
 function About.setup()
-	view:addWindow(Controls.Window{
+	view:addWindow(Controls.Window {
 		title = "About VieWS",
 		
 		-- x = 16 + math.random(0, view.size.x),
 		-- y = 32 + math.random(0, view.size.y),
 		
-		width = 128,
-		height = 64,
+		size = Vec2(128, 64),
 		
 		setup = About.setupComponents,
 		
@@ -17,43 +16,48 @@ function About.setup()
 end
 
 function About.setupComponents(wSelf)
-	local logoImage = Controls.Image{
-		x = 4,
-		y = 6,
-		image = love.graphics.newImage("resources/logo.png"),
+	local img = love.graphics.newImage("resources/logo.png")
+	
+	local logoImage = Controls.Image {
+		position = Vec2(4, 6),
+		image = img,
+		color = 1,
 	}
+	local logoImageGhost = Controls.Image {
+		position = Vec2(4, 6) + 1,
+		image = img,
+		color = 3,
+	}
+	
+	logoImageGhost.mouseEnter = function(m)
+		self.redraw = false
+		logoImage:doRedraw()
+	end
+	wSelf:addControl(logoImageGhost)
 	wSelf:addControl(logoImage)
 	
-	local versionLabel = Controls.Label{
-		x = 94,
-		y = 14,
-		
+	local versionLabel = Controls.Label {
+		position = Vec2(94, 14),
 		text = "v0.1?",
 		color = 1,
 	}
 	wSelf:addControl(versionLabel)
 	
-	local nameLabel = Controls.Label{
-		x = 4,
-		y = 24,
+	local nameLabel = Controls.Label {
+		position = Vec2(4, 24),
 		text = "V360 Window System",
 	}
 	wSelf:addControl(nameLabel)
 	
-	local authorLabel = Controls.Label{
-		x = 4,
-		y = 34,
+	local authorLabel = Controls.Label {
+		position = Vec2(4, 34),
 		text = "By V360 (@V360dev)",
 	}
 	wSelf:addControl(authorLabel)
 	
-	local githubButton = Controls.Button{
-		x = 4,
-		y = 44,
-		
-		width = 58,
-		height = 16,
-		
+	local githubButton = Controls.Button {
+		position = Vec2(4, 44),
+		size = Vec2(58, 16),
 		text = "Nothing",
 	}
 	--[[githubButton.mouseClick = function(cSelf, m)
@@ -61,13 +65,9 @@ function About.setupComponents(wSelf)
 	end]]
 	wSelf:addControl(githubButton)
 	
-	local closeButton = Controls.Button{
-		x = 66,
-		y = 44,
-		
-		width = 58,
-		height = 16,
-		
+	local closeButton = Controls.Button {
+		position = Vec2(66, 44),
+		size = Vec2(58, 16),
 		text = "Close",
 	}
 	closeButton.mouseClick = function(cSelf, m)

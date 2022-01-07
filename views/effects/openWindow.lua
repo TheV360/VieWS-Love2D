@@ -5,7 +5,7 @@ OpenWindow.maxLife = 15
 function OpenWindow:new(o)
 	OpenWindow.super.new(self, o)
 	
-	self.size = Size(o.width or 8, o.height or 8)
+	self.size = o.size or Size(o.width or 8, o.height or 8)
 	
 	self.life = OpenWindow.maxLife
 end

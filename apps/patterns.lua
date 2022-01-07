@@ -8,11 +8,10 @@ function Patterns.setup(s)
 	}
 	secret.total = secret.cels * secret.celSize + 1
 	
-	view:addWindow(Controls.Window{
+	view:addWindow(Controls.Window {
 		title = "Desktop Patterns",
 		
-		width = secret.total.x + 82,
-		height = math.max(65, secret.total.y) + 40,
+		size = Vec2(secret.total.x + 82, math.max(65, secret.total.y) + 40),
 		
 		setup = function(wSelf)
 			local currentPattern = view.desktop.patternData
@@ -24,9 +23,8 @@ function Patterns.setup(s)
 			local appliedPatternFlipV = currentPattern.flipV or false
 			
 			local selectedColor = 1
-			local palettePicker = Controls.Picker{
-				x = 8,
-				y = 8,
+			local palettePicker = Controls.Picker {
+				position = Vec2(8, 8),
 				
 				width = secret.total.x,
 				height = 16,
@@ -42,12 +40,9 @@ function Patterns.setup(s)
 			}
 			wSelf:addControl(palettePicker)
 			
-			local patternPixelGrid = Controls.PixelGrid{
-				x = 8,
-				y = 32,
-				
-				width = secret.total.x,
-				height = secret.total.y,
+			local patternPixelGrid = Controls.PixelGrid {
+				position = Vec2(8, 32),
+				size = secret.total,
 				
 				cels = secret.cels,
 				celSize = secret.celSize,
@@ -58,12 +53,9 @@ function Patterns.setup(s)
 			}
 			wSelf:addControl(patternPixelGrid)
 			
-			local flipHCheckBox = Controls.CheckBox{
-				x = secret.total.x + 16,
-				y = 8,
-				
-				width = 58,
-				height = 16,
+			local flipHCheckBox = Controls.CheckBox {
+				position = Vec2(secret.total.x + 16, 8),
+				size = Vec2(58, 16),
 				
 				text = "Flip H.",
 				
@@ -71,12 +63,9 @@ function Patterns.setup(s)
 			}
 			wSelf:addControl(flipHCheckBox)
 			
-			local flipVCheckBox = Controls.CheckBox{
-				x = secret.total.x + 16,
-				y = 32,
-				
-				width = 58,
-				height = 16,
+			local flipVCheckBox = Controls.CheckBox {
+				position = Vec2(secret.total.x + 16, 32),
+				size = Vec2(58, 16),
 				
 				text = "Flip V.",
 				
@@ -84,13 +73,9 @@ function Patterns.setup(s)
 			}
 			wSelf:addControl(flipVCheckBox)
 			
-			local clearButton = Controls.Button{
-				x = secret.total.x + 16,
-				y = 56,
-				
-				width = 29,
-				height = 16,
-				
+			local clearButton = Controls.Button {
+				position = Vec2(secret.total.x + 16, 56),
+				size = Vec2(29, 16),
 				text = "Fill",
 			}
 			clearButton.mouseDown = function(m)
@@ -101,13 +86,9 @@ function Patterns.setup(s)
 			end
 			wSelf:addControl(clearButton)
 			
-			local resetButton = Controls.Button{
-				x = secret.total.x + 45,
-				y = 56,
-				
-				width = 29,
-				height = 16,
-				
+			local resetButton = Controls.Button {
+				position = Vec2(secret.total.x + 45, 56),
+				size = Vec2(29, 16),
 				text = "Orig",
 			}
 			resetButton.mouseClick = function(m)
@@ -121,13 +102,9 @@ function Patterns.setup(s)
 			end
 			wSelf:addControl(resetButton)
 			
-			local applyButton = Controls.Button{
-				x = secret.total.x + 16,
-				y = 81,
-				
-				width = 58,
-				height = 16,
-				
+			local applyButton = Controls.Button {
+				position = Vec2(secret.total.x + 16, 81),
+				size = Vec2(58, 16),
 				text = "Apply",
 			}
 			applyButton.mouseClick = function(cSelf, m)

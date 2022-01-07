@@ -1,12 +1,8 @@
 local AlwaysOnTop = {}
 
 function AlwaysOnTop.setup()
-	view:addWindow(Controls.Window{
-		-- x = 8,
-		-- y = 8,
-		
-		width = 64,
-		height = 64,
+	view:addWindow(Controls.Window {
+		size = Vec2(64, 64),
 		
 		setup = AlwaysOnTop.setupComponents,
 		
@@ -15,12 +11,10 @@ function AlwaysOnTop.setup()
 end
 
 function AlwaysOnTop.setupComponents(wSelf)
-	myButton = Controls.Button{
-		x = 2,
-		y = 2,
+	myButton = Controls.Button {
+		position = Vec2(2, 2),
+		size = Vec2(16, 14),
 		text = "Hi",
-		
-		height = 14,
 	}
 	myButton.mouseClick = function(cSelf, m)
 		windowMakerWindow()
