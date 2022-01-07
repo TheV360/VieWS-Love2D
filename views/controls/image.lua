@@ -13,9 +13,8 @@ function Image:new(o)
 end
 
 function Image:draw()
+	-- self:clearRect()
 	love.graphics.setColor(VieWS.PALETTE[self.color])
-	self:clearRect()
-	
 	love.graphics.draw(self.image)
 end
 
