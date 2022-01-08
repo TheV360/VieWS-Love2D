@@ -18,6 +18,12 @@ utf8 = require("utf8")
 DebugHelper = require("debug.helper")(true)
 
 function love.load()
+	fpsLimit = {
+		tick = 0,
+		-- maxTick = 1 / 60,
+		maxTick = 1 / 144, -- Fuckin gamer laptops
+	}
+	
 	-- Makes everything nice and pixel-perfect.
 	PixelScreen.PixelPerfect()
 	
@@ -62,6 +68,11 @@ function love.load()
 end
 
 function love.update(dt)
+	fpsLimit.tick = fpsLimit.tick + dt
+	
+	if fpsLimit.tick < fpsLimit.maxTick then return end
+	fpsLimit.tick = fpsLimit.tick - fpsLimit.maxTick
+	
 	-- Update VieWS
 	view:update(dt)
 	
