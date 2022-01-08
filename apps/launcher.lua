@@ -1,8 +1,6 @@
-function barWindow()
-	require("apps/bar").setup()
-end
+local Launcher = {}
 
-function windowMakerWindow()
+function Launcher.setup(vSelf)
 	local cfg = {
 		pop = {
 			{"About", "about"},
@@ -42,8 +40,8 @@ function windowMakerWindow()
 					size = cfg.buttonSize,
 				}
 				nwButton.mouseClick = function()
-					view:try(function()
-						dofile("apps/" .. appFile .. ".lua").setup()
+					vSelf:try(function()
+						dofile("apps/" .. appFile .. ".lua").setup(vSelf)
 					end)
 				end
 				
@@ -53,4 +51,4 @@ function windowMakerWindow()
 	})
 end
 
-barWindow()
+return Launcher

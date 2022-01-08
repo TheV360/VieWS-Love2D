@@ -1,22 +1,18 @@
 local Bar = {}
 
-function Bar.setup()
-	view:addWindow(Controls.Window {
+function Bar.setup(vSelf)
+	local wSelf = Controls.Window {
 		title = "OS Menu",
 		
 		position = Vec2(0, 0),
-		size = Vec2(view.size.x, 12),
+		size = Vec2(vSelf.size.x, 12),
 		
 		border = Sides(0, 0, 1, 0),
 		
-		setup = Bar.setupComponents,
-		
 		onTop = true,
-	})
-end
-
-function Bar.setupComponents(wSelf)
-	myButton = Controls.Button {
+	}
+	
+	local myButton = Controls.Button {
 		position = Vec2(8, -1),
 		
 		height = 14,
@@ -24,10 +20,11 @@ function Bar.setupComponents(wSelf)
 		text = "New",
 	}
 	myButton.mouseClick = function(cSelf, m)
-		windowMakerWindow()
+		require("apps/launcher").setup(vSelf)
 	end
-	
 	wSelf:addControl(myButton)
+	
+	vSelf:addWindow(wSelf)
 end
 
 return Bar

@@ -58,11 +58,10 @@ function love.load()
 	love.keyboard.setKeyRepeat(true)
 	
 	view = VieWS {
-		width  = screen.size.x,
-		height = screen.size.y,
+		size = screen.size,
 	}
 	
-	require("apps/init")
+	require("apps/bar").setup(view)
 	
 	timeSpent = 0
 end
