@@ -4,15 +4,21 @@ local VectorTypes = require("util.geometry.vector")
 local Vec2 = unpack(VectorTypes.float)
 
 function PixScr.PixelPerfect()
-	love.graphics.setDefaultFilter("nearest", "nearest", 1)
-	love.graphics.setLineStyle("rough")
+	love.graphics.setDefaultFilter('nearest', 'nearest', 1)
+	love.graphics.setLineStyle('rough')
 	love.graphics.setLineWidth(1)
 end
 
 function PixScr:new(size)
 	self.size = size or Vec2(360, 240)
 	
-	self.canvas = love.graphics.newCanvas(self.size:unpack())
+	if love.system.getOS() == 'Android' then
+		local dpiScale = love.graphics.getDPIScale()
+		self.canvas = love.graphics.newCanvas((self.size * dpiScale):unpack())
+		self.dpiScale = dpiScale
+	else
+		self.canvas = love.graphics.newCanvas(self.size:unpack())
+	end
 	
 	self.offset = Vec2(0, 0)
 	self.scale = 1
@@ -43,7 +49,14 @@ function PixScr:renderThenDraw(...)
 end
 
 function PixScr:draw()
-	love.graphics.draw(self.canvas, self.offset.x, self.offset.y, 0, self.scale)
+	if dpiScale then
+		love.graphics.push()
+		love.graphics.scale(1 / self.dpiScale, 1 / self.dpiScale)
+		love.graphics.draw(self.canvas, self.offset.x, self.offset.y, 0, self.scale)
+		love.graphics.pop()
+	else
+		love.graphics.draw(self.canvas, self.offset.x, self.offset.y, 0, self.scale)
+	end
 end
 
 function PixScr:pointIn(outside)
