@@ -76,8 +76,8 @@ function Window:update(dt)
 	Window.super.update(self)
 	
 	--[[if view.mouse.drag.window ~= self then
-		self.position = self.position + self.velocity
 		if self.velocity:squaredMagnitude() ~= 0 then
+			self.position = self.position + self.velocity
 			if self.position.x < 0 then self.position.x = 0 self.velocity.x = math.abs(self.velocity.x) end
 			if self.position.y < 16 then self.position.y = 16 self.velocity.y = math.abs(self.velocity.y) end
 			if self.position.x + self.size.x >= view.size.x then self.position.x = view.size.x - self.size.x self.velocity.x = -math.abs(self.velocity.x) end
@@ -88,15 +88,25 @@ function Window:update(dt)
 end
 
 function Window:draw()
-	love.graphics.setColor(1, 1, 1)
-	
-	love.graphics.push()
+	--[[if view.mouse.drag.window ~= self then
+		if self.velocity:squaredMagnitude() ~= 0 then
+			love.graphics.setColor(VieWS.PALETTE[4])
+			love.graphics.push()
+			love.graphics.translate((-self.velocity * 4):unpack())
+			love.graphics.rectangle(
+				"fill",
+				-self.border.left,
+				-self.border.top,
+				self.size.x + self.border.left + self.border.right,
+				self.size.y + self.border.top + self.border.bottom
+			)
+			love.graphics.pop()
+		end
+	end]]
 	
 	self:drawShadow()
 	self:drawBorder()
 	Window.super.draw(self)
-	
-	love.graphics.pop()
 end
 
 function Window:drawBorder()
