@@ -41,17 +41,17 @@ function Panel:draw()
 				love.graphics.push()
 				love.graphics.origin()
 				
-				if debugRects then
-					love.graphics.origin()
-					love.graphics.setColor(1, 0, 0, 0.125)
-					c:drawRect("line")
-				end
-				
 				love.graphics.translate(c.position:unpack())
 				love.graphics.setScissor(c.position.x, c.position.y, c.size.x, c.size.y)
 				
 				love.graphics.setColor(VieWS.PALETTE[1])
 				c:draw()
+				
+				if debugRects then
+					love.graphics.setColor(1, 0, 0, 0.125)
+					c:drawRect("line")
+					love.graphics.setColor(VieWS.PALETTE[1])
+				end
 				
 				c.redraw = false
 				

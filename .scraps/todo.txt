@@ -13,3 +13,17 @@ mouseClick
 - triggered when the mouse is already over a thing and just clicked
 
 this'll need me to make big changes to the "views" object, which really makes me want to switch languages right now lol.
+
+
+okay i'm writing in this again. i guess.
+
+new todo:
+- allow apps to accept cli parameters
+- apps need to have a self that they can write to.
+	- this'd mean that the app window handle would be a field in the object.
+	- it'd make stateful apps 20x easier to make
+
+function app(self)
+	self.data = { hi = 5 }
+	self.data.window = newWindow(funny)
+end
