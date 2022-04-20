@@ -55,6 +55,12 @@ VieWS.PALETTE_FOREST = {
 	{ 2/5, 3/5, 2/5 },
 	{ 3/5, 4/5, 3/5 },
 }
+VieWS.PALETTE_DULL = {
+	{ 0/5, 1/5, 1/5 },
+	{ 1/5, 2/5, 2/5 },
+	{ 2/5, 3/5, 3/5 },
+	{ 4/5, 5/5, 5/5 },
+}
 VieWS.PALETTE_ICE = {
 	{ 0/5, 0/5, 1/5 },
 	{ 1/5, 1/5, 3/5 },
@@ -67,7 +73,7 @@ VieWS.PALETTE_PURPLE = {
 	{ 9/ 10, 17/ 20,      1 },
 	{     1,      1,      1 },
 }
-VieWS.PALETTE = VieWS.PALETTE_FOREST
+VieWS.PALETTE = VieWS.PALETTE_DULL
 
 function VieWS:new(o)
 	VieWS.super.new(self, o)
@@ -177,15 +183,15 @@ function VieWS:try(fn, ...)
 end
 
 function VieWS:modal(text, title, callback, parent)
+	local label = Controls.Label {
+		text = text,
+		position = Vec2(8, 4),
+		maxWidth = 144,
+	}
 	local mw = Controls.Window {
 		title = title or "Modal",
-		size = Vec2(160, 64),
+		size = Vec2(label.size.x + 16, label.size.y + 24),
 		setup = function(wSelf)
-			local label = Controls.Label {
-				text = text,
-				position = Vec2(8, 4),
-				size = Vec2(wSelf.size.x - 16, 32),
-			}
 			wSelf:addControl(label)
 			
 			local button = Controls.Button {
