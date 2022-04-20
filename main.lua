@@ -8,7 +8,7 @@ Vec2, Vec3, Vec4 = unpack(VectorTypes.float)
 
 -- Helpful stuff.
 CallbackWrapper = require("util.callbackwrapper")
-InputHandler = require "util.input" -- Renamed from "Baton" by Tesselode
+InputHandler = require("util.input") -- Renamed from "Baton" by Tesselode
 PixelScreen = require("util.pixelscreen")
 Util = require("util.util")
 utf8 = require("utf8")

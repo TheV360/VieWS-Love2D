@@ -172,7 +172,7 @@ function VieWS:try(fn, ...)
 		table.remove(res, 1)
 		return unpack(res)
 	else
-		self:modal(tostring(res[1]), "Error Caught!")
+		self:modal(tostring(res[2] or "lol idk"), "Error Caught!")
 	end
 end
 
