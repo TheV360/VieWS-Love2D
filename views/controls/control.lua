@@ -34,13 +34,7 @@ function Control:update()
 end
 
 function Control:draw()
-	love.graphics.rectangle(
-		"fill",
-		0,
-		0,
-		self.size.x,
-		self.size.y
-	)
+	love.graphics.rectangle("fill", 0, 0, self.size.x, self.size.y)
 end
 
 function Control:getPaddingRect(round)

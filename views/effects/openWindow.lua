@@ -1,6 +1,6 @@
 local OpenWindow = Effects.Effect:extend()
 
-OpenWindow.maxLife = 15
+OpenWindow.maxLife = 1/6
 
 function OpenWindow:new(o)
 	OpenWindow.super.new(self, o)

@@ -235,7 +235,7 @@ function VieWS:update(dt)
 	
 	-- FX
 	for i = #self.effects, 1, -1 do
-		self.effects[i].life = self.effects[i].life - 1
+		self.effects[i].life = self.effects[i].life - dt
 		
 		if self.effects[i].life < 0 then
 			table.remove(self.effects, i)

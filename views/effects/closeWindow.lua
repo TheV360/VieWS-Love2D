@@ -1,6 +1,6 @@
 local CloseWindow = Effects.Effect:extend()
 
-CloseWindow.maxLife = 60
+CloseWindow.maxLife = 1/2
 
 function CloseWindow:new(o)
 	CloseWindow.super.new(self, o)

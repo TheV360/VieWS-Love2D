@@ -72,6 +72,8 @@ function love.update(dt)
 	if fpsLimit.tick < fpsLimit.maxTick then return end
 	fpsLimit.tick = fpsLimit.tick - fpsLimit.maxTick
 	
+	dt = math.max(dt, fpsLimit.maxTick)
+	
 	-- Update VieWS
 	view:update(dt)
 	
