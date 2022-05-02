@@ -7,6 +7,14 @@ local Util = {}
 -- Lua Utility Functions --
 -- --------------------- --
 
+function Util.isInfinity(n)
+	return n == math.huge or n == -math.huge
+end
+
+function Util.isNaN(n)
+	return not (n > 0 or n < 0 or n == 0)
+end
+
 function Util.frac(n)
 	return n - math.floor(n)
 end

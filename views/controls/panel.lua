@@ -38,6 +38,8 @@ function Panel:draw()
 	self.canvas:renderTo(function()
 		for i, c in pairs(self.controls) do
 			if c.redraw and c.visible then
+				c.redraw = false
+				
 				love.graphics.push()
 				love.graphics.origin()
 				
@@ -52,8 +54,6 @@ function Panel:draw()
 					c:drawRect("line")
 					love.graphics.setColor(VieWS.PALETTE[1])
 				end
-				
-				c.redraw = false
 				
 				love.graphics.setScissor()
 				love.graphics.pop()

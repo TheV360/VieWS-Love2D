@@ -24,6 +24,7 @@ Controls.CheckBox = require("views/controls/checkbox")
 Controls.Slider = require("views/controls/slider")
 Controls.Picker = require("views/controls/picker")
 Controls.PixelGrid = require("views/controls/pixelGrid")
+Controls.Canvas = require("views/controls/canvas")
 Controls.Window = require("views/controls/window")
 
 VieWS = VieWSRect:extend()

@@ -7,6 +7,7 @@ function Launcher.setup(vSelf)
 			{"Fixed Pt", "fixedPoint"},
 			{"Palette", "palette"},
 			{"Patterns", "patterns"},
+			{"Eyes", "eyes"},
 		},
 		topLeft = Vec2(8, 32),
 		margin = Vec2(2, 4),
