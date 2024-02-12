@@ -1,22 +1,26 @@
 local Patterns = {}
 
-function Patterns.setup(s)
-	s = s or {}
+function Patterns.setup(vSelf, o)
+	o = o or {}
 	local secret = {
-		cells = s.cells or Vec2(8, 8),
-		cellSize = s.cellSize or Vec2(8, 8),
+		cells = o.cells or Vec2(8, 8),
+		cellSize = o.cellSize or Vec2(8, 8),
 	}
-	secret.total = secret.cells * secret.cellSize + 1
 	
-	view:addWindow(Controls.Window {
+	o.cells = o.cells or Vec2(8, 8)
+	o.cellSize = o.cellSize or Vec2(8, 8)
+	
+	o.total = o.cells * o.cellSize + 1
+	
+	vSelf:addWindow(Controls.Window {
 		title = "Desktop Patterns",
 		
-		size = Vec2(secret.total.x + 82, math.max(65, secret.total.y) + 40),
+		size = Vec2(o.total.x + 82, math.max(65, o.total.y) + 40),
 		
 		setup = function(wSelf)
-			local currentPattern = view.desktop.patternData
+			local currentPattern = vSelf.desktop.patternData
 			local appliedPatternData = {}
-			for i = 1, (secret.cells.x * secret.cells.y) do
+			for i = 1, (o.cells.x * o.cells.y) do
 				appliedPatternData[i] = currentPattern[i] or #VieWS.PALETTE
 			end
 			local appliedPatternFlipH = currentPattern.flipH or false
@@ -26,7 +30,7 @@ function Patterns.setup(s)
 			local palettePicker = Controls.Picker {
 				position = Vec2(8, 8),
 				
-				width = secret.total.x,
+				width = o.total.x,
 				height = 16,
 				
 				elements = {
@@ -42,10 +46,10 @@ function Patterns.setup(s)
 			
 			local patternPixelGrid = Controls.PixelGrid {
 				position = Vec2(8, 32),
-				size = secret.total,
+				size = o.total,
 				
-				cells = secret.cells,
-				cellSize = secret.cellSize,
+				cells = o.cells,
+				cellSize = o.cellSize,
 				
 				cellData = appliedPatternData,
 				
@@ -54,7 +58,7 @@ function Patterns.setup(s)
 			wSelf:addControl(patternPixelGrid)
 			
 			local flipHCheckBox = Controls.CheckBox {
-				position = Vec2(secret.total.x + 16, 8),
+				position = Vec2(o.total.x + 16, 8),
 				size = Vec2(58, 16),
 				
 				text = "Flip H.",
@@ -64,7 +68,7 @@ function Patterns.setup(s)
 			wSelf:addControl(flipHCheckBox)
 			
 			local flipVCheckBox = Controls.CheckBox {
-				position = Vec2(secret.total.x + 16, 32),
+				position = Vec2(o.total.x + 16, 32),
 				size = Vec2(58, 16),
 				
 				text = "Flip V.",
@@ -74,7 +78,7 @@ function Patterns.setup(s)
 			wSelf:addControl(flipVCheckBox)
 			
 			local clearButton = Controls.Button {
-				position = Vec2(secret.total.x + 16, 56),
+				position = Vec2(o.total.x + 16, 56),
 				size = Vec2(29, 16),
 				text = "Fill",
 			}
@@ -87,7 +91,7 @@ function Patterns.setup(s)
 			wSelf:addControl(clearButton)
 			
 			local resetButton = Controls.Button {
-				position = Vec2(secret.total.x + 45, 56),
+				position = Vec2(o.total.x + 45, 56),
 				size = Vec2(29, 16),
 				text = "Orig",
 			}
@@ -103,7 +107,7 @@ function Patterns.setup(s)
 			wSelf:addControl(resetButton)
 			
 			local applyButton = Controls.Button {
-				position = Vec2(secret.total.x + 16, 81),
+				position = Vec2(o.total.x + 16, 81),
 				size = Vec2(58, 16),
 				text = "Apply",
 			}
@@ -112,14 +116,14 @@ function Patterns.setup(s)
 					appliedPatternData[i] = patternPixelGrid.cellData[i]
 				end
 				
-				appliedPatternData.width  = secret.cells.x
-				appliedPatternData.height = secret.cells.y
+				appliedPatternData.width  = o.cells.x
+				appliedPatternData.height = o.cells.y
 				
 				appliedPatternData.flipH = flipHCheckBox.value
 				appliedPatternData.flipV = flipVCheckBox.value
 				
-				view.desktop:setPattern(appliedPatternData)
-				-- view:modal("Pattern applied to desktop!", nil, nil, wSelf)
+				vSelf.desktop:setPattern(appliedPatternData)
+				-- vSelf:modal("Pattern applied to desktop!", nil, nil, wSelf)
 			end
 			wSelf:addControl(applyButton)
 		end,
