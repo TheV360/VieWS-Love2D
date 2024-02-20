@@ -1,7 +1,11 @@
 local Palette = {}
 
-function Palette.setup()
-	view:addWindow(Controls.Window {
+Palette.env = nil
+
+function Palette.setup(vSelf)
+	Palette.env = vSelf
+	
+	vSelf:addWindow(Controls.Window {
 		title = "Palette Editor",
 		
 		size = Vec2(96, 64),
@@ -37,8 +41,11 @@ function Palette.setupApp(wSelf)
 			progress = true,
 			
 			applied = function(v)
-				VieWS.PALETTE[selectedColor][i] = v
-				view:switchPalette(VieWS.PALETTE)
+				-- TODO: not right
+				Palette.env.PALETTE[selectedColor][i] = v
+				if Palette.env then
+					Palette.env:switchPalette(VieWS.PALETTE)
+				end
 			end,
 		}
 		

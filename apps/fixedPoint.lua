@@ -1,20 +1,19 @@
 local FixedPoint = {}
 
-function FixedPoint.setup(s)
-	s = s or {}
-	local secret = {
-		bits = s.bits or 8,
-	}
+function FixedPoint.setup(vSelf, o)
+	o = o or {}
 	
-	view:addWindow(Controls.Window {
+	o.bits = o.bits or 8
+	
+	vSelf:addWindow(Controls.Window {
 		title = "Fixed Point",
 		
-		size = Vec2(secret.bits * 12 + 2, 54),
+		size = Vec2(o.bits * 12 + 2, 54),
 		
 		setup = function(wSelf)
 			local value = 0
-			local mask = bit.lshift(1, secret.bits) - 1
-			local fontHeight = view.font:getHeight("_")
+			local mask = bit.lshift(1, o.bits) - 1
+			local fontHeight = vSelf.font:getHeight("_")
 			
 			-- gets the bit at position n
 			local function bit_at(val, n) return bit.band(bit.rshift(val, n - 1), 1) end
@@ -46,7 +45,7 @@ function FixedPoint.setup(s)
 			-- you can click them to flip the bit they represent!
 			local bitsButtons = {}
 			
-			for i = 1, secret.bits do
+			for i = 1, o.bits do
 				local c = Controls.Button {
 					position = Vec2(wSelf.size.x - i * 12, 26),
 					text = "0",
@@ -67,7 +66,7 @@ function FixedPoint.setup(s)
 				position = Vec2(2, 16),
 				size = Vec2(wSelf.size.x - 4, 0),
 				
-				min = 0, max = secret.bits,
+				min = 0, max = o.bits,
 				step = 1,
 				value = 0,
 				direction = 'rightToLeft',
@@ -118,6 +117,6 @@ function FixedPoint.setup(s)
 	})
 end
 
-
+-- TODO: put that ↑ all into another function here to prevent indent hell
 
 return FixedPoint

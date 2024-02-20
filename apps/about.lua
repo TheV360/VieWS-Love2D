@@ -1,7 +1,7 @@
 local About = {}
 
-function About.setup()
-	view:addWindow(Controls.Window {
+function About.setup(vSelf)
+	vSelf:addWindow(Controls.Window {
 		title = "About VieWS",
 		
 		size = Vec2(128, 64),

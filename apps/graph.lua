@@ -1,7 +1,7 @@
 local Graph = {}
 
-function Graph.setup()
-	view:addWindow(Controls.Window {
+function Graph.setup(vSelf)
+	vSelf:addWindow(Controls.Window {
 		title = "Panel test",
 		
 		size = Vec2(256, 128),

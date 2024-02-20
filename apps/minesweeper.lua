@@ -1,6 +1,8 @@
 local Minesweeper = {}
 
-function Minesweeper.setup()
+function Minesweeper.setup(vSelf, o)
+	o = o or {}
+	
 	local cfg = {
 		statusBar = 12,
 		cellSize = Vec2(12, 12),
@@ -12,7 +14,7 @@ function Minesweeper.setup()
 		title = "Minesweeper",
 		size = cfg.totalSize
 	}
-	view:addWindow(w)
+	vSelf:addWindow(w)
 end
 
 return Minesweeper

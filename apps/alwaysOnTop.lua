@@ -1,7 +1,7 @@
 local AlwaysOnTop = {}
 
-function AlwaysOnTop.setup()
-	view:addWindow(Controls.Window {
+function AlwaysOnTop.setup(vSelf)
+	vSelf:addWindow(Controls.Window {
 		size = Vec2(64, 64),
 		
 		setup = AlwaysOnTop.setupComponents,
@@ -17,7 +17,7 @@ function AlwaysOnTop.setupComponents(wSelf)
 		text = "Hi",
 	}
 	myButton.mouseClick = function(cSelf, m)
-		windowMakerWindow()
+		windowMakerWindow() -- FIXME: doesn't exist anymore,
 	end
 	
 	wSelf:addControl(myButton)
