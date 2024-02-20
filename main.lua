@@ -63,6 +63,11 @@ function love.load()
 	
 	require("apps/bar").setup(view)
 	
+	if DebugHelper.enabled then
+		DebugHelper.console:pushHistory "dofile('apps/fixedPoint.lua').setup(view, { bits = 16 })"
+		DebugHelper.console:pushHistory "dofile('apps/patterns.lua').setup(view, { cells = Vec2(16,16) })"
+	end
+	
 	timeSpent = 0
 end
 

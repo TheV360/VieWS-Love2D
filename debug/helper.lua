@@ -4,7 +4,8 @@ return function(debug)
 	local nop = function() end
 	local d = { update = nop, draw = nop }
 	
-	if debug then
+	d.enabled = debug
+	if d.enabled then
 		d.stats = require("debug.stats")
 		d.console = require("debug.console")
 		

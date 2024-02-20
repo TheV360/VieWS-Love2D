@@ -422,6 +422,15 @@ function Console:tabCompletion(dir)
 	self.cursorBlink = 0
 end
 
+function Console:pushHistory(line)
+	-- Add line to history
+	table.insert(self.history, 1, line)
+	-- If history passed its max, remove least recently used item.
+	if #self.history > self.historyMax then
+		table.remove(self.history)
+	end
+end
+
 function Console:runInput()
 	local line = self.input
 	
@@ -471,12 +480,7 @@ function Console:runInput()
 	-- Show line in console
 	Console:printSpecial{text = self.inputPrefix .. line, color = {0.75, 0.875, 1}}
 	
-	-- Add line to history
-	table.insert(self.history, 1, line)
-	-- If history passed its max, remove a thing.
-	if #self.history > self.historyMax then
-		table.remove(self.history)
-	end
+	self:pushHistory(line)
 	
 	-- If line has = at start, encase the code in print()
 	-- If line has double equals at start, encase it in some identifying characters to show how yes, it is a thing
